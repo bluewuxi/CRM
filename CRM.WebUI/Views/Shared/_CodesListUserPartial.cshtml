@@ -1,0 +1,69 @@
+﻿@model String
+@{ 
+    string callbackFunc = Model.ToString() + "_onSelect";
+}
+<div id="@Model" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Select a user</h4>
+            </div>
+            <div class="modal-body">
+                <table class="codesTable">
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    var $model = $("#@Model");
+    var $table = $('#@Model .codesTable');
+    $(function () {
+        $(document).on("shown.bs.modal", "#@Model", function () {
+            //$table.bootstrapTable('resetView');
+            $table.bootstrapTable({
+                url: "/api/QueryCodes/users?limit=0",
+                height: 320,
+                clickToSelect: true,
+                sidePagination: 'client',
+                pagination: true,
+                search: true,
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'id',
+                    title: 'User ID',
+                    visible: false
+                }, {
+                    field: 'userName',
+                    title: 'User Name',
+                }, {
+                    field: 'email',
+                    title: 'Email',
+                }, {
+                    field: 'phoneNumber',
+                    title: 'Phone Number',
+                }]
+            });
+            $table.on('check.bs.table', function () {
+                $('#@Model').modal('toggle');
+                @callbackFunc ($table.bootstrapTable('getSelections'));
+                //$table.bootstrapTable("destory");
+            });
+        });
+    });
+
+
+</script>
+
+

@@ -1,0 +1,144 @@
+@model CRM.Domain.Entities.Account
+
+@{
+    ViewData["Title"] = "Details";
+}
+@section SideBar {
+    <li class="sidebar-search">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                    <div class="form-actions no-color">
+                        <input id="query_sort" type="hidden" name="sort" value="" />
+                        <input id="query_search2" type="hidden" name="search" value="" />
+                        <input id="query_offset" type="hidden" name="offset" value="0" />
+
+                        <label for="AccountName">Account Name:</label>
+                        <input id="AccountName" class="form-control" placeholder="Name" />
+                        <br class="divider" />
+                        <label for="AccountType">Account Type:</label>
+                        <select class="form-control" id="AccountType">
+                            <option value="">-- Select a type --</option>
+                            <option value="0">Agent</option>
+                            <option value="1">Institut</option>
+                            <option value="2">Other</option>
+                        </select>
+                        <br class="divider" />
+                        <label for="AccountOwner">Account Owner:</label>
+                        <input id="AccountOwner" class="form-control" placeholder="User Name" />
+                    </div>
+            </div>
+        </div>
+    </li>
+}
+    <div class="panel panel-info" style="margin-top:10px;">
+        <div class="panel-heading">
+            <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.AccountID">
+                <div class="btn-group pull-right">
+                    <a style="margin-left:10px;margin-right:10px;" class="btn btn-success" asp-action="Edit" asp-route-id="@Model.AccountID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                    <a asp-action="Index" class="btn btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                    <a id="deleteButton" href="#" onclick="deleteAccount()" class="btn btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+                </div>
+                <p style="font-size:21px; margin-top:0px; margin-bottom:0px;">Account Details</p>
+            </form>
+        </div>
+        <div class="panel-body">
+                <div class="row">
+                    <div  class="columns col-md-6 crm-style">
+                        <dl class="dl-horizontal">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Name)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.ShortName)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.ShortName)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.AccountType)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.AccountType)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.ContactName)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.ContactName)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.ContactGender)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.ContactGender)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Birthdate)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Birthdate)
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="columns col-md-6  crm-style">
+                        <dl class="dl-horizontal">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.EMail)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.EMail)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Mobile)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Mobile)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.RegisterDate)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.RegisterDate)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Address)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Address)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Note)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Note)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.AccountOwner.UserName)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.AccountOwner.UserName)
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+@section Scripts {
+<script>
+    $("#crm-accounts").addClass('active');
+     function deleteAccount () {
+        if (confirm("Are you sure to delete the Account?")) {
+            $("#confirmForm").submit();
+        }
+    };
+</script>
+}

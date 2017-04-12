@@ -1,0 +1,98 @@
+@model String
+
+<div id="@Model" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg ">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Select a user</h4>
+            </div>
+            <div class="modal-body">
+                <span>Search by user name: </span><input class="searchString" type="text" />
+                <span id="codeslist"></span>
+                <table id="codetable">
+                    <thead>
+                        <tr>
+                            <th data-field="id">User Id</th>
+                            <th data-field="userName">User Name</th>
+                            <th data-field="email">>Email</th>
+                            <th data-field="phoneNumber">>Phone number</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer" >
+            <button type="button" class="btn btn-default" onclick="pirror_@Model ()"><</button><div style="display:inline-block;" class="pagenum">- Page 1 -</div>
+            <button type="button" class="btn btn-default" onclick="next_@Model ()">></button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    var page_@Model= 1;
+    var pirror_@Model = function () {
+        if (page_@Model >1)
+            $('#@Model #codetable').bootstrapTable('refresh', { url: LC_GetUrl_@Model ('users', this.value, --page_@Model ) });
+        return;
+    }
+    var next_@Model = function () {
+        var data = $('#@Model #codetable').bootstrapTable('getData');
+        if (data != null && data.length <= 2) {
+            ;
+        }
+        else {
+            $('#@Model #codetable').bootstrapTable('refresh', { url: LC_GetUrl_@Model ('users', this.value, ++page_@Model ) });
+        }
+        return;
+    }
+
+    LC_GetUrl_@Model =
+        function (codetype, searchString, page) {
+            if (searchString === undefined) {
+                searchString = "";
+            }
+
+            if (codetype === undefined) {
+                codetype = "";
+            }
+
+            if (page === undefined) {
+                page = 1;
+            }
+            page_@Model = page;
+            $("#@Model .pagenum").text("-Page " + page.toString() + "-");
+            return '/api/QueryCodes/' + codetype + '/page' + page.toString().trim() + (searchString==''?'':('?name=' + encodeURIComponent(searchString)));
+        }
+       LC_List_@Model =
+        function listCodes(codetype, searchString, page) {
+            $('#@Model #codetable').bootstrapTable({
+                url: LC_GetUrl_@Model (codetype, searchString, page),
+                height: 230,
+                clickToSelect: true,
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true
+                }, {
+                    field: 'id',
+                    title: 'User ID',
+                    visible: false
+                }, {
+                    field: 'userName',
+                    title: 'User Name'
+                }, {
+                    field: 'email',
+                    title: 'Email'
+                }, {
+                    field: 'phoneNumber',
+                    title: 'Phone Number'
+                },]
+            });
+        };
+        LC_Debounce_@Model = function debounce(a, b, c) { var d; return function () { var e = this, f = arguments, g = function () { d = null, c || a.apply(e, f) }, h = c && !d; clearTimeout(d), d = setTimeout(g, b), h && a.apply(e, f) }; };
+</script>
