@@ -1,0 +1,113 @@
+@model CRM.Domain.Entities.Enrollment
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Enrollment</h2>
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <div class="form-actions no-color">
+
+                    <label>Open Activities:</label>
+                    <br class="divider" />
+                    <label>Closed Activities:</label>
+                    <br class="divider" />
+                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
+                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
+                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
+                    <br class="divider" />
+                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
+                    <br class="divider" />
+                </div>
+            </div>
+        </div>
+    </li>
+}
+
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="EnrollmentID" />
+        <div class="form-group">
+            <label asp-for="StudentID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="StudentID" class="form-control" asp-items="ViewBag.StudentID"></select>
+                <span asp-validation-for="StudentID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="InstituteID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="InstituteID" class="form-control" asp-items="ViewBag.InstituteID"></select>
+                <span asp-validation-for="InstituteID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="PaymentDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="PaymentDate" class="form-control" />
+                <span asp-validation-for="PaymentDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="DueDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="DueDate" class="form-control" />
+                <span asp-validation-for="DueDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Tuition" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Tuition" class="form-control" />
+                <span asp-validation-for="Tuition" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="EnrollmentAgentID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="EnrollmentAgentID" class="form-control" asp-items="ViewBag.EnrollmentAgentID"></select>
+                <span asp-validation-for="EnrollmentAgentID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Status" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Status" class="form-control"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Note" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

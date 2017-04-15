@@ -45,11 +45,13 @@
             <!-- /.navbar-header -->
                 <ul id="crm-menu" class="nav navbar-top-links navbar-right navbar-collapse collapse">
                     <li id="crm-accounts"><a asp-area="" asp-controller="Accounts" asp-action="Index" >Accounts</a></li>
+                    <li id="crm-leads"><a asp-area="" asp-controller="Leads" asp-action="Index">Leads</a></li>
                     <li id="crm-students"><a asp-area="" asp-controller="Students" asp-action="Index">Students</a></li>
-                    <li id="crm-applications"><a asp-area="" asp-controller="Applications" asp-action="Index">Applications</a></li>
                     <li id="crm-activities"><a asp-area="" asp-controller="Activities" asp-action="Index">Activities</a></li>
+                    <li id="crm-applications"><a asp-area="" asp-controller="Applications" asp-action="Index">Applications</a></li>
+                    <li id="crm-visa"><a asp-area="" asp-controller="Applications" asp-action="Index">Visa</a></li>
+                    <li id="crm-enrollment"><a asp-area="" asp-controller="Applications" asp-action="Index">Enrollment</a></li>
                     <li id="crm-about"><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <!-- /.dropdown -->
                     <li class="dropdown">
                         <!-- /.dropdown -->
@@ -100,7 +102,7 @@
             <!-- /.navbar-static-side -->
         </nav>
         <!-- Page Content -->
-        <div id="page-wrapper">
+        <div id="page-wrapper" style="padding:0px;">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">

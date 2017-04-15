@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CRM.Domain.Concrete
 {
-    public class AccountRepository: IAccountRepository
+    public class AccountRepository: BaseRepository, IAccountRepository
     {
         private EFDbContext context;
         private DbSet<Account> accountEntity;
@@ -26,6 +26,7 @@ namespace CRM.Domain.Concrete
         public Task<int> AddAsync(Account account)
         {
             context.Entry(account).State = EntityState.Added;
+            SetCreatedSignature(account);
             return context.SaveChangesAsync();
         }
 
@@ -73,6 +74,7 @@ namespace CRM.Domain.Concrete
 
         public void Update(Account account)
         {
+            SetModifiedSignature(account);
             context.Update(account);
             context.SaveChanges();
         }

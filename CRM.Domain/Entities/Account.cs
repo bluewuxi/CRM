@@ -7,9 +7,9 @@ using CRM.Domain.Abstract;
 
 namespace CRM.Domain.Entities
 {
-    public class Account
+    public class Account: IEntity
     {
-        public enum AccountTypeEnum
+        public enum AccountTypeEnum : int
         {
             Agent=0, Institute, Other
         }
@@ -53,8 +53,12 @@ namespace CRM.Domain.Entities
         [Display(Name = "Account Owner")]
         public ApplicationUser AccountOwner { get; set; }
 
-        [Display(Name = "Modified By")]
+        public DateTime ModifiedTime { get; set; }
         public ApplicationUser ModifiedBy { get; set; }
+        public string ModifiedByID { get; set; }
+        public DateTime CreatedTime { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
+        public string CreatedByID { get; set; }
 
     }
 }

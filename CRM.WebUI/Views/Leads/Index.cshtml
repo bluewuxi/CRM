@@ -1,0 +1,144 @@
+@model CRM.WebUI.Models.QuerySettingViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    CRM.Domain.Entities.Lead fieldDisplay = new CRM.Domain.Entities.Lead();
+}
+
+@section SideBar {
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span class="h4">Filter</span>
+            </div>
+            <div class="panel-body">
+                <form asp-action="SetQuery" method="post">
+                    <div class="form-actions no-color">
+                        @Html.Hidden("search", Newtonsoft.Json.JsonConvert.SerializeObject(Model.search), new { id = "query_search" })
+                        <input id="query_sort" type="hidden" name="sort" value="" />
+                        <input id="query_offset" type="hidden" name="offset" value="0" />
+
+                        <label for="LeadName">Lead Name:</label>
+                        <input id="LeadName" class="form-control" placeholder="Name" />
+                        <br class="divider" />
+                        <label for="CustomerOwner">Lead Owner:</label>
+                        <input id="LeadOwner" class="form-control" placeholder="User Name" />
+                        <br class="divider" />
+                        <button onclick="applyFilter(true)" class="btn btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                        <button onclick="applyFilter(false)" class="btn btn-default"><i class="fa fa-fw fa-remove"></i>Clear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+}
+
+<form asp-area="" asp-controller="Leads" asp-action="Create" method="post" id="toolForm">
+    <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-success">
+        <i class="glyphicon glyphicon-plus"></i> Create
+    </button>
+</form>
+<table id="leadsTable"></table>
+
+@section Scripts
+{
+    <script>
+        restoreFilter();
+
+        $("#crm-leads").addClass('active');
+        $table = $("#leadsTable");
+        $table.bootstrapTable({
+            url: "/api/leads",
+                height: CRM.getHeight(),
+                clickToSelect: true,
+                sidePagination: 'server',
+                pagination: true,
+                toolbar: "#toolForm",
+                idField: "customerID",
+                queryParams: function (Param) { Param.search = $("#query_search").val(); return Param;},
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'customerID',
+                    title: 'Lead ID',
+                    visible: false
+                }, {
+                    field: 'name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Name)',
+                }, {
+                    field: 'shortName',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.PreferName)',
+                }, {
+                    field: 'Gender',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Gender)',
+                    formatter: CRM.convertAccountType,
+                }, {
+                    field: 'source',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Source)',
+                }, {
+                    field: 'birthdate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Birthdate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'eMail',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.EMail)',
+                }, {
+                    field: 'mobile',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Mobile)',
+                }, {
+                    field: 'createdTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.CreatedTime)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'modifiedTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.ModifiedTime)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'customerOwner.userName',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.CustomerOwner)',
+                },]
+            });
+
+        $table.on('check.bs.table', function () {
+            leads_onSelect($table.bootstrapTable('getSelections'));
+            //$table.bootstrapTable("destory");
+        });
+
+        function leads_onSelect(eSelect)
+        {
+            if (eSelect != null) {
+                window.location.href = "/Leads/Details/"+eSelect[0].customerID.toString().trim();
+            }
+        }
+
+        function applyFilter(enable) {
+            var item = {};
+            item.field = "";
+            item.value = "";
+
+            if (enable){
+                LeadName = $("#LeadName").val().trim();
+                CustomerOwner = $("#CustomerOwner").val().trim();;
+                $("#query_search").val(JSON.stringify(
+                    [   { field: 'CustomerName', value: CustomerName },
+                        { field: 'CustomerOwner', value: CustomerOwner }]));
+            }
+            else {
+                $("#query_search").val("");
+            }
+            $(this).closest('form').submit();
+        }
+
+        function restoreFilter() {
+            var filter = $("#query_search").val();
+            if (filter == null || filter == "") return;
+            filter = JSON.parse(filter);
+            for (var i = 0, len = filter.length; i < len; i++) {
+                if (filter[i] != null) $("#" + filter[i].field).val(filter[i].value);
+            }
+        }
+
+    </script>
+}
+

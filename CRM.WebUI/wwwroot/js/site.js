@@ -45,26 +45,63 @@ $(function () {
 var CRM = {};
 
 CRM.convertAccountType =
-function (value, row, index) {
-    switch (value) {
-        case 0:
-            return "Agent";
-        case 1:
-            return "Institute";
-        default:
-            return "Other";
-    }
-    }
+    function (value, row, index) {
+        switch (value) {
+            case 0:
+                return "Agent";
+            case 1:
+                return "Institute";
+            default:
+                return "Other";
+        }
+    };
+
+CRM.convertActivityType =
+    function (value, row, index) {
+        switch (value) {
+            case 1:
+                return "OutboundCall";
+            case 2:
+                return "InboundCall";
+            case 3:
+                return "Message";
+            case 4:
+                return "Meeting";
+            case 5:
+                return "Email";
+            case 6:
+                return "Visit";
+            default:
+                return "Other";
+        }
+    };
 
 CRM.formatDate =
-function (value, row, index) {
-    if (value != null && value != "")
-        return value.toString().substring(0, 10);
-    else
-        return value;
-    }
+    function (value, row, index) {
+        if (value !== null && value !== "")
+            return value.toString().substring(0, 10);
+        else
+            return value;
+    };
 
-CRM.getHeight = 
-function () {
-    return $(window).height() -80;
-}
+CRM.formatDatetime =
+    function (value, row, index) {
+        return value;
+    };
+
+CRM.convertAccountType =
+    function (value, row, index) {
+        switch (value) {
+            case 0:
+                return "Agent";
+            case 1:
+                return "Institute";
+            default:
+                return "Other";
+        }
+    };
+
+CRM.getHeight =
+    function () {
+        return $(window).height() - 80;
+    };

@@ -1,0 +1,89 @@
+@model CRM.Domain.Entities.Activity
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Activity Details</h2>
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <div class="form-actions no-color">
+
+                    <label>Open Activities:</label>
+                    <br class="divider" />
+                    <label>Closed Activities:</label>
+                    <br class="divider" />
+                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
+                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
+                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
+                    <br class="divider" />
+                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
+                    <br class="divider" />
+                </div>
+            </div>
+        </div>
+    </li>
+}
+
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ActivityType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ActivityType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Subject)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Subject)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ActivityOwner)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ActivityOwner.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AttendedAccount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AttendedAccount.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AttendedCustomer)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AttendedCustomer.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ActivityID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

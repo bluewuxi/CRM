@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CRM.Domain.Abstract;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace CRM.Domain.Entities
 {
-    public class VisaApplication
+    public class VisaApplication : IEntity
     {
         public enum AppliedVisaTypeEnum
         {
@@ -14,12 +13,11 @@ namespace CRM.Domain.Entities
         public int VisaApplicationID { get; set; }
 
         public Student Student { get; set; }
+        [Required]
+        public int StudentID { get; set; }
 
         [StringLength(20, MinimumLength = 8)]
         public string PassportNumber { get; set; }
-
-        [StringLength(20, MinimumLength = 6)]
-        public string ClientNumber { get; set; }
 
         [StringLength(50)]
         public string EamilInForm { get; set; }
@@ -34,6 +32,8 @@ namespace CRM.Domain.Entities
         public string VisaAppliedType { get; set; }
 
         public Account Institute { get; set; }
+        [Required]
+        public int InstituteID { get; set; }
 
         [StringLength(50)]
         public string Documents { get; set; }
@@ -48,6 +48,14 @@ namespace CRM.Domain.Entities
         public DateTime ExpiredDate { get; set; }
 
         [StringLength(50)]
+
         public string Note { get; set; }
+
+        public DateTime ModifiedTime { get; set; }
+        public ApplicationUser ModifiedBy { get; set; }
+        public string ModifiedByID { get; set; }
+        public DateTime CreatedTime { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
+        public string CreatedByID { get; set; }
     }
 }

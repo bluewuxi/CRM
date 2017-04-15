@@ -1,39 +1,34 @@
 @model CRM.Domain.Entities.Account
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Account Details";
 }
 @section SideBar {
-    <li class="sidebar-search">
-        <div class="panel panel-primary">
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
             <div class="panel-heading">
                 <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
             </div>
             <div class="panel-body">
-                    <div class="form-actions no-color">
-                        <input id="query_sort" type="hidden" name="sort" value="" />
-                        <input id="query_search2" type="hidden" name="search" value="" />
-                        <input id="query_offset" type="hidden" name="offset" value="0" />
-
-                        <label for="AccountName">Account Name:</label>
-                        <input id="AccountName" class="form-control" placeholder="Name" />
-                        <br class="divider" />
-                        <label for="AccountType">Account Type:</label>
-                        <select class="form-control" id="AccountType">
-                            <option value="">-- Select a type --</option>
-                            <option value="0">Agent</option>
-                            <option value="1">Institut</option>
-                            <option value="2">Other</option>
-                        </select>
-                        <br class="divider" />
-                        <label for="AccountOwner">Account Owner:</label>
-                        <input id="AccountOwner" class="form-control" placeholder="User Name" />
-                    </div>
+                <div class="form-actions no-color">
+                    <label>Open Activities:</label>
+                    <br class="divider" />
+                    <label>Closed Activities:</label>
+                    <br class="divider" />
+                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
+                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
+                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
+                    <br class="divider" />
+                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
+                    <br class="divider" />
+                </div>
             </div>
         </div>
     </li>
 }
-    <div class="panel panel-info" style="margin-top:10px;">
+
+
+    <div class="panel panel-info" style="margin:5px;">
         <div class="panel-heading">
             <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.AccountID">
                 <div class="btn-group pull-right">

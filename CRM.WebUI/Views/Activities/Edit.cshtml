@@ -1,0 +1,107 @@
+@using CRM.Domain.Entities
+@model CRM.Domain.Entities.Activity
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Activity</h2>
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <div class="form-actions no-color">
+
+                    <label>Open Activities:</label>
+                    <br class="divider" />
+                    <label>Closed Activities:</label>
+                    <br class="divider" />
+                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
+                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
+                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
+                    <br class="divider" />
+                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
+                    <br class="divider" />
+                </div>
+            </div>
+        </div>
+    </li>
+}
+
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ActivityID" />
+        <div class="form-group">
+            <label asp-for="ActivityType" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="ActivityType" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityTypeEnum>()"></select>
+                <span asp-validation-for="ActivityType" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ActivityOwnerID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="ActivityOwnerID" class="form-control" asp-items="ViewBag.ActivityOwnerID"></select>
+                <span asp-validation-for="ActivityOwnerID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Subject" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Content" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Content" class="form-control" />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="StartTime" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="StartTime" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndTime" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="EndTime" class="form-control" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="AttendedAccountID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="AttendedAccountID" class="form-control" asp-items="ViewBag.AttendedAccountID"></select>
+                <span asp-validation-for="AttendedAccountID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="AttendedCustomerID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="AttendedCustomerID" class="form-control" asp-items="ViewBag.AttendedCustomerID"></select>
+                <span asp-validation-for="AttendedCustomerID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

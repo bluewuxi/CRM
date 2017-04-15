@@ -5,7 +5,34 @@
 @{
     ViewData["Title"] = " Edit An Account";
 }
-<form asp-action="Edit" autocomplete="off"  style="margin-top:10px;">
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <div class="form-actions no-color">
+
+                    <label>Open Activities:</label>
+                    <br class="divider" />
+                    <label>Closed Activities:</label>
+                    <br class="divider" />
+                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
+                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
+                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
+                    <br class="divider" />
+                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
+                    <br class="divider" />
+                </div>
+            </div>
+        </div>
+    </li>
+}
+
+
+<form asp-action="Edit" autocomplete="off"  style="margin-top:5px;">
     <div class="panel panel-info">
         <div class="panel-heading">
             <div class="btn-group pull-right form-inline">

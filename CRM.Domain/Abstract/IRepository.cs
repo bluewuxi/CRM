@@ -12,14 +12,13 @@ namespace CRM.Domain.Abstract
         Male=1, Female=2
     }
 
-    public interface IRepository<T> where T: class, new()
+    public interface IRepository<T> where T: IEntity, new()
     {
         void Add(T Item);
         void Delete(int id);
         T Get(int id);
         IQueryable<T> GetAll();
         void Update(T Item);
-        IQueryable<T> GetCodesList(string searchName, int page);
 
         Task<int> AddAsync(T Item);
         Task<int> DeleteAsync(int id);
@@ -27,13 +26,37 @@ namespace CRM.Domain.Abstract
         //Task<IQueryable<T>> GetAllAsync();
         Task<int> UpdateAsync(T Item);
 
+        void AttachUserContext(string userid);
+
     }
 
     public interface IAccountRepository : IRepository<Account>
     {
     }
 
+
     public interface IStudentRepository : IRepository<Student>
+    {
+    }
+    public interface ILeadRepository : IRepository<Lead>
+    {
+    }
+    public interface ICustomerRepository 
+    {
+        Customer Get(int id);
+        IQueryable<Customer> GetAll();
+    }
+
+    public interface IActivityRepository : IRepository<Activity>
+    {
+    }
+    public interface IApplicationRepository : IRepository<Application>
+    {
+    }
+    public interface IVisaApplicationRepository : IRepository<VisaApplication>
+    {
+    }
+    public interface IEnrollmentRepository : IRepository<Enrollment>
     {
     }
 

@@ -1,4 +1,6 @@
-﻿using CRM.Domain.Entities;
+﻿using CRM.Domain.Abstract;
+using CRM.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,46 +9,60 @@ using System.Threading.Tasks;
 
 namespace CRM.Domain.Concrete
 {
-    class StudentRepository
+    public class StudentRepository: BaseRepository, IStudentRepository
     {
-        void Add(Student Item)
+        private EFDbContext context;
+        private DbSet<Student> LeadEntity;
+
+        public StudentRepository(EFDbContext dbcontext)
+        {
+            this.context = dbcontext;
+            LeadEntity = context.Set<Student>();
+        }
+        public void Add(Student Item)
+        {
+            context.Entry(Item).State = EntityState.Added;
+            SetCreatedSignature(Item);
+            context.SaveChanges();
+        }
+        public void Delete(int id)
         {
             throw new NotImplementedException();
         }
-        void Delete(int id)
+        public Student Get(int id)
         {
             throw new NotImplementedException();
         }
-        Student Get(int id)
+        public IQueryable<Student> GetAll()
         {
             throw new NotImplementedException();
         }
-        IQueryable<Student> GetAll()
+        public void Update(Student Item)
         {
-            throw new NotImplementedException();
-        }
-        void Update(Student Item)
-        {
-            throw new NotImplementedException();
+            SetModifiedSignature(Item);
+            context.Update(Item);
+            context.SaveChanges();
         }
 
-        Task<int> AddAsync(Student Item)
+        public Task<int> AddAsync(Student Item)
+        {
+            context.Entry(Item).State = EntityState.Added;
+            SetCreatedSignature(Item);
+            return context.SaveChangesAsync();
+        }
+        public Task<int> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
-        Task<int> DeleteAsync(int id)
+        public Task<Student> GetAsync(int id)
         {
             throw new NotImplementedException();
         }
-        Task<Student> GetAsync(int id)
+        public Task<IQueryable<Student>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
-        Task<IQueryable<Student>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-        Task<int> UpdateAsync(Student Item)
+        public Task<int> UpdateAsync(Student Item)
         {
             throw new NotImplementedException();
         }

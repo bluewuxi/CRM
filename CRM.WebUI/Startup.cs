@@ -72,8 +72,6 @@ namespace CRM.WebUI
                 options.User.RequireUniqueEmail = true;
             });
 
-            
-
             services.AddMvc();
 
             // Adds a default in-memory implementation of IDistributedCache.
@@ -93,6 +91,16 @@ namespace CRM.WebUI
             services.AddTransient<IPaginatedMetaService, PaginatedMetaService>();
 
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ILeadRepository, LeadRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<ILeadRepository, LeadRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IActivityRepository, ActivityRepository>();
+            services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+            services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            services.AddScoped<IVisaApplicationRepository, VisaApplicationRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

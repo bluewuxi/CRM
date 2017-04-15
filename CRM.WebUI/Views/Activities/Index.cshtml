@@ -1,0 +1,77 @@
+@model IEnumerable<CRM.Domain.Entities.Activity>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ActivityType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Subject)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndTime)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActivityOwner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttendedAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttendedCustomer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActivityType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActivityOwner.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AttendedAccount.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AttendedCustomer.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ActivityID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ActivityID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ActivityID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

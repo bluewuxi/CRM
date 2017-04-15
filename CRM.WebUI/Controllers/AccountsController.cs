@@ -23,26 +23,24 @@ namespace CRM.WebUI.Controllers
         }
     }
 
-    public class AccountsController : Controller
+    public class AccountsController : BaseController
     {
         //private readonly EFDbContext _context;
         private IAccountRepository _accountRepo;
-        private IQueryable<ApplicationUser> _userList;
-        private UserManager<ApplicationUser> _userManager;
+        //private IQueryable<ApplicationUser> _userList;
+        //private UserManager<ApplicationUser> _userManager;
 
         public AccountsController(IAccountRepository accountRepo, UserManager<ApplicationUser> userManager)
         {
             _accountRepo = accountRepo;
-            _userList = userManager.Users;
-            _userManager = userManager;
-
+            AttachUserManager(userManager);
         }
 
         // GET: Accounts
         public IActionResult Index(string Filter="", string Sorter="")
         {
             //We use RESPful WebApi do list accounts, leave here empty.
-            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("AccountList");
+            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("AccountsList");
             if (querySetting == null)
                 querySetting = new QuerySettingViewModel();
             return View(querySetting);
@@ -52,7 +50,7 @@ namespace CRM.WebUI.Controllers
         [HttpPost]
         public void SetQuery(string search = "", string sort = "", long offset=0)
         {
-            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("AccountList");
+            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("AccountsList");
             if (querySetting == null)
                 querySetting = new QuerySettingViewModel();
             else
@@ -60,8 +58,8 @@ namespace CRM.WebUI.Controllers
 
             if (search !=null && search != "")
                 querySetting.search= JsonConvert.DeserializeObject<List<QuerySetting>>(search);
-            HttpContext.Session.Set<QuerySettingViewModel>("AccountList", querySetting);
-            string a = HttpContext.Session.GetString("AccountList");
+            HttpContext.Session.Set<QuerySettingViewModel>("AccountsList", querySetting);
+            string a = HttpContext.Session.GetString("AccountsList");
             Response.Redirect("/Accounts/Index");
         }
 
@@ -86,8 +84,8 @@ namespace CRM.WebUI.Controllers
         // GET: Accounts/Create
         public async Task<IActionResult> Create()
         {
-            ApplicationUser curUser = await GetCurrentUserAsync();
-            ViewData["Userlist"] = new SelectList(_userList, "Id", "UserName", curUser == null ? "":curUser.Id);
+            ApplicationUser curUser = await GetCurrentUserAsync(); 
+            ViewData["Userlist"] = new SelectList(GetUsers(), "Id", "UserName");
             Account newAccount = new Account();
             if (curUser!=null)
                 newAccount.AccountOwnerID = curUser.Id;
@@ -103,6 +101,7 @@ namespace CRM.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
+                _accountRepo.AttachUserContext(GetCurrentUserID());
                 await _accountRepo.AddAsync(account);
                 return RedirectToAction("Index");
             }
@@ -117,7 +116,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            ViewData["Userlist"] = new SelectList(_userList, "Id", "UserName");
+            ViewData["Userlist"] = new SelectList(GetUsers(), "Id", "UserName");
 
             var account = await _accountRepo.GetAsync(id.GetValueOrDefault());
             if (account == null)
@@ -143,6 +142,7 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
+                    _accountRepo.AttachUserContext(GetCurrentUserID());
                     await _accountRepo.UpdateAsync(account);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -192,11 +192,11 @@ namespace CRM.WebUI.Controllers
             return _accountRepo.GetAll().Any(e => e.AccountID == id);
         }
 
-        private Task<ApplicationUser> GetCurrentUserAsync()
-        {
-            if (HttpContext.User == null) return null;
-            return _userManager.GetUserAsync(HttpContext.User);
-        }
+        //private Task<ApplicationUser> GetCurrentUserAsync()
+        //{
+        //    if (HttpContext.User == null) return null;
+        //    return _userManager.GetUserAsync(HttpContext.User);
+        //}
 
     }
 }

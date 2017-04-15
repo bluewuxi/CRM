@@ -1,0 +1,107 @@
+@model CRM.Domain.Entities.VisaApplication
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Visa Application Details</h2>
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <div class="form-actions no-color">
+
+                    <label>Open Activities:</label>
+                    <br class="divider" />
+                    <label>Closed Activities:</label>
+                    <br class="divider" />
+                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
+                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
+                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
+                    <br class="divider" />
+                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
+                    <br class="divider" />
+                </div>
+            </div>
+        </div>
+    </li>
+}
+
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PassportNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PassportNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EamilInForm)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EamilInForm)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhysicalAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhysicalAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PostalAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PostalAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.VisaAppliedType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.VisaAppliedType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Documents)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Documents)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SubmittedDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SubmittedDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ReceivedDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ReceivedDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpiredDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExpiredDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Student)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Student.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.VisaApplicationID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

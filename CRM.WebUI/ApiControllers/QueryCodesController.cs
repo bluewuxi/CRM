@@ -36,10 +36,10 @@ namespace CRM.WebUI.ApiControllers
         }
 
         [HttpGet("api/QueryCodes/accounts")]
-        public async Task<IActionResult> AccountsCode([FromServices] IAccountRepository accountReopo, int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        public async Task<IActionResult> AccountsCode([FromServices] IAccountRepository accountRepo, int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
         {
             IQueryable<Account> records;
-            records = accountReopo.GetAll();
+            records = accountRepo.GetAll();
             if (!(search == null || search == ""))
             {
                 List<QuerySetting> aSearch = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
@@ -49,20 +49,9 @@ namespace CRM.WebUI.ApiControllers
                     searchName = aSearch.Where<QuerySetting>(u => u.field == "AccountName").Select(p => p.value).SingleOrDefault();
                     if (searchName != null && searchName != "") records = records.Where(u => u.Name.ToLower().Contains(searchName.ToLower()));
                     searchType = aSearch.Where<QuerySetting>(u => u.field == "AccountType").Select(p => p.value).SingleOrDefault();
-                    Account.AccountTypeEnum aEnum;
-                    switch (searchType)
-                    {
-                        case "0":
-                            aEnum = Account.AccountTypeEnum.Agent;
-                            break;
-                        case "1":
-                            aEnum = Account.AccountTypeEnum.Institute;
-                            break;
-                        default:
-                            aEnum = Account.AccountTypeEnum.Other;
-                            break;
-                    }
-                    if (searchType != null && searchType != "") records = records.Where(u => u.AccountType== aEnum);
+
+                    //if (searchType != null && searchType != "") records = records.Where(u => u.AccountType== aEnum);
+                    if (searchType != null && searchType != "") records = records.Where(u => (int)u.AccountType == int.Parse(searchType));
                     searchOwner = aSearch.Where<QuerySetting>(u => u.field == "AccountOwner").Select(p => p.value).SingleOrDefault();
                     if (searchOwner != null && searchOwner != "") records = records.Where(u => u.AccountOwner.UserName.ToLower().Contains(searchOwner.ToLower()));
                 }
