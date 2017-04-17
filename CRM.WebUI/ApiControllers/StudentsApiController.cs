@@ -16,24 +16,26 @@ using CRM.WebUI.Models;
 namespace CRM.WebUI.ApiControllers
 {
     [Produces("application/json")]
-    //[Route("api/LeadsApi")]
-    public class LeadsApiController : BaseController
+    //[Route("api/StudentsApi")]
+    public class StudentsApiController : BaseController
     {
         public object JsonRequestBehavior { get; private set; }
-        private ILeadRepository leadRepo;
 
-        public LeadsApiController(UserManager<ApplicationUser> aUserManager, ILeadRepository aRepo) : base(aUserManager)
+        private IStudentRepository _Repo;
+
+        public StudentsApiController(UserManager<ApplicationUser> aUserManager, IStudentRepository aRepo) : base(aUserManager)
         {
-            leadRepo = aRepo;
+            _Repo = aRepo;
         }
 
-        [HttpGet("api/leads")]
-        public async Task<IActionResult> ListLead(int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        [HttpGet("api/students")]
+        public async Task<IActionResult> ListStudent(int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
         {
-            IQueryable<Lead> records;
+            IQueryable<Student> records;
             List<QuerySetting> aSearch = null;
             List<QuerySetting> aSort = null;
 
+            BindUserContext(_Repo);
             if (!(search == null || search == ""))
             {
                 aSearch = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
@@ -43,9 +45,7 @@ namespace CRM.WebUI.ApiControllers
                 aSort = JsonConvert.DeserializeObject<List<QuerySetting>>(sort);
             }
 
-            BindUserContext(leadRepo);
-
-            records = leadRepo.GetAll(aSearch, aSort);
+            records = _Repo.GetAll(aSearch, aSort);
             var count = await records.CountAsync();
 
             if (limit <= 0)

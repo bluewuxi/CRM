@@ -16,24 +16,25 @@ using CRM.WebUI.Models;
 namespace CRM.WebUI.ApiControllers
 {
     [Produces("application/json")]
-    //[Route("api/LeadsApi")]
-    public class LeadsApiController : BaseController
+    public class AccountsController : BaseController
     {
         public object JsonRequestBehavior { get; private set; }
-        private ILeadRepository leadRepo;
 
-        public LeadsApiController(UserManager<ApplicationUser> aUserManager, ILeadRepository aRepo) : base(aUserManager)
+        private IAccountRepository _Repo;
+
+        public AccountsController(UserManager<ApplicationUser> aUserManager, IAccountRepository aRepo) : base(aUserManager)
         {
-            leadRepo = aRepo;
+            _Repo = aRepo;
         }
 
-        [HttpGet("api/leads")]
-        public async Task<IActionResult> ListLead(int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        [HttpGet("api/accounts")]
+        public async Task<IActionResult> ListAccounts(int limit = 0, int offset = 0, string search = "", string sort = "")
         {
-            IQueryable<Lead> records;
+            IQueryable<Account> records;
             List<QuerySetting> aSearch = null;
             List<QuerySetting> aSort = null;
 
+            //accountRepo.AttachUserContext(GetUserContext());
             if (!(search == null || search == ""))
             {
                 aSearch = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
@@ -43,15 +44,13 @@ namespace CRM.WebUI.ApiControllers
                 aSort = JsonConvert.DeserializeObject<List<QuerySetting>>(sort);
             }
 
-            BindUserContext(leadRepo);
-
-            records = leadRepo.GetAll(aSearch, aSort);
+            records = _Repo.GetAll(aSearch, aSort);
             var count = await records.CountAsync();
 
             if (limit <= 0)
                 return Json(records);
             else
-                return Json(new { total = count, rows = records.Skip(offset).Take(limit) });
+                return Json(new {total=count, rows= records.Skip(offset).Take(limit)});
         }
 
         private IActionResult Json(IQueryable<ApplicationUser> queryable, object allowGet)

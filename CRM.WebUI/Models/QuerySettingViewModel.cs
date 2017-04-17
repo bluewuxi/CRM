@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CRM.Domain.Concrete;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CRM.WebUI.Models
 {
@@ -22,12 +20,6 @@ namespace CRM.WebUI.Models
             return value == null ? default(T) :
                                   JsonConvert.DeserializeObject<T>(value);
         }
-    }
-
-    public class QuerySetting
-    {
-        public string field { get; set; }
-        public string value { get; set; }
     }
 
     public class QuerySettingViewModel

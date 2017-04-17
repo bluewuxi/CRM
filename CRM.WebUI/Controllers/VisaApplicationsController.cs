@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
+using CRM.Domain.Abstract;
+using Microsoft.AspNetCore.Identity;
+using CRM.WebUI.Models;
 
 namespace CRM.WebUI.Controllers
 {
-    public class VisaApplicationsController : Controller
+    public class VisaApplicationsController : BaseController
     {
         private readonly EFDbContext _context;
+        private readonly IVisaApplicationRepository _repo;
 
-        public VisaApplicationsController(EFDbContext context)
+        public VisaApplicationsController(EFDbContext context, IVisaApplicationRepository repo, UserManager<ApplicationUser> userManager) : base(userManager)
         {
-            _context = context;    
+            _repo = repo;
+            _context = context;
         }
 
         // GET: VisaApplications

@@ -5,15 +5,13 @@ namespace CRM.Domain.Abstract
 {
     public class BaseRepository
     {
-        string _userid;
+        private string _userid;
 
-        public void AttachUserContext(string userid)
-        {
-            _userid = userid;
-        }
+        public string UserContext { get; set; }
 
         public void SetCreatedSignature(IEntity item)
         {
+            _userid = UserContext;
             if (_userid!=null) item.CreatedByID = _userid;
             item.CreatedTime = DateTime.Now;
             if (_userid != null) item.ModifiedByID = _userid;
@@ -22,6 +20,7 @@ namespace CRM.Domain.Abstract
 
         public void SetModifiedSignature(IEntity item)
         {
+            _userid = UserContext;
             if (_userid != null) item.ModifiedByID = _userid;
             item.ModifiedTime = DateTime.Now;
         }

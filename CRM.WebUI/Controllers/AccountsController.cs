@@ -10,6 +10,7 @@ using CRM.WebUI.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using CRM.Domain.Concrete;
 
 namespace CRM.WebUI.Controllers
 {
@@ -30,10 +31,9 @@ namespace CRM.WebUI.Controllers
         //private IQueryable<ApplicationUser> _userList;
         //private UserManager<ApplicationUser> _userManager;
 
-        public AccountsController(IAccountRepository accountRepo, UserManager<ApplicationUser> userManager)
+        public AccountsController(IAccountRepository accountRepo, UserManager<ApplicationUser> userManager):base(userManager)
         {
             _accountRepo = accountRepo;
-            AttachUserManager(userManager);
         }
 
         // GET: Accounts
@@ -101,7 +101,7 @@ namespace CRM.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _accountRepo.AttachUserContext(GetCurrentUserID());
+                BindUserContext(_accountRepo);
                 await _accountRepo.AddAsync(account);
                 return RedirectToAction("Index");
             }
@@ -142,7 +142,7 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    _accountRepo.AttachUserContext(GetCurrentUserID());
+                    BindUserContext(_accountRepo);
                     await _accountRepo.UpdateAsync(account);
                 }
                 catch (DbUpdateConcurrencyException)

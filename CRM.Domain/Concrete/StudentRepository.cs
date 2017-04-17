@@ -19,13 +19,13 @@ namespace CRM.Domain.Concrete
             this.context = dbcontext;
             LeadEntity = context.Set<Student>();
         }
-        public void Add(Student Item)
+        public int Add(Student Item)
         {
             context.Entry(Item).State = EntityState.Added;
             SetCreatedSignature(Item);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
-        public void Delete(int id)
+        public int Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -33,15 +33,20 @@ namespace CRM.Domain.Concrete
         {
             throw new NotImplementedException();
         }
+        public IQueryable<Student> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryable<Student> GetAll()
         {
             throw new NotImplementedException();
         }
-        public void Update(Student Item)
+        public int Update(Student Item)
         {
             SetModifiedSignature(Item);
             context.Update(Item);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
         public Task<int> AddAsync(Student Item)

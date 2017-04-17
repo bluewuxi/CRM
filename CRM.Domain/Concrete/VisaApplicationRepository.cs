@@ -20,12 +20,12 @@ namespace CRM.Domain.Concrete
             visaEntity = context.Set<VisaApplication>();
         }
 
-        public void Add(VisaApplication visa)
+        public int Add(VisaApplication visa)
         {
             context.Entry(visa).State = EntityState.Added;
-            context.SaveChanges();
+            return context.SaveChanges();
         }
-        public void Delete(int id)
+        public int Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -33,15 +33,19 @@ namespace CRM.Domain.Concrete
         {
             return visaEntity.Include(u => u.Student).SingleOrDefault(s => s.VisaApplicationID == id);
         }
+        public IQueryable<VisaApplication> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
+        {
+            return visaEntity.Include(u => u.Student).AsQueryable();
+        }
         public IQueryable<VisaApplication> GetAll()
         {
             return visaEntity.Include(u => u.Student).AsQueryable();
         }
-        public void Update(VisaApplication Item)
+        public int Update(VisaApplication Item)
         {
             SetModifiedSignature(Item);
             context.Update(Item);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
         public Task<int> AddAsync(VisaApplication visa)

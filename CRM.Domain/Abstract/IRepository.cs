@@ -1,4 +1,5 @@
-﻿using CRM.Domain.Entities;
+﻿using CRM.Domain.Concrete;
+using CRM.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +12,22 @@ namespace CRM.Domain.Abstract
     {
         Male=1, Female=2
     }
-
-    public interface IRepository<T> where T: IEntity, new()
+    public interface IBaseRepository
     {
-        void Add(T Item);
-        void Delete(int id);
+        string UserContext { get; set; }
+        void SetCreatedSignature(IEntity item);
+        void SetModifiedSignature(IEntity item);
+    }
+
+    public interface IRepository<T> : IBaseRepository where T: IEntity, new()
+    {
+        int Add(T Item);
+        int Delete(int id);
         T Get(int id);
         IQueryable<T> GetAll();
-        void Update(T Item);
+        IQueryable<T> GetAll(List<QuerySetting> search, List<QuerySetting> sort);
+
+        int Update(T Item);
 
         Task<int> AddAsync(T Item);
         Task<int> DeleteAsync(int id);
@@ -26,7 +35,7 @@ namespace CRM.Domain.Abstract
         //Task<IQueryable<T>> GetAllAsync();
         Task<int> UpdateAsync(T Item);
 
-        void AttachUserContext(string userid);
+        //string UserContext { get; set; }
 
     }
 

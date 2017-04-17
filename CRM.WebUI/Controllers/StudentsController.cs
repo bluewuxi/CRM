@@ -7,16 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
+using CRM.Domain.Abstract;
+using Microsoft.AspNetCore.Identity;
+using CRM.WebUI.Models;
 
 namespace CRM.WebUI.Controllers
 {
-    public class StudentsController : Controller
+    public class StudentsController : BaseController
     {
         private readonly EFDbContext _context;
 
-        public StudentsController(EFDbContext context)
+        private readonly IStudentRepository _repo;
+
+        public StudentsController(EFDbContext context, IStudentRepository repo, UserManager<ApplicationUser> userManager):base(userManager)
         {
-            _context = context;    
+            _repo = repo;
+            _context = context;
         }
 
         // GET: Students

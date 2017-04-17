@@ -20,13 +20,13 @@ namespace CRM.Domain.Concrete
             leadEntity = context.Set<Lead>();
         }
 
-        public void Add(Lead lead)
+        public int Add(Lead lead)
         {
             context.Entry(lead).State = EntityState.Added;
             SetCreatedSignature(lead);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
-        public void Delete(int id)
+        public int Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -34,15 +34,28 @@ namespace CRM.Domain.Concrete
         {
             return leadEntity.Include(u => u.CustomerOwner).SingleOrDefault(s => s.CustomerID == id);
         }
+        public IQueryable<Lead> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
+        {
+            IQueryable<Lead> records= leadEntity.Include(u => u.CustomerOwner).AsQueryable();
+            if (search != null && search.Count() > 0)
+            {
+                string searchName, searchOwner;
+                searchName = search.Where<QuerySetting>(u => u.Field == "leadName").Select(p => p.Value).SingleOrDefault();
+                if (searchName != null && searchName != "") records = records.Where(u => u.Name.ToLower().Contains(searchName.ToLower()) || u.PreferName.ToLower().Contains(searchName.ToLower()));
+                searchOwner = search.Where<QuerySetting>(u => u.Field == "customerOwner").Select(p => p.Value).SingleOrDefault();
+                if (searchOwner != null && searchOwner != "") records = records.Where(u => u.CustomerOwner.UserName.ToLower().Contains(searchOwner.ToLower()));
+            }
+            return records;
+        }
         public IQueryable<Lead> GetAll()
         {
             return leadEntity.Include(u => u.CustomerOwner).AsQueryable();
         }
-        public void Update(Lead Item)
+        public int Update(Lead Item)
         {
             SetModifiedSignature(Item);
             context.Update(Item);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
         public Task<int> AddAsync(Lead lead)

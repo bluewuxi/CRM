@@ -9,10 +9,12 @@
     "air-datepicker": "v2.2.3",
     "bootstrap-table": "1.11.1",
     "magnific-popup": "1.1.0",
-    "font-awesome": "Font-Awesome#v4.7.0"
+    "font-awesome": "Font-Awesome#v4.7.0",
+    "bootstrap-modal": "2.2.6"
   },
   "resolutions": {
-    "jquery": "3.2.1",
-    "jquery-validation": "1.16.0"
+    "jquery": ">=1.8.0",
+    "jquery-validation": "1.16.0",
+    "bootstrap": "3.3.7"
   }
 }

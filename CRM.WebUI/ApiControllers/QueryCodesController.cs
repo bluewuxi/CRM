@@ -11,6 +11,7 @@ using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using CRM.WebUI.Models;
+using CRM.Domain.Concrete;
 
 namespace CRM.WebUI.ApiControllers
 {
@@ -46,13 +47,13 @@ namespace CRM.WebUI.ApiControllers
                 if (aSearch != null && aSearch.Count()>0)
                 {
                     string searchName, searchType, searchOwner;
-                    searchName = aSearch.Where<QuerySetting>(u => u.field == "AccountName").Select(p => p.value).SingleOrDefault();
+                    searchName = aSearch.Where<QuerySetting>(u => u.Field == "AccountName").Select(p => p.Value).SingleOrDefault();
                     if (searchName != null && searchName != "") records = records.Where(u => u.Name.ToLower().Contains(searchName.ToLower()));
-                    searchType = aSearch.Where<QuerySetting>(u => u.field == "AccountType").Select(p => p.value).SingleOrDefault();
+                    searchType = aSearch.Where<QuerySetting>(u => u.Field == "AccountType").Select(p => p.Value).SingleOrDefault();
 
                     //if (searchType != null && searchType != "") records = records.Where(u => u.AccountType== aEnum);
                     if (searchType != null && searchType != "") records = records.Where(u => (int)u.AccountType == int.Parse(searchType));
-                    searchOwner = aSearch.Where<QuerySetting>(u => u.field == "AccountOwner").Select(p => p.value).SingleOrDefault();
+                    searchOwner = aSearch.Where<QuerySetting>(u => u.Field == "AccountOwner").Select(p => p.Value).SingleOrDefault();
                     if (searchOwner != null && searchOwner != "") records = records.Where(u => u.AccountOwner.UserName.ToLower().Contains(searchOwner.ToLower()));
                 }
             }

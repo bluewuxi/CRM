@@ -13,24 +13,26 @@ namespace CRM.WebUI.Models
     {
         private UserManager<ApplicationUser> _userMnger;
 
-        public BaseController()
+        public BaseController(UserManager<ApplicationUser> aUserManager)
         {
+            _userMnger = aUserManager;
         }
         public void AttachUserManager(UserManager<ApplicationUser> aUserManager)
         {
             _userMnger = aUserManager;
         }
 
-        public async Task<string> GetCurrentUserIdAsync()
+        public async Task<string> GetUserContextAsync()
         {
             ApplicationUser aUser = await GetCurrentUserAsync();
             return aUser.Id;
         }
 
-        public string GetCurrentUserID()
+        public int BindUserContext(IBaseRepository iRepo)
         {
-            if (HttpContext.User == null) return null;
-            return _userMnger.GetUserId(HttpContext.User);
+            if (HttpContext.User == null) return -1;
+            iRepo.UserContext = _userMnger.GetUserId(HttpContext.User);
+            return 0;
         }
 
         public Task<ApplicationUser> GetCurrentUserAsync()

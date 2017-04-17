@@ -7,15 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using CRM.Domain.Abstract;
+using CRM.WebUI.Models;
 
 namespace CRM.WebUI.Controllers
 {
-    public class ApplicationsController : Controller
+    public class ApplicationsController : BaseController
     {
         private readonly EFDbContext _context;
+        private readonly IApplicationRepository _repo;
 
-        public ApplicationsController(EFDbContext context)
+        public ApplicationsController(EFDbContext context, IApplicationRepository repo, UserManager<ApplicationUser> userManager):base(userManager)
         {
+            _repo = repo;
             _context = context;    
         }
 

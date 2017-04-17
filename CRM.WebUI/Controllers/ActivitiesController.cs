@@ -16,10 +16,9 @@ namespace CRM.WebUI.Controllers
     {
         private readonly IActivityRepository _repo;
 
-        public ActivitiesController(IActivityRepository repo, UserManager<ApplicationUser> userManager)
+        public ActivitiesController(IActivityRepository repo, UserManager<ApplicationUser> userManager):base(userManager)
         {
             _repo = repo;
-            AttachUserManager(userManager);
         }
 
         // GET: Activities
@@ -61,6 +60,7 @@ namespace CRM.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
+                BindUserContext(_repo);
                 await _repo.AddAsync(activity);
                 return RedirectToAction("Index");
             }
@@ -100,7 +100,7 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    _repo.AttachUserContext(GetCurrentUserID());
+                    BindUserContext(_repo);
                     await _repo.UpdateAsync(activity);
                 }
                 catch (DbUpdateConcurrencyException)

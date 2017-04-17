@@ -12,11 +12,20 @@ namespace CRM.Domain.Entities
             OutboundCall=1, InboundCall, Message, Meeting, Email, Visit, Other
         }
 
+        public enum ActivityStatusEnum : int
+        {
+            Event = 1, OpenTask, ClosedTask
+        }
+
         public int ActivityID { get; set; }
 
+        public ActivityStatusEnum Status { get; set; }
+
+        [Display(Name = "Activity Type")]
         public ActivityTypeEnum  ActivityType { get; set; }
 
         public ApplicationUser ActivityOwner { get; set; }
+        [Display(Name = "Activity Owner")]
         public string ActivityOwnerID { get; set; }
 
         [Required, StringLength(50, MinimumLength = 3)]
@@ -32,9 +41,11 @@ namespace CRM.Domain.Entities
 
 
         public Account AttendedAccount { get; set; }
+        [Display(Name = "Attended Account")]
         public int? AttendedAccountID { get; set; }
 
         public Customer AttendedCustomer { get; set; }
+        [Display(Name = "Attended Customer")]
         public int? AttendedCustomerID { get; set; }
 
         public DateTime ModifiedTime { get; set; }

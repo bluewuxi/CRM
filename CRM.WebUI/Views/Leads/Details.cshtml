@@ -141,10 +141,11 @@
 
             $table = $("#activityTable");
             $table.bootstrapTable({
-                url: "/api/leads/activities",
-                    height: 100,
+                url: "/api/leads/activities/@Model.CustomerID ",
+                    height: 250,
                     clickToSelect: true,
                     sidePagination: 'client',
+                    queryParamType: "",
                     pagination: true,
                     //toolbar: "#toolForm",
                     idField: "activityID",
@@ -164,8 +165,8 @@
                         field: 'subject',
                         title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
                     }, {
-                        field: 'activityOwner',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityOwner.UserName)',
+                        field: 'activityOwner.userName',
+                        title: 'Activity Owner',
                     }, {
                         field: 'startTime',
                         title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',

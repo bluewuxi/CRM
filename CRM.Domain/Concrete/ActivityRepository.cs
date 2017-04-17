@@ -20,16 +20,18 @@ namespace CRM.Domain.Concrete
             activityEntity = context.Set<Activity>();
         }
 
-        public void Add(Activity activity)
+        public int Add(Activity activity)
         {
             context.Entry(activity).State = EntityState.Added;
             SetCreatedSignature(activity);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public int Delete(int id)
         {
-            throw new NotImplementedException();
+            Activity activity = Get(id);
+            activityEntity.Remove(activity);
+            return context.SaveChanges();
         }
 
         public Activity Get(int id)
@@ -47,10 +49,16 @@ namespace CRM.Domain.Concrete
             return activityEntity.Include(a => a.ActivityOwner).Include(a => a.AttendedAccount).Include(a => a.AttendedCustomer).AsQueryable();
         }
 
-        public void Update(Activity Item)
+        public IQueryable<Activity> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
+        {
+            return activityEntity.Include(a => a.ActivityOwner).Include(a => a.AttendedAccount).Include(a => a.AttendedCustomer).AsQueryable();
+        }
+
+        public int Update(Activity Item)
         {
             SetModifiedSignature(Item);
             context.Update(Item);
+            return context.SaveChanges();
         }
 
         public Task<int> AddAsync(Activity activity)
@@ -61,7 +69,9 @@ namespace CRM.Domain.Concrete
         }
         public Task<int> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Activity activity = Get(id);
+            activityEntity.Remove(activity);
+            return context.SaveChangesAsync();
         }
         public Task<Activity> GetAsync(int id)
         {

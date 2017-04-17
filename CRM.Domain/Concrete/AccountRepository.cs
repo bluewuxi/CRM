@@ -1,6 +1,7 @@
 ﻿using CRM.Domain.Abstract;
 using CRM.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,10 +18,10 @@ namespace CRM.Domain.Concrete
             accountEntity = context.Set<Account>();
         }
 
-        public void Add(Account account)
+        public int Add(Account account)
         {
             context.Entry(account).State = EntityState.Added;
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
         public Task<int> AddAsync(Account account)
@@ -33,6 +34,24 @@ namespace CRM.Domain.Concrete
         public IQueryable<Account> GetAll()
         {
             return accountEntity.Include(u=>u.AccountOwner).AsQueryable();
+        }
+
+        public IQueryable<Account> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
+        {
+            IQueryable<Account> records=accountEntity.Include(u => u.AccountOwner);
+            if (search != null && search.Count() > 0)
+            {
+                string searchName, searchType, searchOwner;
+                searchName = search.Where<QuerySetting>(u => u.Field == "AccountName").Select(p => p.Value).SingleOrDefault();
+                if (searchName != null && searchName != "") records = records.Where(u => u.Name.ToLower().Contains(searchName.ToLower()));
+                searchType = search.Where<QuerySetting>(u => u.Field == "AccountType").Select(p => p.Value).SingleOrDefault();
+
+                //if (searchType != null && searchType != "") records = records.Where(u => u.AccountType== aEnum);
+                if (searchType != null && searchType != "") records = records.Where(u => (int)u.AccountType == int.Parse(searchType));
+                searchOwner = search.Where<QuerySetting>(u => u.Field == "AccountOwner").Select(p => p.Value).SingleOrDefault();
+                if (searchOwner != null && searchOwner != "") records = records.Where(u => u.AccountOwner.UserName.ToLower().Contains(searchOwner.ToLower()));
+            }
+            return records;
         }
 
         public Task<IQueryable<Account>> GetAllAsync()
@@ -58,11 +77,11 @@ namespace CRM.Domain.Concrete
             return accountEntity.Include(u => u.AccountOwner).SingleOrDefaultAsync(s => s.AccountID == id);
         }
 
-        public void Delete(int id)
+        public int Delete(int id)
         {
             Account account = Get(id);
             accountEntity.Remove(account);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
         public Task<int> DeleteAsync(int id)
@@ -72,11 +91,11 @@ namespace CRM.Domain.Concrete
             return context.SaveChangesAsync();
         }
 
-        public void Update(Account account)
+        public int Update(Account account)
         {
             SetModifiedSignature(account);
             context.Update(account);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
         public Task<int> UpdateAsync(Account account)

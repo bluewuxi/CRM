@@ -18,5 +18,9 @@ namespace CRM.Domain.Concrete
         {
             throw new NotImplementedException();
         }
+        public IQueryable<Customer> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

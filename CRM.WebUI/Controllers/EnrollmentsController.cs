@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
+using CRM.Domain.Abstract;
+using Microsoft.AspNetCore.Identity;
+using CRM.WebUI.Models;
 
 namespace CRM.WebUI.Controllers
 {
-    public class EnrollmentsController : Controller
+    public class EnrollmentsController : BaseController
     {
         private readonly EFDbContext _context;
+        private readonly IEnrollmentRepository _repo;
 
-        public EnrollmentsController(EFDbContext context)
+        public EnrollmentsController(EFDbContext context, IEnrollmentRepository repo, UserManager<ApplicationUser> userManager):base(userManager)
         {
-            _context = context;    
+            _repo = repo;
+            _context = context;
         }
 
         // GET: Enrollments

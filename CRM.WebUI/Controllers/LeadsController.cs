@@ -10,16 +10,21 @@ using CRM.Domain.Entities;
 using CRM.WebUI.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using CRM.Domain.Abstract;
+using Microsoft.AspNetCore.Identity;
 
 namespace CRM.WebUI.Controllers
 {
-    public class LeadsController : Controller
+    public class LeadsController : BaseController
     {
         private readonly EFDbContext _context;
 
-        public LeadsController(EFDbContext context)
+        private readonly ILeadRepository _repo;
+
+        public LeadsController(EFDbContext context, ILeadRepository repo, UserManager<ApplicationUser> userManager):base(userManager)
         {
-            _context = context;    
+            _repo = repo;
+            _context = context;
         }
 
         // GET: Leads

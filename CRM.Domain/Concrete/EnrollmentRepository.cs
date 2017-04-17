@@ -20,13 +20,13 @@ namespace CRM.Domain.Concrete
             enrollmentEntity = context.Set<Enrollment>();
         }
 
-        public void Add(Enrollment enrollment)
+        public int Add(Enrollment enrollment)
         {
             context.Entry(enrollment).State = EntityState.Added;
             SetCreatedSignature(enrollment);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
-        public void Delete(int id)
+        public int Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -38,11 +38,15 @@ namespace CRM.Domain.Concrete
         {
             return enrollmentEntity.Include(u => u.Student).AsQueryable();
         }
-        public void Update(Enrollment Item)
+        public IQueryable<Enrollment> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
+        {
+            return enrollmentEntity.Include(u => u.Student).AsQueryable();
+        }
+        public int Update(Enrollment Item)
         {
             SetModifiedSignature(Item);
             context.Update(Item);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
 
         public Task<int> AddAsync(Enrollment enrollment)
