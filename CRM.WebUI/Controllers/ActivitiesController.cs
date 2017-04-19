@@ -9,6 +9,9 @@ using CRM.WebUI.Models;
 using CRM.Domain.Entities;
 using CRM.Domain.Abstract;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using CRM.Domain.Concrete;
+using Microsoft.AspNetCore.Http;
 
 namespace CRM.WebUI.Controllers
 {
@@ -24,7 +27,28 @@ namespace CRM.WebUI.Controllers
         // GET: Activities
         public IActionResult Index()
         {
-            return View( _repo.GetAll());
+            //We use RESPful WebApi do list accounts, leave here empty.
+            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ActivitiesList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            return View(querySetting);
+        }
+
+        // POST: Set Accounts Filter
+        [HttpPost]
+        public void SetQuery(string search = "", string sort = "", long offset = 0)
+        {
+            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ActivitiesList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            else
+                querySetting.search.Clear();
+
+            if (search != null && search != "")
+                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
+            HttpContext.Session.Set<QuerySettingViewModel>("ActivitiesList", querySetting);
+            string a = HttpContext.Session.GetString("ActivitiesList");
+            Response.Redirect("/Activities/Index");
         }
 
         // GET: Activities/Details/5

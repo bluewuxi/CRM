@@ -34,7 +34,7 @@ namespace CRM.WebUI.ApiControllers
             List<QuerySetting> aSearch = null;
             List<QuerySetting> aSort = null;
 
-            //accountRepo.AttachUserContext(GetUserContext());
+            //BindUserContext(_Repo);
             if (!(search == null || search == ""))
             {
                 aSearch = JsonConvert.DeserializeObject<List<QuerySetting>>(search);

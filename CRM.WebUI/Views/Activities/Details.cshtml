@@ -4,7 +4,6 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Activity Details</h2>
 @section SideBar {
     <li class="sidebar-info">
         <div class="panel panel-primary" style="margin:5px;">
@@ -31,59 +30,82 @@
 }
 
 
-<div>
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ActivityType)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ActivityType)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Subject)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Subject)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ActivityOwner)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ActivityOwner.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AttendedAccount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AttendedAccount.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AttendedCustomer)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AttendedCustomer.Name)
-        </dd>
-    </dl>
+<div class="panel panel-info" style="margin:5px;">
+    <div class="panel-heading">
+        <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.ActivityID">
+            <div class="btn-group pull-right">
+                <a style="margin-left:10px;margin-right:10px;" class="btn btn-success" asp-action="Edit" asp-route-id="@Model.ActivityID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                <a asp-action="Index" class="btn btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a id="deleteButton" href="#" onclick="deleteActivity()" class="btn btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+            </div>
+            <p style="font-size:21px; margin-top:0px; margin-bottom:0px;">Account Details</p>
+        </form>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="crm-style">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ActivityType)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ActivityType)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Subject)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Subject)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Content)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Content)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StartTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.StartTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EndTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EndTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ActivityOwner)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ActivityOwner.UserName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.AttendedAccount)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.AttendedAccount.Name)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.AttendedCustomer)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.AttendedCustomer.Name)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ActivityID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    <script>
+        $("#crm-activities").addClass('active');
+        function deleteAccount() {
+            if (confirm("Are you sure to delete the Activity?")) {
+                $("#confirmForm").submit();
+            }
+        };
+    </script>
+}

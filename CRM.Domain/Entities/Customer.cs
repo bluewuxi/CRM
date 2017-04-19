@@ -1,11 +1,12 @@
 ﻿using CRM.Domain.Abstract;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CRM.Domain.Entities
 {
-    public abstract class Customer : IEntity
+    public class Customer : IEntity
     {
         [Key]
         public int CustomerID { get; set; }
@@ -38,6 +39,7 @@ namespace CRM.Domain.Entities
 
         public string Note { get; set; }
 
+        [JsonIgnore]
         public ICollection<Activity> Activities { get; set; }
 
         [Display(Name = "Customer Owner")]

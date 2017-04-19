@@ -27,7 +27,7 @@ namespace CRM.WebUI.ApiControllers
             _Repo = aRepo;
         }
 
-        [HttpGet("api/leads/activities/{id}")]
+        [HttpGet("api/activities/leads/{id}")]
         public IActionResult ListLeadActivities([FromRoute] int id)
         {
             IQueryable<Activity> records;
@@ -35,7 +35,7 @@ namespace CRM.WebUI.ApiControllers
             return Json(records);
         }
 
-        [HttpGet("api/students/activities/{id}")]
+        [HttpGet("api/activities/students/{id}")]
         public IActionResult ListStudentActivities([FromRoute] int id)
         {
             IQueryable<Activity> records;
@@ -43,7 +43,7 @@ namespace CRM.WebUI.ApiControllers
             return Json(records);
         }
 
-        [HttpGet("api/accounts/activities")]
+        [HttpGet("api/activities/accounts/{id}")]
         public IActionResult ListAccountActivities(int accountID)
         {
             IQueryable<Activity> records;
@@ -52,7 +52,7 @@ namespace CRM.WebUI.ApiControllers
         }
 
         [HttpGet("api/activities")]
-        public async Task<IActionResult> ListActivities(int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        public async Task<IActionResult> ListActivities(int limit = 0, int offset = 0, string search = "", string sort = "")
         {
             IQueryable<Activity> records;
             List<QuerySetting> aSearch = null;
@@ -75,11 +75,13 @@ namespace CRM.WebUI.ApiControllers
             if (limit <= 0)
                 return Json(records);
             else
+            {
                 return Json(new { total = count, rows = records.Skip(offset).Take(limit) });
+            }
         }
 
         // PUT: api/Activity/5
-        [HttpPut("{id}")]
+        [HttpPut("api/activities/detail/{id}")]
         public async Task<IActionResult> PutActivity([FromRoute] int id, [FromBody] Activity activity)
         {
             if (!ModelState.IsValid)
@@ -111,9 +113,9 @@ namespace CRM.WebUI.ApiControllers
             return NoContent();
         }
 
-        // POST: api/Customers
+        // POST: api/Activity
         [HttpPost]
-        public async Task<IActionResult> PostCustomer([FromBody] Activity activity)
+        public async Task<IActionResult> PostActivity([FromBody] Activity activity)
         {
             if (!ModelState.IsValid)
             {

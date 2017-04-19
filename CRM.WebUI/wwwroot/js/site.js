@@ -76,6 +76,20 @@ CRM.convertActivityType =
         }
     };
 
+CRM.convertActivityStatus =
+    function (value, row, index) {
+        switch (value) {
+            case 1:
+                return "Event";
+            case 2:
+                return "OpenTask";
+            case 3:
+                return "ClosedTask";
+            default:
+                return "Unknown";
+        }
+    };
+
 CRM.formatDate =
     function (value, row, index) {
         if (value !== null && value !== "")

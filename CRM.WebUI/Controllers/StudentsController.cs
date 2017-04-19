@@ -10,6 +10,8 @@ using CRM.Domain.Entities;
 using CRM.Domain.Abstract;
 using Microsoft.AspNetCore.Identity;
 using CRM.WebUI.Models;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace CRM.WebUI.Controllers
 {
@@ -26,10 +28,30 @@ namespace CRM.WebUI.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var eFDbContext = _context.Students.Include(s => s.CreatedBy).Include(s => s.CustomerOwner).Include(s => s.ModifiedBy).Include(s => s.Agent);
-            return View(await eFDbContext.ToListAsync());
+            //We use RESPful WebApi do list accounts, leave here empty.
+            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("StudentsList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            return View(querySetting);
+        }
+
+        // POST: Set Accounts Filter
+        [HttpPost]
+        public void SetQuery(string search = "", string sort = "", long offset = 0)
+        {
+            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("StudentsList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            else
+                querySetting.search.Clear();
+
+            if (search != null && search != "")
+                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
+            HttpContext.Session.Set<QuerySettingViewModel>("StudentsList", querySetting);
+            string a = HttpContext.Session.GetString("StudentsList");
+            Response.Redirect("/Students/Index");
         }
 
         // GET: Students/Details/5

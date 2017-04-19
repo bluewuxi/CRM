@@ -39,7 +39,6 @@ namespace CRM.Domain.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndTime { get; set; }
 
-
         public Account AttendedAccount { get; set; }
         [Display(Name = "Attended Account")]
         public int? AttendedAccountID { get; set; }

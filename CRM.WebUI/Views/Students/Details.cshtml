@@ -1,7 +1,9 @@
+@using CRM.Domain.Entities
 @model CRM.Domain.Entities.Student
 
 @{
     ViewData["Title"] = "Details";
+    Activity activityDisplay = new Activity();
 }
 
 <h2>Student Details</h2>
@@ -30,107 +32,182 @@
         </div>
     </li>
 }
-<div>
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Rating)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Nationality)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Nationality)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PassportNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PassportNumber)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ClientNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ClientNumber)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ContactName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ContactName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PreferName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PreferName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Gender)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Gender)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Birthdate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Birthdate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AcademicBackground)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AcademicBackground)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EMail)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EMail)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Mobile)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Mobile)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Note)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Note)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CustomerOwner)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CustomerOwner.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Agent)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Agent.Name)
-        </dd>
-    </dl>
+<div class="panel panel-info" style="margin-top:5px;">
+    <div class="panel-heading">
+        <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.CustomerID">
+            <div class="btn-group pull-right">
+                <a style="margin-left:10px;margin-right:10px;" class="btn btn-success" asp-action="Edit" asp-route-id="@Model.CustomerID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                <a asp-action="Index" class="btn btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a id="deleteButton" href="#" onclick="deleteStudent()" class="btn btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+            </div>
+            <p style="font-size:21px; margin-top:0px; margin-bottom:0px;">Lead Details</p>
+        </form>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="columns col-md-6 crm-style">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Name)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.PreferName)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.PreferName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Gender)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Birthdate)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Birthdate)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Rating)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Rating)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nationality)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Nationality)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.PassportNumber)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.PassportNumber)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ClientNumber)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ClientNumber)
+                    </dd>
+                </dl>
+            </div>
+            <div class="columns col-md-6 crm-style">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ContactName)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ContactName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.AcademicBackground)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.AcademicBackground)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EMail)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EMail)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Mobile)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Mobile)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Address)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Address)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Note)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Note)
+                    </dd>
+                    <dt>
+                        Student Owner
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.CustomerOwner.UserName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Agent)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Agent.Name)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.CustomerID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<form asp-area="" asp-controller="Activities" asp-action="Create" method="post" id="toolForm">
+    <span class="h4">Activities</span>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-success">
+        <i class="glyphicon glyphicon-plus"></i> Create
+    </button>
+</form>
+<table id="activityTable"></table>
+
+@section Scripts {
+    <script>
+            $("#crm-students").addClass('active');
+            function deleteLead() {
+                if (confirm("Are you sure to delete the Lead? All activites will be deleted as well.")) {
+                    $("#confirmForm").submit();
+                }
+            };
+
+            $table = $("#activityTable");
+            $table.bootstrapTable({
+                url: "/api/activities/students/@Model.CustomerID ",
+                    height: 250,
+                    clickToSelect: true,
+                    sidePagination: 'client',
+                    queryParamType: "",
+                    pagination: true,
+                    //toolbar: "#toolForm",
+                    idField: "activityID",
+                    columns: [{
+                        field: 'state',
+                        title: '',
+                        radio: true,
+                    }, {
+                        field: 'customerID',
+                        title: 'Customer ID',
+                        visible: false
+                    }, {
+                        field: 'activityType',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
+                        formatter: CRM.convertActivityType,
+                    }, {
+                        field: 'subject',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
+                    }, {
+                        field: 'activityOwner.userName',
+                        title: 'Activity Owner',
+                    }, {
+                        field: 'startTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
+                        formatter: CRM.convertAccountType,
+                    }, {
+                        field: 'endTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                    },]
+                });
+
+    </script>
+
+}

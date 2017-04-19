@@ -1,7 +1,7 @@
 @model CRM.WebUI.Models.QuerySettingViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Leads List";
     CRM.Domain.Entities.Lead fieldDisplay = new CRM.Domain.Entities.Lead();
 }
 
@@ -17,11 +17,11 @@
                         <input id="query_sort" type="hidden" name="sort" value="" />
                         <input id="query_offset" type="hidden" name="offset" value="0" />
 
-                        <label for="LeadName">Lead Name:</label>
-                        <input id="LeadName" class="form-control" placeholder="Name" />
+                        <label for="CustomerName">Customer Name:</label>
+                        <input id="CustomerName" class="form-control" placeholder="Name" />
                         <br class="divider" />
                         <label for="CustomerOwner">Lead Owner:</label>
-                        <input id="LeadOwner" class="form-control" placeholder="User Name" />
+                        <input id="CustomerOwner" class="form-control" placeholder="User Name" />
                         <br class="divider" />
                         <button onclick="applyFilter(true)" class="btn btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
                         <button onclick="applyFilter(false)" class="btn btn-default"><i class="fa fa-fw fa-remove"></i>Clear</button>
@@ -118,7 +118,7 @@
             item.value = "";
 
             if (enable){
-                LeadName = $("#LeadName").val().trim();
+                CustomerName = $("#CustomerName").val().trim();
                 CustomerOwner = $("#CustomerOwner").val().trim();;
                 $("#query_search").val(JSON.stringify(
                     [   { field: 'CustomerName', value: CustomerName },
