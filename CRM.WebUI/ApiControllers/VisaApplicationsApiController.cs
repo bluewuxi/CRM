@@ -28,8 +28,8 @@ namespace CRM.WebUI.ApiControllers
             _Repo = aRepo;
         }
 
-        [HttpGet("api/Enrollments")]
-        public async Task<IActionResult> ListStudent(int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        [HttpGet("api/VisaApplications")]
+        public async Task<IActionResult> ListStudent(int limit = 0, int offset = 0, string search = "", string sort = "", string order = "")
         {
             IQueryable<VisaApplication> records;
             List<QuerySetting> aSearch = null;
@@ -48,7 +48,6 @@ namespace CRM.WebUI.ApiControllers
 
             records = _Repo.GetAll(aSearch, aSort);
             var count = await records.CountAsync();
-
             if (limit <= 0)
                 return Json(records);
             else

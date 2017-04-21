@@ -12,12 +12,12 @@ namespace CRM.Domain.Concrete
     public class StudentRepository: BaseRepository, IStudentRepository
     {
         private EFDbContext context;
-        private DbSet<Student> LeadEntity;
+        private DbSet<Student> StudentEntity;
 
         public StudentRepository(EFDbContext dbcontext)
         {
             this.context = dbcontext;
-            LeadEntity = context.Set<Student>();
+            StudentEntity = context.Set<Student>();
         }
         public int Add(Student Item)
         {
@@ -27,15 +27,26 @@ namespace CRM.Domain.Concrete
         }
         public int Delete(int id)
         {
-            throw new NotImplementedException();
+            Student account = Get(id);
+            StudentEntity.Remove(account);
+            return context.SaveChanges();
         }
         public Student Get(int id)
         {
-            throw new NotImplementedException();
+            return StudentEntity.Include(u => u.CustomerOwner).Include(a=>a.Agent).SingleOrDefault(s => s.CustomerID == id);
         }
         public IQueryable<Student> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            throw new NotImplementedException();
+            IQueryable<Student> records = StudentEntity.Include(u => u.CustomerOwner).Include(a=>a.Agent).AsQueryable();
+            if (search != null && search.Count() > 0)
+            {
+                string searchName, searchOwner;
+                searchName = search.Where<QuerySetting>(u => u.Field == "customerName").Select(p => p.Value).SingleOrDefault();
+                if (searchName != null && searchName != "") records = records.Where(u => u.Name.ToLower().Contains(searchName.ToLower()) || u.PreferName.ToLower().Contains(searchName.ToLower()));
+                searchOwner = search.Where<QuerySetting>(u => u.Field == "customerOwner").Select(p => p.Value).SingleOrDefault();
+                if (searchOwner != null && searchOwner != "") records = records.Where(u => u.CustomerOwner.UserName.ToLower().Contains(searchOwner.ToLower()));
+            }
+            return records;
         }
 
         public IQueryable<Student> GetAll()
@@ -55,21 +66,25 @@ namespace CRM.Domain.Concrete
             SetCreatedSignature(Item);
             return context.SaveChangesAsync();
         }
-        public Task<int> DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
+        {
+            Student account = Get(id);
+            StudentEntity.Remove(account);
+            return await context.SaveChangesAsync();
+        }
+        public async Task<Student> GetAsync(int id)
+        {
+            return await StudentEntity.Include(u => u.CustomerOwner).Include(a => a.Agent).SingleOrDefaultAsync(s => s.CustomerID == id);
+        }
+        public async Task<IQueryable<Student>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
-        public Task<Student> GetAsync(int id)
+        public async Task<int> UpdateAsync(Student Item)
         {
-            throw new NotImplementedException();
+            SetModifiedSignature(Item);
+            context.Update(Item);
+            return await context.SaveChangesAsync();
         }
-        public Task<IQueryable<Student>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-        public Task<int> UpdateAsync(Student Item)
-        {
-            throw new NotImplementedException();
-        }
-}
+    }
 }

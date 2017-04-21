@@ -4,38 +4,37 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
+using Newtonsoft.Json;
+using CRM.WebUI.Models;
 using CRM.Domain.Abstract;
 using Microsoft.AspNetCore.Identity;
-using System.Net;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using CRM.Domain.Concrete;
-using CRM.WebUI.Models;
 
 namespace CRM.WebUI.ApiControllers
 {
     [Produces("application/json")]
-    //[Route("api/StudentsApi")]
-    public class StudentsApiController : BaseController
+    [Route("api/Customers")]
+    public class CustomersApiController : BaseController
     {
         public object JsonRequestBehavior { get; private set; }
 
-        private IStudentRepository _Repo;
+        private ICustomerRepository _Repo;
 
-        public StudentsApiController(UserManager<ApplicationUser> aUserManager, IStudentRepository aRepo) : base(aUserManager)
+        public CustomersApiController(UserManager<ApplicationUser> aUserManager, ICustomerRepository aRepo) : base(aUserManager)
         {
             _Repo = aRepo;
         }
 
-        [HttpGet("api/students")]
-        public async Task<IActionResult> ListStudent(int limit = 0, int offset = 0, string search = "", string sort = "", string order = "")
+        // GET: api/Customers
+        [HttpGet]
+        public async Task<IActionResult> ListCustomers(int limit = 0, int offset = 0, string search = "", string sort = "", string order = "")
         {
-            IQueryable<Student> records;
+            IQueryable<Customer> records;
             List<QuerySetting> aSearch = null;
             List<QuerySetting> aSort = null;
 
-            BindUserContext(_Repo);
             if (!(search == null || search == ""))
             {
                 aSearch = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
@@ -45,6 +44,8 @@ namespace CRM.WebUI.ApiControllers
                 aSort = JsonConvert.DeserializeObject<List<QuerySetting>>(sort);
             }
 
+            BindUserContext(_Repo);
+
             records = _Repo.GetAll(aSearch, aSort);
             var count = await records.CountAsync();
 
@@ -53,12 +54,5 @@ namespace CRM.WebUI.ApiControllers
             else
                 return Json(new { total = count, rows = records.Skip(offset).Take(limit) });
         }
-
-        private IActionResult Json(IQueryable<ApplicationUser> queryable, object allowGet)
-        {
-            throw new NotImplementedException();
-        }
     }
-
-
 }

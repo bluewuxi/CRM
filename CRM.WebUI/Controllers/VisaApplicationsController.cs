@@ -10,6 +10,8 @@ using CRM.Domain.Entities;
 using CRM.Domain.Abstract;
 using Microsoft.AspNetCore.Identity;
 using CRM.WebUI.Models;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace CRM.WebUI.Controllers
 {
@@ -25,10 +27,30 @@ namespace CRM.WebUI.Controllers
         }
 
         // GET: VisaApplications
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var eFDbContext = _context.VisaApplications.Include(v => v.Student);
-            return View(await eFDbContext.ToListAsync());
+            //We use RESPful WebApi do list accounts, leave here empty.
+            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("VisaApplicationsList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            return View(querySetting);
+        }
+
+        // POST: Set VisaApplications Filter
+        [HttpPost]
+        public void SetQuery(string search = "", string sort = "", long offset = 0)
+        {
+            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("VisaApplicationsList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            else
+                querySetting.search.Clear();
+
+            if (search != null && search != "")
+                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
+            HttpContext.Session.Set<QuerySettingViewModel>("VisaApplicationsList", querySetting);
+            string a = HttpContext.Session.GetString("VisaApplicationsList");
+            Response.Redirect("/VisaApplications/Index");
         }
 
         // GET: VisaApplications/Details/5
@@ -39,9 +61,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var visaApplication = await _context.VisaApplications
-                .Include(v => v.Student)
-                .SingleOrDefaultAsync(m => m.VisaApplicationID == id);
+            var visaApplication = await _repo.GetAsync(id.GetValueOrDefault());
             if (visaApplication == null)
             {
                 return NotFound();
@@ -53,8 +73,7 @@ namespace CRM.WebUI.Controllers
         // GET: VisaApplications/Create
         public IActionResult Create()
         {
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name");
-            return View();
+            return View(new VisaApplication() {VisaAppliedType="student"});
         }
 
         // POST: VisaApplications/Create
@@ -62,15 +81,14 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VisaApplicationID,StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
+        public async Task<IActionResult> Create([Bind("VisaApplicationID,InstituteID,StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(visaApplication);
-                await _context.SaveChangesAsync();
+                BindUserContext(_repo);
+                await _repo.AddAsync(visaApplication);
                 return RedirectToAction("Index");
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", visaApplication.StudentID);
             return View(visaApplication);
         }
 
@@ -82,12 +100,11 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var visaApplication = await _context.VisaApplications.SingleOrDefaultAsync(m => m.VisaApplicationID == id);
+            var visaApplication = await _repo.GetAsync(id.GetValueOrDefault());
             if (visaApplication == null)
             {
                 return NotFound();
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", visaApplication.StudentID);
             return View(visaApplication);
         }
 
@@ -96,7 +113,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VisaApplicationID,StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
+        public async Task<IActionResult> Edit(int id, [Bind("VisaApplicationID,InstituteID,StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
         {
             if (id != visaApplication.VisaApplicationID)
             {
@@ -107,8 +124,8 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    _context.Update(visaApplication);
-                    await _context.SaveChangesAsync();
+                    BindUserContext(_repo);
+                    await _repo.UpdateAsync(visaApplication);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,26 +140,6 @@ namespace CRM.WebUI.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", visaApplication.StudentID);
-            return View(visaApplication);
-        }
-
-        // GET: VisaApplications/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var visaApplication = await _context.VisaApplications
-                .Include(v => v.Student)
-                .SingleOrDefaultAsync(m => m.VisaApplicationID == id);
-            if (visaApplication == null)
-            {
-                return NotFound();
-            }
-
             return View(visaApplication);
         }
 
@@ -151,15 +148,13 @@ namespace CRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var visaApplication = await _context.VisaApplications.SingleOrDefaultAsync(m => m.VisaApplicationID == id);
-            _context.VisaApplications.Remove(visaApplication);
-            await _context.SaveChangesAsync();
+            await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 
         private bool VisaApplicationExists(int id)
         {
-            return _context.VisaApplications.Any(e => e.VisaApplicationID == id);
+            return _repo.Get(id)==null?false:true;
         }
     }
 }

@@ -1,138 +1,17 @@
 @model CRM.Domain.Entities.VisaApplication
 
 @{
-    ViewData["Title"] = "Create";
-}
-
-<h2>Create Visa Application</h2>
-@section SideBar {
-    <li class="sidebar-info">
-        <div class="panel panel-primary" style="margin:5px;">
-            <div class="panel-heading">
-                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
-            </div>
-            <div class="panel-body">
-                <div class="form-actions no-color">
-
-                    <label>Open Activities:</label>
-                    <br class="divider" />
-                    <label>Closed Activities:</label>
-                    <br class="divider" />
-                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
-                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
-                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
-                    <br class="divider" />
-                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
-                    <br class="divider" />
-                </div>
-            </div>
-        </div>
-    </li>
+    ViewData["Title"] = "Create Visa Application";
+    ViewData["Action"] = "Create";
 }
 
 
-<form asp-action="Create">
-    <div class="form-horizontal">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="StudentID" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="StudentID" class ="form-control" asp-items="ViewBag.StudentID"></select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="PassportNumber" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="PassportNumber" class="form-control" />
-                <span asp-validation-for="PassportNumber" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="EamilInForm" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="EamilInForm" class="form-control" />
-                <span asp-validation-for="EamilInForm" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="PhysicalAddress" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="PhysicalAddress" class="form-control" />
-                <span asp-validation-for="PhysicalAddress" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="PostalAddress" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="PostalAddress" class="form-control" />
-                <span asp-validation-for="PostalAddress" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="VisaAppliedType" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="VisaAppliedType" class="form-control" />
-                <span asp-validation-for="VisaAppliedType" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Documents" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Documents" class="form-control" />
-                <span asp-validation-for="Documents" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="SubmittedDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="SubmittedDate" class="form-control" />
-                <span asp-validation-for="SubmittedDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="ReceivedDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="ReceivedDate" class="form-control" />
-                <span asp-validation-for="ReceivedDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="ExpiredDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="ExpiredDate" class="form-control" />
-                <span asp-validation-for="ExpiredDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Note" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Note" class="form-control" />
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="ModifiedTime" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="ModifiedTime" class="form-control" />
-                <span asp-validation-for="ModifiedTime" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="CreatedTime" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="CreatedTime" class="form-control" />
-                <span asp-validation-for="CreatedTime" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
+@{await Html.RenderPartialAsync("_VisaPartial", Model, ViewData);}
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts
+{
+    <script>
+        $("#crm-visa").addClass('active');
+    </script>
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+}

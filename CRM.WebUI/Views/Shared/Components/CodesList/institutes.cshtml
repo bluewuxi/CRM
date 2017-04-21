@@ -1,5 +1,5 @@
 @model String[]
-@{
+@{ 
     string modalName = Model[0];
     string valueRef = Model[1];
     string displayRef = Model[2];
@@ -12,7 +12,7 @@
         <div class="modal-content">
             <div class="modal-body" style="padding:0px; margin:5px;">
                 <div class="toolForm form-group" style="margin:2px">
-                    <span style="margin-right:10px; font-size:medium;">Select a User</span><button class="btn btn-sm empty" type="button" style="margin-right:10px;">Empty</button><button type="button" class="close" data-dismiss="modal" style="margin:5px">&times;</button>
+                    <span style="margin-right:10px; font-size:medium;">Select an Institutes</span><button class="btn btn-sm empty" type="button" style="margin-right:10px;">Empty</button><button type="button" class="close" data-dismiss="modal" style="margin:5px">&times;</button>
                 </div>
                 <table></table>
             </div>
@@ -36,7 +36,7 @@
         $("#@modalName table").on('check.bs.table', function () {
             $modal.modal('toggle');
             sel = $(this).bootstrapTable('getSelections');
-            $('#@valueRef').val(sel[0].id);
+            $('#@valueRef').val(sel[0].accountID);
             $('#@displayRef').val(sel[0].name);
         });
         $("#@modalName .empty").on("click", function () {
@@ -49,42 +49,52 @@
 
     var initTable_@valueRef =
     function () {
-
         $('#@modalName').on('shown.bs.modal', function () {
         $table = $("#@modalName table");
         $table.bootstrapTable({
-            url: "/api/users",
-            height: 250,
+            url: "/api/institutes",
+            height: 400,
             clickToSelect: true,
-            sidePagination: 'client',
+            search: true,
+            searchAlign: 'left',
+            //sidePagination: 'client',
             pagination: true,
             queryParamsType: "",
-            //toolbar: "#toolForm",
-            idField: "id",
+            toolbar: "#@modalName .toolForm",
+            toolbarAlign: 'right',
+            idField: "accountID",
             //queryParams: function (Param) { Param.search = $("#query_search").val(); return Param; },
-                columns: [{
-                    field: 'state',
-                    title: '',
-                    radio: true
-                }, {
-                    field: 'id',
-                    title: 'User ID',
-                    visible: false
-                }, {
-                    field: 'userName',
-                    title: 'User Name'
-                }, {
-                    field: 'email',
-                    title: 'Email'
-                }, {
-                    field: 'phoneNumber',
-                    title: 'Phone Number'
-                },]
-
+            columns: [{
+                field: 'state',
+                title: '',
+                radio: true,
+            }, {
+                field: 'accountID',
+                title: 'Account ID',
+                visible: false
+            }, {
+                field: 'name',
+                title: 'Name',
+            }, {
+                field: 'shortName',
+                title: 'Short Name',
+            }, {
+                field: 'accountType',
+                title: 'Account Type',
+                formatter: CRM.convertAccountType,
+            }, {
+                field: 'contactName',
+                title: 'Contact Name',
+            }, {
+                field: 'birthdate',
+                title: 'DOB',
+                formatter: CRM.formatDate,
+            }, {
+                field: 'eMail',
+                title: 'EMail',
+            },]
         });
 
       });
     }
 </script>
-
-

@@ -10,6 +10,8 @@ using CRM.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using CRM.Domain.Abstract;
 using CRM.WebUI.Models;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace CRM.WebUI.Controllers
 {
@@ -25,11 +27,34 @@ namespace CRM.WebUI.Controllers
         }
 
         // GET: Applications
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var eFDbContext = _context.Applications.Include(a => a.ApplicationAgent).Include(a => a.CreatedBy).Include(a => a.Institute).Include(a => a.ModifiedBy).Include(a => a.Student);
-            return View(await eFDbContext.ToListAsync());
+            
+            //We use RESPful WebApi do list accounts, leave here empty.
+            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ApplicatiosnList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            return View(querySetting);
         }
+
+        // POST: Set Application Filter
+        [HttpPost]
+        public void SetQuery(string search = "", string sort = "", long offset = 0)
+        {
+            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ApplicationsList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            else
+                querySetting.search.Clear();
+
+            if (search != null && search != "")
+                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
+            HttpContext.Session.Set<QuerySettingViewModel>("ApplicationsList", querySetting);
+            string a = HttpContext.Session.GetString("ApplicationsList");
+            Response.Redirect("/Applications/Index");
+        }
+
 
         // GET: Applications/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -57,10 +82,12 @@ namespace CRM.WebUI.Controllers
         // GET: Applications/Create
         public IActionResult Create()
         {
-            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name");
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name");
+            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts.Where(a=>a.AccountType==Account.AccountTypeEnum.Agent), "AccountID", "Name");
+            ViewData["InstituteID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Institute), "AccountID", "Name");
             ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name");
-            return View();
+
+            Application newRecord = new Application() { Status = Application.ApplicationStatusEnum.Draft };
+            return View(newRecord);
         }
 
         // POST: Applications/Create
@@ -76,9 +103,6 @@ namespace CRM.WebUI.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", application.ApplicationAgentID);
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name", application.InstituteID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", application.StudentID);
             return View(application);
         }
 
@@ -95,8 +119,8 @@ namespace CRM.WebUI.Controllers
             {
                 return NotFound();
             }
-            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", application.ApplicationAgentID);
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name", application.InstituteID);
+            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Agent), "AccountID", "Name");
+            ViewData["InstituteID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Institute), "AccountID", "Name");
             ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", application.StudentID);
             return View(application);
         }
@@ -133,8 +157,8 @@ namespace CRM.WebUI.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", application.ApplicationAgentID);
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name", application.InstituteID);
+            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Agent), "AccountID", "Name");
+            ViewData["InstituteID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Institute), "AccountID", "Name");
             ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", application.StudentID);
             return View(application);
         }

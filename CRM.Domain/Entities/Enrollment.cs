@@ -21,6 +21,7 @@ namespace CRM.Domain.Entities
         public int InstituteID { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Payment Date")]
         public DateTime PaymentDate { get; set; }
 
         [Display(Name = "Due Date"), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -38,9 +39,12 @@ namespace CRM.Domain.Entities
         public EnrollmentStatusEnum Status {get; set;}
         public string Note { get; set; }
 
+        [Display(Name = "Modified Time")]
         public DateTime ModifiedTime { get; set; }
         public ApplicationUser ModifiedBy { get; set; }
         public string ModifiedByID { get; set; }
+
+        [Display(Name = "Created Time")]
         public DateTime CreatedTime { get; set; }
         public ApplicationUser CreatedBy { get; set; }
         public string CreatedByID { get; set; }

@@ -28,8 +28,8 @@ namespace CRM.WebUI.ApiControllers
             _Repo = aRepo;
         }
 
-        [HttpGet("api/Enrollments")]
-        public async Task<IActionResult> ListStudent( int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        [HttpGet("api/Applications")]
+        public async Task<IActionResult> ListApplication( int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
         {
             IQueryable<Application> records;
             List<QuerySetting> aSearch = null;

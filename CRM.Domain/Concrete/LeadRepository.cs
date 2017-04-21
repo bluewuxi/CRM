@@ -68,9 +68,9 @@ namespace CRM.Domain.Concrete
         {
             throw new NotImplementedException();
         }
-        public Task<Lead> GetAsync(int id)
+        public async Task<Lead> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await leadEntity.Include(u => u.CustomerOwner).SingleOrDefaultAsync(s => s.CustomerID == id);
         }
         public Task<IQueryable<Lead>> GetAllAsync()
         {

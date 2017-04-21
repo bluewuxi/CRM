@@ -90,9 +90,27 @@ CRM.convertActivityStatus =
         }
     };
 
+CRM.convertApplicationStatus =
+    function (value, row, index) {
+        switch (value) {
+            case 0:
+                return "Draft";
+            case 1:
+                return "Applied";
+            case 2:
+                return "Reserved";
+            case 3:
+                return "Accepted";
+            case 4:
+                return "AcceptedWithCondition";
+            default:
+                return "Closed";
+        }
+    };
+
 CRM.formatDate =
     function (value, row, index) {
-        if (value !== null && value !== "")
+        if (value!==undefined && value !== null && value !== "")
             return value.toString().substring(0, 10);
         else
             return value;
@@ -100,7 +118,10 @@ CRM.formatDate =
 
 CRM.formatDatetime =
     function (value, row, index) {
-        return value;
+        if (value !== undefined && value !== null && value !== "")
+            return value.toString().replace(/T/g, " ");
+        else
+            return value;
     };
 
 CRM.convertAccountType =

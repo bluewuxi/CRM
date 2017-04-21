@@ -20,8 +20,8 @@ namespace CRM.WebUI.ApiControllers
     {
         public object JsonRequestBehavior { get; private set; }
 
-        [HttpGet("api/QueryCodes/users")]
-        public async Task<IActionResult> UsersCode([FromServices] UserManager<ApplicationUser> userManager, int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        [HttpGet("api/users")]
+        public async Task<IActionResult> UsersCode([FromServices] UserManager<ApplicationUser> userManager, int limit = 0, int offset = 0, string search = "", string sort = "", string order = "")
         {
             IQueryable<ApplicationUser> records;
             if (search == null || search == "")

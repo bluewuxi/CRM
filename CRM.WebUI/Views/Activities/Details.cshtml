@@ -1,7 +1,7 @@
 @model CRM.Domain.Entities.Activity
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Activity Details";
 }
 
 @section SideBar {
@@ -34,11 +34,11 @@
     <div class="panel-heading">
         <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.ActivityID">
             <div class="btn-group pull-right">
-                <a style="margin-left:10px;margin-right:10px;" class="btn btn-success" asp-action="Edit" asp-route-id="@Model.ActivityID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
-                <a asp-action="Index" class="btn btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
-                <a id="deleteButton" href="#" onclick="deleteActivity()" class="btn btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+                <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.ActivityID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a id="deleteButton" href="#" onclick="deleteActivity()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
             </div>
-            <p style="font-size:21px; margin-top:0px; margin-bottom:0px;">Account Details</p>
+            <p style="font-size:18px; margin-top:0px; margin-bottom:0px;">@ViewData["Title"]</p>
         </form>
     </div>
     <div class="panel-body">
@@ -50,6 +50,12 @@
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.ActivityType)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Status)
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.Subject)

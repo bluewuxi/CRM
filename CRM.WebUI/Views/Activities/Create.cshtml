@@ -6,18 +6,12 @@
     ViewData["Action"] = "Create";
 }
 
-<h4>Create Activity</h4>
-
 @{await Html.RenderPartialAsync("_ActivitiesPartial", Model, ViewData);}
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
+@section Scripts{
+    <script>$("#crm-activities").addClass('active');</script>
 
-@section Scripts
-{
-    <script>
-    initActivityPartial()
-    </script>
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+
 }

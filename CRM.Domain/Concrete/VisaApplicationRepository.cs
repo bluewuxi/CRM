@@ -31,7 +31,7 @@ namespace CRM.Domain.Concrete
         }
         public VisaApplication Get(int id)
         {
-            return visaEntity.Include(u => u.Student).SingleOrDefault(s => s.VisaApplicationID == id);
+            return visaEntity.Include(u => u.Student).Include(i=>i.Institute).SingleOrDefault(s => s.VisaApplicationID == id);
         }
         public IQueryable<VisaApplication> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
@@ -39,7 +39,7 @@ namespace CRM.Domain.Concrete
         }
         public IQueryable<VisaApplication> GetAll()
         {
-            return visaEntity.Include(u => u.Student).AsQueryable();
+            return visaEntity.Include(u => u.Student).Include(i=>i.Institute).AsQueryable();
         }
         public int Update(VisaApplication Item)
         {
@@ -58,9 +58,9 @@ namespace CRM.Domain.Concrete
         {
             throw new NotImplementedException();
         }
-        public Task<VisaApplication> GetAsync(int id)
+        public async Task<VisaApplication> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await visaEntity.Include(u => u.Student).Include(i => i.Institute).SingleOrDefaultAsync(s => s.VisaApplicationID == id);
         }
         public Task<IQueryable<VisaApplication>> GetAllAsync()
         {

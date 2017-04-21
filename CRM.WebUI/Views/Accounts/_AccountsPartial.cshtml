@@ -93,7 +93,7 @@
                 <label asp-for="AccountOwner" class="col-md-4 col-lg-4 control-label"></label>
                 <div class="col-md-8 col-lg-8 ">
                     <select asp-for="AccountOwnerID" class="form-control" asp-items="@((SelectList)ViewData["UserList"])">
-                        <option value="">select one user</option>
+                        <option value="">-None-</option>
                     </select>
 
                     <span asp-validation-for="AccountOwner" class="text-danger"></span>

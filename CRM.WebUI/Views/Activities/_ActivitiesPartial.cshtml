@@ -1,6 +1,5 @@
 @using CRM.Domain.Entities
 @model CRM.Domain.Entities.Activity
-
 <form asp-action="@ViewData["Action"]">
     @{if (ViewData["Action"].ToString() == "Edit")
         {
@@ -8,204 +7,105 @@
         }
     }
 
-    <div class="form-horizontal">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="ActivityType" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="ActivityType" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityTypeEnum>()"></select>
-                <span asp-validation-for="ActivityType" class="text-danger"></span>
+    <div class="panel panel-info" style="margin-top:5px;">
+        <div class="panel-heading">
+            <div class="btn-group pull-right form-inline">
+                <a type="button" class="btn btn-sm btn-info" href='/Activities' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <button type="submit" value="Save" class="btn btn-sm btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save"></i>Save</button>
+                @{if (ViewData["Action"].ToString() == "Edit")
+                    {
+                        <a asp-action="Details" class="btn btn-sm btn-warning " asp-route-id="@Model.ActivityID" style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-warning " style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
+                    }
+                }
             </div>
+            <p style="font-size:18px; margin:0px; padding:0px;">@ViewData["Title"]</p>
         </div>
-        <div class="form-group">
-            <label asp-for="ActivityOwnerID" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="ActivityOwnerID" class="form-control" asp-items="ViewBag.ActivityOwnerID"></select>
-                <span asp-validation-for="ActivityOwnerID" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Subject" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Subject" class="form-control" />
-                <span asp-validation-for="Subject" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Content" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="StartTime" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="StartTime" class="form-control" />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="EndTime" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="EndTime" class="form-control" />
-                <span asp-validation-for="EndTime" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="AttendedAccountID" class="control-label col-md-2"></label>
-            <div class="col-md-10 form-inline">
-                <input id="activity_accountid" type="hidden" asp-for="AttendedAccountID" /> <input id="activity_accountname" class="form-control" readonly />  <button type="button" id="btnAccount" data-toggle="modal" data-target="#SelectAccount">...</button>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="AttendedCustomerID" class="control-label col-md-2"></label>
-            <div class="col-md-10 form-inline">
-                <input id="activity_customerid" type="hidden" asp-for="AttendedCustomerID" /><input id="activity_customername" class="form-control" readonly />  <button type="button" id="btnCustomer" data-toggle="modal" data-target="#SelectCustomer">...</button>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="ActivityType" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <select asp-for="ActivityType" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityTypeEnum>()"></select>
+                                <span asp-validation-for="ActivityType" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityStatusEnum>()"></select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Subject" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="Subject" class="form-control" />
+                                <span asp-validation-for="Subject" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Content" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <textarea rows="4" asp-for="Content" class="form-control"></textarea>
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label asp-for="ActivityOwnerID" class="control-label col-md-4"></label>
+                            <div class="col-md-8">
+                                <select asp-for="ActivityOwnerID" class="form-control" asp-items="ViewBag.ActivityOwnerID"></select>
+                                <span asp-validation-for="ActivityOwnerID" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StartTime" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="StartTime" class="form-control datepicker-here" data-date-format="yyyy-mm-dd" data-clear-button="true"
+                                       data-timepicker="true" data-auto-close="true" data-time-format='hh:ii' data-language="en" />
+                                <span asp-validation-for="StartTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EndTime" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="EndTime" class="form-control datepicker-here" data-date-format="yyyy-mm-dd" data-clear-button="true"
+                                       data-timepicker="true" data-auto-close="true" data-time-format='hh:ii' data-language="en" />
+                                <span asp-validation-for="EndTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AttendedAccountID" class="control-label col-md-4"></label>
+                            <div class="col-md-8 form-inline">
+                                <input id="activity_accountid" type="hidden" asp-for="AttendedAccountID" /> <input id="activity_accountname" class="form-control" readonly />  <button type="button" id="btnAccount" class="btn btn-sm">...</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AttendedCustomerID" class="control-label col-md-4"></label>
+                            <div class="col-md-8 form-inline">
+                                <input id="activity_customerid" type="hidden" asp-for="AttendedCustomerID" /><input id="activity_customername" class="form-control" readonly />  <button type="button" id="btnCustomer" class="btn btn-sm">...</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!--End of Row-->
+        </div> <!--End of Panel Body-->
+    </div> <!--End of Panel-->
 </form>
 
-<div id="SelectAccount" class="modal fade" data-backdrop="static" role="dialog">
-    <div class="modal-dialog modal-lg ">
-        <!-- Modal content-->
-        <div class="modal-content" >
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Select an Account</h4>
-            </div>
-            <div class="modal-body">
-                <span id="codeslist"></span>
-                <table id="accountsTable">
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<vc:codes-list crm-code="accounts" value-ref="activity_accountid" display-ref="activity_accountname" button-ref="btnAccount" on-select-func="">
+</vc:codes-list>
+<vc:codes-list crm-code="customers" value-ref="AttendedCustomerID" display-ref="activity_customername" button-ref="btnCustomer" on-select-func="">
+</vc:codes-list>
 
-<div id="SelectCustomer" class="modal fade" data-backdrop="static" role="dialog">
-    <div class="modal-dialog modal-lg ">
-        <!-- Modal content-->
-        <div class="modal-content" >
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Select a Lead or a Student</h4>
-            </div>
-            <div class="modal-body">
-                <span id="codeslist"></span>
-                <table id="customersTable"></table>
-            </div>
-        </div>
-    </div>
-</div>
 
-<script>
-    function initAccountTable() {
-        $table = $("#accountsTable");
-        $table.bootstrapTable({
-            url: "/api/accounts",
-            height: 250,
-            clickToSelect: true,
-            //sidePagination: 'client',
-            pagination: true,
-            queryParamsType: "",
-            //toolbar: "#toolForm",
-            idField: "accountID",
-            //queryParams: function (Param) { Param.search = $("#query_search").val(); return Param; },
-            columns: [{
-                field: 'state',
-                title: '',
-                radio: true,
-            }, {
-                field: 'accountID',
-                title: 'Account ID',
-                visible: false
-            }, {
-                field: 'name',
-                title: 'Name',
-            }, {
-                field: 'shortName',
-                title: 'Short Name',
-            }, {
-                field: 'accountType',
-                title: 'Account Type',
-                formatter: CRM.convertAccountType,
-            }, {
-                field: 'contactName',
-                title: 'Contact Name',
-            }, {
-                field: 'birthdate',
-                title: 'DOB',
-                formatter: CRM.formatDate,
-            }, {
-                field: 'eMail',
-                title: 'EMail',
-            },]
-        });
-
-        $table.on('check.bs.table', function () {
-            $('#SelectAccount').modal('toggle');
-            sel = $(this).bootstrapTable('getSelections');
-            $('#activity_accountid').val(sel[0].accountID);
-            $('#activity_accountname').val(sel[0].name);
-        });
-    }
-
-    function initCustomerTable() {
-        $table = $("#customersTable");
-        $table.bootstrapTable({
-            url: "/api/customers",
-            height: 250,
-            clickToSelect: true,
-            sidePagination: 'client',
-            pagination: true,
-            //toolbar: "#toolForm",
-            idField: "customerID",
-            //queryParams: function (Param) { Param.search = $("#query_search").val(); return Param; },
-            columns: [{
-                field: 'state',
-                title: '',
-                radio: true,
-            }, {
-                field: 'customerID',
-                title: 'customer ID',
-                visible: false
-            }, {
-                field: 'name',
-                title: 'Name',
-            }, {
-                field: 'shortName',
-                title: 'Short Name',
-            }, {
-                field: 'birthdate',
-                title: 'DOB',
-                formatter: CRM.formatDate,
-            }, {
-                field: 'eMail',
-                title: 'EMail',
-            },]
-        });
-
-        $table.on('check.bs.table', function () {
-            $('#SelectCustomer').modal('toggle');
-            sel = $(this).bootstrapTable('getSelections');
-            $('#activity_customerid').val(sel[0].customerID);
-            $('#activity_customername').val(sel[0].name);
-        });
-    }
-
-    function initActivityPartial() {
-        $('#SelectAccount').on('show.bs.modal', function () {
-            initAccountTable();
-        })
-        $('#SelectCustomer').on('show.bs.modal', function () {
-            initCustomerTable();
-        })
-    }
-</script>

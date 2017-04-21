@@ -25,7 +25,10 @@ namespace CRM.WebUI.Models
         public async Task<string> GetUserContextAsync()
         {
             ApplicationUser aUser = await GetCurrentUserAsync();
-            return aUser.Id;
+            if (aUser != null)
+                return aUser.Id;
+            else
+                return "";
         }
 
         public int BindUserContext(IBaseRepository iRepo)

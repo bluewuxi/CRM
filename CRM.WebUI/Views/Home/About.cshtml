@@ -7,86 +7,18 @@
 <h3>@ViewData["Message"]</h3>
 
 <p>Use this area to provide additional information.</p>
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#SelectOwner">Owner</button><br />
-<vc:codes-list modal-id="myModal" code-name="Users">
+<input id="value1"/><input id="display1" /><button id="b1" type="button" class="btn">Owner1</button><br />
+<input id="value2" /><input id="display2" /><button id="b2" type="button" class="btn">Owner2</button><br />
+
+<vc:codes-list crm-code="institutes" value-ref="value1" display-ref="display1" button-ref="b1" on-select-func="">
 </vc:codes-list>
-<input id="display"/>
-<table id="accounts">
-</table>
+<vc:codes-list crm-code="users" value-ref="value2" display-ref="display2" button-ref="b2" on-select-func="">
+</vc:codes-list>
+
+
 @section Scripts{
 <script>$("#crm-about").addClass('active');</script>
-    <script>
-        @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register("myModal", "userselectCallback"))
-        $("#accounts").bootstrapTable({
-            url: "/api/QueryCodes/accounts",
-                height: 230,
-                clickToSelect: true,
-                sidePagination: 'server',
-                pagination: true,
-                search: true,
-                columns: [{
-                    field: 'state',
-                    title: '',
-                    radio: true,
-                }, {
-                    field: 'accountID',
-                    title: 'Account ID',
-                    visible: false
-                }, {
-                    field: 'name',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.Name)',
-                }, {
-                    field: 'shortName',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.ShortName)',
-                }, {
-                    field: 'accountType',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.AccountType)',
-                    formatter: myfunction,
-                }, {
-                    field: 'contactName',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.ContactName)',
-                }, {
-                    field: 'birthdate',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.Birthdate)',
-                }, {
-                    field: 'eMail',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.EMail)',
-                }, {
-                    field: 'mobile',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.Mobile)',
-                }, {
-                    field: 'registerDate',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.RegisterDate)',
-                }, {
-                    field: 'accountOwner.userName',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.AccountOwner)',
-                },]
-            });
 
-
-
-        function myfunction(value, row, index)
-        {
-            switch (value) {
-                case 0:
-                    return "Agent";
-                case 1:
-                    return "Institute";
-                default:
-                    return "Other";
-            }
-        }
-
-        function SelectOwner_onSelect(eSelect)
-        {
-            if (eSelect != null) {
-                $("#display").val(eSelect[0].id);
-            }
-        }
-
-</script>
-
-        @{await Html.RenderPartialAsync("_CodesListUserPartial", "SelectOwner");}
-
+@Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
 
 }

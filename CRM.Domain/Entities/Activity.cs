@@ -34,9 +34,11 @@ namespace CRM.Domain.Entities
         public string Content { get; set; }
 
         [Required, DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Start Time")]
         public DateTime StartTime { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
+        [Display(Name = "End Time")]
         public DateTime EndTime { get; set; }
 
         public Account AttendedAccount { get; set; }
@@ -47,9 +49,12 @@ namespace CRM.Domain.Entities
         [Display(Name = "Attended Customer")]
         public int? AttendedCustomerID { get; set; }
 
+        [Display(Name = "Modified Time")]
         public DateTime ModifiedTime { get; set; }
         public ApplicationUser ModifiedBy { get; set; }
         public string ModifiedByID { get; set; }
+
+        [Display(Name = "Created Time")]
         public DateTime CreatedTime { get; set; }
         public ApplicationUser CreatedBy { get; set; }
         public string CreatedByID { get; set; }

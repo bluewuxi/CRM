@@ -1,0 +1,183 @@
+@using CRM.Domain.Entities
+@using CRM.Domain.Abstract
+@model CRM.Domain.Entities.Enrollment
+
+<form asp-action="@ViewData["Action"]" autocomplete="off">
+    @{if (ViewData["Action"].ToString() == "Edit")
+        {
+            <input type="hidden" asp-for="CustomerID" />
+        }
+    }
+
+    <div class="panel panel-info" style="margin-top:5px;">
+        <div class="panel-heading">
+            <div class="btn-group pull-right form-inline">
+                <a type="button" class="btn btn-info" href='/Enrollments' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <button type="submit" value="Save" class="btn btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save"></i>Save</button>
+@{if (ViewData["Action"].ToString() == "Edit")
+    {
+                <a asp-action="Details" class="btn btn-warning " asp-route-id="@Model.EnrollmentAgentID" style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
+    }
+    else
+    {
+                <a asp-action="Index" class="btn btn-warning " style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
+    }
+}
+            </div>
+            <p style="font-size:21px; margin:0px; padding:0px;">@ViewData["Title"]</p>
+        </div>
+        <div class="panel-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row crm-style">
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label asp-for="Name" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PreferName" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="PreferName" class="form-control" />
+                                <span asp-validation-for="PreferName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Gender" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<GenderEnum>()"></select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Birthdate" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="Birthdate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
+                                       data-date-format="yyyy-mm-dd" data-clearButton="true" data-autoClose="true" data-language="en" />
+                                <span asp-validation-for="Birthdate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AcademicBackground" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="AcademicBackground" class="form-control" />
+                                <span asp-validation-for="AcademicBackground" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Nationality" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <select asp-for="Nationality" class="form-control" >
+                                    <option value="">- select Nationality -</option>
+                                    <option value="CN">China (Mainland)</option>
+                                    <option value="TW">China (Taiwan)</option>
+                                    <option value="HK">China (HongKong)</option>
+                                    <option value="IN">India</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                                <span asp-validation-for="Nationality" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PassportNumber" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="PassportNumber" class="form-control" />
+                                <span asp-validation-for="PassportNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ClientNumber" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="ClientNumber" class="form-control" />
+                                <span asp-validation-for="ClientNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label asp-for="Rating" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <select asp-for="Rating" class="form-control">
+                                    <option value="0">-None-</option>
+                                    <option value="1">Acquired</option>
+                                    <option value="2">Active</option>
+                                    <option value="3">Valued</option>
+                                    <option value="-1">Shut Down</option>
+                                </select>
+                                <span asp-validation-for="Rating" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ContactName" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="ContactName" class="form-control" />
+                                <span asp-validation-for="ContactName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AgentID" class="control-label col-md-4"></label>
+                            <div class="col-md-8">
+                                <select asp-for="AgentID" class="form-control" asp-items="ViewBag.AgentID">
+                                    <option value="">-None-</option>
+                                </select>
+                                <span asp-validation-for="AgentID" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EMail" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="EMail" class="form-control" />
+                                <span asp-validation-for="EMail" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Mobile" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="Mobile" class="form-control" />
+                                <span asp-validation-for="Mobile" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="Address" class="form-control" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Note" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="Note" class="form-control" />
+                                <span asp-validation-for="Note" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CustomerOwnerID" class="control-label col-md-4"></label>
+                            <div class="col-md-8">
+                                <select asp-for="CustomerOwnerID" class="form-control" asp-items="ViewBag.CustomerOwnerID">
+                                    <option value="">-None-</option>
+                                </select>
+                                <span asp-validation-for="CustomerOwnerID" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+</form>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+    @section Scripts
+{
+        <script>
+            $("#crm-students").addClass('active');
+        </script>
+    }

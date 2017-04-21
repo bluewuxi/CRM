@@ -62,11 +62,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var lead = await _context.Leads
-                .Include(l => l.CreatedBy)
-                .Include(l => l.CustomerOwner)
-                .Include(l => l.ModifiedBy)
-                .SingleOrDefaultAsync(m => m.CustomerID == id);
+            var lead = await _repo.GetAsync(id.GetValueOrDefault());
             if (lead == null)
             {
                 return NotFound();
@@ -76,10 +72,11 @@ namespace CRM.WebUI.Controllers
         }
 
         // GET: Leads/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
+            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName");
+
+            return View(new Lead() { CustomerOwnerID = await GetUserContextAsync() });
         }
 
         // POST: Leads/Create
@@ -87,12 +84,12 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Source,CustomerID,Name,PreferName,Gender,Birthdate,AcademicBackground,EMail,Mobile,Address,Note,CustomerOwnerID,ModifiedTime,CreatedTime,ModifiedByID,CreatedByID")] Lead lead)
+        public async Task<IActionResult> Create([Bind("Source,CustomerID,Name,PreferName,Gender,Birthdate,AcademicBackground,EMail,Mobile,Address,Note,CustomerOwnerID")] Lead lead)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(lead);
-                await _context.SaveChangesAsync();
+                BindUserContext(_repo);
+                await _repo.AddAsync(lead);
                 return RedirectToAction("Index");
             }
             ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName", lead.CustomerOwnerID);
@@ -107,14 +104,12 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var lead = await _context.Leads.SingleOrDefaultAsync(m => m.CustomerID == id);
+            var lead = await _repo.GetAsync( id.GetValueOrDefault());
             if (lead == null)
             {
                 return NotFound();
             }
-            ViewData["CreatedByID"] = new SelectList(_context.Users, "Id", "Id", lead.CreatedByID);
-            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "Id", lead.CustomerOwnerID);
-            ViewData["ModifiedByID"] = new SelectList(_context.Users, "Id", "Id", lead.ModifiedByID);
+            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName", lead.CustomerOwnerID);
             return View(lead);
         }
 
@@ -134,8 +129,7 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    _context.Update(lead);
-                    await _context.SaveChangesAsync();
+                    await _repo.UpdateAsync(lead);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -150,30 +144,7 @@ namespace CRM.WebUI.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["CreatedByID"] = new SelectList(_context.Users, "Id", "Id", lead.CreatedByID);
-            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "Id", lead.CustomerOwnerID);
-            ViewData["ModifiedByID"] = new SelectList(_context.Users, "Id", "Id", lead.ModifiedByID);
-            return View(lead);
-        }
-
-        // GET: Leads/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var lead = await _context.Leads
-                .Include(l => l.CreatedBy)
-                .Include(l => l.CustomerOwner)
-                .Include(l => l.ModifiedBy)
-                .SingleOrDefaultAsync(m => m.CustomerID == id);
-            if (lead == null)
-            {
-                return NotFound();
-            }
-
+            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName", lead.CustomerOwnerID);
             return View(lead);
         }
 
@@ -182,15 +153,13 @@ namespace CRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var lead = await _context.Leads.SingleOrDefaultAsync(m => m.CustomerID == id);
-            _context.Leads.Remove(lead);
-            await _context.SaveChangesAsync();
+            await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 
         private bool LeadExists(int id)
         {
-            return _context.Leads.Any(e => e.CustomerID == id);
+            return _repo.Get(id)==null? false:true;
         }
     }
 }

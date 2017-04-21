@@ -2,11 +2,9 @@
 @model CRM.Domain.Entities.Student
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Student Details";
     Activity activityDisplay = new Activity();
 }
-
-<h2>Student Details</h2>
 
 @section SideBar {
     <li class="sidebar-info">
@@ -36,11 +34,11 @@
     <div class="panel-heading">
         <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.CustomerID">
             <div class="btn-group pull-right">
-                <a style="margin-left:10px;margin-right:10px;" class="btn btn-success" asp-action="Edit" asp-route-id="@Model.CustomerID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
-                <a asp-action="Index" class="btn btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
-                <a id="deleteButton" href="#" onclick="deleteStudent()" class="btn btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+                <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.CustomerID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a id="deleteButton" href="#" onclick="deleteStudent()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
             </div>
-            <p style="font-size:21px; margin-top:0px; margin-bottom:0px;">Lead Details</p>
+            <p style="font-size:18px; margin-top:0px; margin-bottom:0px;">@ViewData["Title"] </p>
         </form>
     </div>
     <div class="panel-body">
@@ -153,16 +151,49 @@
     </div>
 </div>
 
-<form asp-area="" asp-controller="Activities" asp-action="Create" method="post" id="toolForm">
-    <span class="h4">Activities</span>&nbsp;&nbsp;
-    <button type="submit" class="btn btn-success">
-        <i class="glyphicon glyphicon-plus"></i> Create
-    </button>
-</form>
+<div class="well well-sm info" style="margin:0px;">
+    <form asp-area="" asp-controller="Activities" asp-action="Create" method="post" id="toolFormActivity">
+        <span class="h4">Activities</span>&nbsp;&nbsp;
+        <button type="submit" class="btn btn-sm btn-success pull-right">
+            <i class="glyphicon glyphicon-plus"></i> Create
+        </button>
+    </form>
+</div>
 <table id="activityTable"></table>
 
-@section Scripts {
-    <script>
+<div class="well well-sm info" style="margin:0px; margin-top:10px;">
+    <form asp-area="" asp-controller="Applications" asp-action="Create" method="post" id="toolFormApplication">
+        <span class="h4">Applications</span>&nbsp;&nbsp;
+        <button type="submit" class="btn btn-sm btn-success pull-right">
+            <i class="glyphicon glyphicon-plus"></i> Create
+        </button>
+    </form>
+</div>
+
+<table id="applicationTable"></table>
+
+<div class="well well-sm info" style="margin:0px; margin-top:10px;">
+    <form asp-area="" asp-controller="VisaApplications" asp-action="Create" method="post" id="toolFormVisa">
+        <span class="h4">Visa Applications</span>&nbsp;&nbsp;
+        <button type="submit" class="btn btn-sm btn-success pull-right">
+            <i class="glyphicon glyphicon-plus"></i> Create
+        </button>
+    </form>
+</div>
+<table id="visaTable"></table>
+
+<div class="well well-sm info" style="margin:0px; margin-top:10px;">
+    <form asp-area="" asp-controller="Enrollments" asp-action="Create" method="post" id="toolFormEnrollment">
+        <span class="h4">Enrollments</span>&nbsp;&nbsp;
+        <button type="submit" class="btn btn-sm btn-success pull-right">
+            <i class="glyphicon glyphicon-plus"></i> Create
+        </button>
+    </form>
+</div>
+<table id="enrollmentTable"></table>
+
+    @section Scripts {
+        <script>
             $("#crm-students").addClass('active');
             function deleteLead() {
                 if (confirm("Are you sure to delete the Lead? All activites will be deleted as well.")) {
@@ -208,6 +239,119 @@
                     },]
                 });
 
-    </script>
+            $table = $("#applicationTable");
+            $table.bootstrapTable({
+                url: "/api/activities/students/@Model.CustomerID ",
+                    height: 250,
+                    clickToSelect: true,
+                    sidePagination: 'client',
+                    queryParamType: "",
+                    pagination: true,
+                    //toolbar: "#toolForm",
+                    idField: "activityID",
+                    columns: [{
+                        field: 'state',
+                        title: '',
+                        radio: true,
+                    }, {
+                        field: 'customerID',
+                        title: 'Customer ID',
+                        visible: false
+                    }, {
+                        field: 'activityType',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
+                        formatter: CRM.convertActivityType,
+                    }, {
+                        field: 'subject',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
+                    }, {
+                        field: 'activityOwner.userName',
+                        title: 'Activity Owner',
+                    }, {
+                        field: 'startTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
+                        formatter: CRM.convertAccountType,
+                    }, {
+                        field: 'endTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                    },]
+                });
 
-}
+            $table = $("#visaTable");
+            $table.bootstrapTable({
+                url: "/api/activities/students/@Model.CustomerID ",
+                    height: 250,
+                    clickToSelect: true,
+                    sidePagination: 'client',
+                    queryParamType: "",
+                    pagination: true,
+                    //toolbar: "#toolForm",
+                    idField: "activityID",
+                    columns: [{
+                        field: 'state',
+                        title: '',
+                        radio: true,
+                    }, {
+                        field: 'customerID',
+                        title: 'Customer ID',
+                        visible: false
+                    }, {
+                        field: 'activityType',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
+                        formatter: CRM.convertActivityType,
+                    }, {
+                        field: 'subject',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
+                    }, {
+                        field: 'activityOwner.userName',
+                        title: 'Activity Owner',
+                    }, {
+                        field: 'startTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
+                        formatter: CRM.convertAccountType,
+                    }, {
+                        field: 'endTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                    },]
+                });
+
+            $table = $("#enrollmentTable");
+            $table.bootstrapTable({
+                url: "/api/activities/students/@Model.CustomerID ",
+                    height: 250,
+                    clickToSelect: true,
+                    sidePagination: 'client',
+                    queryParamType: "",
+                    pagination: true,
+                    //toolbar: "#toolForm",
+                    idField: "activityID",
+                    columns: [{
+                        field: 'state',
+                        title: '',
+                        radio: true,
+                    }, {
+                        field: 'customerID',
+                        title: 'Customer ID',
+                        visible: false
+                    }, {
+                        field: 'activityType',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
+                        formatter: CRM.convertActivityType,
+                    }, {
+                        field: 'subject',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
+                    }, {
+                        field: 'activityOwner.userName',
+                        title: 'Activity Owner',
+                    }, {
+                        field: 'startTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
+                        formatter: CRM.convertAccountType,
+                    }, {
+                        field: 'endTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                    },]
+                });
+        </script>
+
+    }

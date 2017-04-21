@@ -77,3 +77,8 @@ textarea {
 .crm-style dl dd:hover {
     border-bottom: 1px solid lightblue;
 }
+
+.crm-style h4 {
+    margin: 2px;
+    padding: 0px;
+}

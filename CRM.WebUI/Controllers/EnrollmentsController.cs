@@ -10,6 +10,8 @@ using CRM.Domain.Entities;
 using CRM.Domain.Abstract;
 using Microsoft.AspNetCore.Identity;
 using CRM.WebUI.Models;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace CRM.WebUI.Controllers
 {
@@ -25,10 +27,31 @@ namespace CRM.WebUI.Controllers
         }
 
         // GET: Enrollments
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var eFDbContext = _context.Enrollments.Include(e => e.CreatedBy).Include(e => e.EnrollmentAgent).Include(e => e.Institute).Include(e => e.ModifiedBy).Include(e => e.Student);
-            return View(await eFDbContext.ToListAsync());
+            //We use RESPful WebApi do list accounts, leave here empty.
+            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ActivitiesList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            return View(querySetting);
+        }
+
+        // POST: Set Enrollments Filter
+        [HttpPost]
+        public void SetQuery(string search = "", string sort = "", long offset = 0)
+        {
+            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ErollmentsList");
+            if (querySetting == null)
+                querySetting = new QuerySettingViewModel();
+            else
+                querySetting.search.Clear();
+
+            if (search != null && search != "")
+                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
+            HttpContext.Session.Set<QuerySettingViewModel>("ErollmentsList", querySetting);
+            string a = HttpContext.Session.GetString("ErollmentsList");
+            Response.Redirect("/Erollments/Index");
         }
 
         // GET: Enrollments/Details/5
@@ -60,7 +83,9 @@ namespace CRM.WebUI.Controllers
             ViewData["EnrollmentAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name");
             ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name");
             ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name");
-            return View();
+
+            Enrollment newRecord = new Enrollment() {  Status = Enrollment.EnrollmentStatusEnum.Actived };
+            return View(newRecord);
         }
 
         // POST: Enrollments/Create

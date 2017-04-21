@@ -69,10 +69,12 @@ namespace CRM.WebUI.Controllers
         }
 
         // GET: Activities/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["ActivityOwnerID"] = new SelectList(GetUsers(), "Id", "UserName");
-            return View();
+            return View(new Activity() { ActivityOwnerID = await GetUserContextAsync(),
+                Status =Activity.ActivityStatusEnum.Event,
+                ActivityType = Activity.ActivityTypeEnum.OutboundCall});
         }
 
         // POST: Activities/Create
@@ -80,7 +82,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ActivityID,ActivityType,ActivityOwnerID,Subject,Content,StartTime,EndTime,AttendedAccountID,AttendedCustomerID")] Activity activity)
+        public async Task<IActionResult> Create([Bind("ActivityID,ActivityType,Status,ActivityOwnerID,Subject,Content,StartTime,EndTime,AttendedAccountID,AttendedCustomerID")] Activity activity)
         {
             if (ModelState.IsValid)
             {
@@ -113,7 +115,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ActivityID,ActivityType,ActivityOwnerID,Subject,Content,StartTime,EndTime,AttendedAccountID,AttendedCustomerID")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("ActivityID,Status,ActivityType,ActivityOwnerID,Subject,Content,StartTime,EndTime,AttendedAccountID,AttendedCustomerID")] Activity activity)
         {
             if (id != activity.ActivityID)
             {

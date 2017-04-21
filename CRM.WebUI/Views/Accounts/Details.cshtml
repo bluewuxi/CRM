@@ -1,7 +1,9 @@
+@using CRM.Domain.Entities
 @model CRM.Domain.Entities.Account
 
 @{
     ViewData["Title"] = "Account Details";
+    Activity activityDisplay = new Activity();
 }
 @section SideBar {
     <li class="sidebar-info">
@@ -32,11 +34,11 @@
         <div class="panel-heading">
             <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.AccountID">
                 <div class="btn-group pull-right">
-                    <a style="margin-left:10px;margin-right:10px;" class="btn btn-success" asp-action="Edit" asp-route-id="@Model.AccountID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
-                    <a asp-action="Index" class="btn btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
-                    <a id="deleteButton" href="#" onclick="deleteAccount()" class="btn btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+                    <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.AccountID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                    <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                    <a id="deleteButton" href="#" onclick="deleteAccount()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
                 </div>
-                <p style="font-size:21px; margin-top:0px; margin-bottom:0px;">Account Details</p>
+                <p style="font-size:18px; margin-top:0px; margin-bottom:0px;">Account Details</p>
             </form>
         </div>
         <div class="panel-body">
@@ -125,15 +127,69 @@
             </div>
         </div>
 
-
+<div class="well well-sm info" style="margin:0px;">
+    <form asp-area="" asp-controller="Activities" asp-action="Create" method="post" id="toolForm">
+        <span class="h4">Activities</span>&nbsp;&nbsp;
+        <button type="submit" class="btn btn-sm btn-success pull-right">
+            <i class="glyphicon glyphicon-plus"></i> Create
+        </button>
+    </form>
+</div>
+<table id="activityTable"></table>
 
 @section Scripts {
-<script>
-    $("#crm-accounts").addClass('active');
-     function deleteAccount () {
-        if (confirm("Are you sure to delete the Account?")) {
-            $("#confirmForm").submit();
-        }
-    };
-</script>
+    <script>
+            $("#crm-accounts").addClass('active');
+             function deleteAccount () {
+                 if (confirm("Are you sure to delete the Account?  All activites will be deleted as well.")) {
+                    $("#confirmForm").submit();
+                }
+            };
+
+            $table = $("#activityTable");
+            $table.bootstrapTable({
+                url: "/api/activities/accounts/@Model.AccountID ",
+                    height: CRM.getHeight()-280,
+                    clickToSelect: true,
+                    sidePagination: 'client',
+                    queryParamType: "",
+                    pagination: true,
+                    //toolbar: "#toolForm",
+                    idField: "activityID",
+                    columns: [{
+                        field: 'state',
+                        title: '',
+                        radio: true,
+                    }, {
+                        field: 'activityID',
+                        title: 'activity ID',
+                        visible: false
+                    }, {
+                        field: 'activityType',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
+                        formatter: CRM.convertActivityType,
+                    }, {
+                        field: 'status',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Status)',
+                        formatter: CRM.convertActivityStatus,
+                    }, {
+                        field: 'subject',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
+                    }, {
+                        field: 'activityOwner.userName',
+                        title: 'Activity Owner',
+                    }, {
+                        field: 'startTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
+                        formatter: CRM.formatDatetime,
+                    }, {
+                        field: 'endTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                        formatter: CRM.formatDatetime,
+                    },]
+                });
+
+    </script>
+
 }
+

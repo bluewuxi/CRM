@@ -50,10 +50,8 @@ namespace CRM.Domain.Abstract
     public interface ILeadRepository : IRepository<Lead>
     {
     }
-    public interface ICustomerRepository 
+    public interface ICustomerRepository : IRepository<Customer>
     {
-        Customer Get(int id);
-        IQueryable<Customer> GetAll();
     }
 
     public interface IActivityRepository : IRepository<Activity>

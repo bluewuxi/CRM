@@ -1,89 +1,139 @@
-@model IEnumerable<CRM.Domain.Entities.Application>
+@model CRM.WebUI.Models.QuerySettingViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Applications List";
+    CRM.Domain.Entities.Application fieldDisplay = new CRM.Domain.Entities.Application();
 }
 
-<h2>Index</h2>
+@section SideBar {
+    <div class="panel panel-primary" style="margin:5px;">
+        <div class="panel-heading">
+            <i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span class="h4">Filter</span>
+        </div>
+        <div class="panel-body">
+            <form asp-action="SetQuery" method="post">
+                <div class="form-actions no-color">
+                    @Html.Hidden("search", Newtonsoft.Json.JsonConvert.SerializeObject(Model.search), new { id = "query_search" })
+                    <input id="query_sort" type="hidden" name="sort" value="" />
+                    <input id="query_offset" type="hidden" name="offset" value="0" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Tuition)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Status)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Note)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ModifiedTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CreatedTime)
-                </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationAgent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Institute)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Student.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tuition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicationAgent.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Institute.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedBy.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ApplicationID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ApplicationID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ApplicationID">Delete</a>
-            </td>
-        </tr>
+                    <label for="StudentName">Student Name:</label>
+                    <input id="StudentName" class="form-control" placeholder="Student Name" />
+                    <br class="divider" />
+                    <label for="InstitutName">Institut Name:</label>
+                    <input id="InstitutName" class="form-control" placeholder="Institut Name" />
+                    <br class="divider" />
+                    <button onclick="applyFilter(true)" class="btn btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button onclick="applyFilter(false)" class="btn btn-default"><i class="fa fa-fw fa-remove"></i>Clear</button>
+                </div>
+            </form>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+
+<form asp-area="" asp-controller="Applications" asp-action="Create" method="get" id="toolForm">
+    <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-success">
+        <i class="glyphicon glyphicon-plus"></i> Create
+    </button>
+</form>
+<table id="applicationsTable"></table>
+
+@section Scripts
+{
+    <script>
+        restoreFilter();
+
+        $("#crm-applications").addClass('active');
+        $table = $("#applicationsTable");
+        $table.bootstrapTable({
+            url: "/api/Applications",
+                height: CRM.getHeight(),
+                clickToSelect: true,
+                sidePagination: 'server',
+                pagination: true,
+                toolbar: "#toolForm",
+                idField: "applicationID",
+                queryParams: function (Param) { Param.search = $("#query_search").val(); return Param;},
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'applicationID',
+                    title: 'applicationID',
+                    visible: false
+                }, {
+                    field: 'student.name',
+                    title: 'student name',
+                }, {
+                    field: 'institut.name',
+                    title: 'Institut Name',
+                }, {
+                    field: 'Status',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Status)',
+                    formatter: CRM.convertApplicationStatus,
+                }, {
+                    field: 'tuition',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Tuition)',
+                }, {
+                    field: 'note',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Note)',
+                }, {
+                    field: 'status',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Status)',
+                }, {
+                    field: 'createdTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.CreatedTime)',
+                    formatter: CRM.formatDatetime,
+                }, {
+                    field: 'modifiedTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.ModifiedTime)',
+                    formatter: CRM.formatDatetime,
+                },]
+            });
+
+        $table.on('check.bs.table', function () {
+            application_onSelect($table.bootstrapTable('getSelections'));
+            //$table.bootstrapTable("destory");
+        });
+
+        function application_onSelect(eSelect)
+        {
+            if (eSelect != null) {
+                window.location.href = "/Applications/Details/"+eSelect[0].customerID.toString().trim();
+            }
+        }
+
+        function applyFilter(enable) {
+            var item = {};
+            item.field = "";
+            item.value = "";
+
+            if (enable){
+                CustomerName = $("#StudentsName").val().trim();
+                InstitutName = $("#InstitutName").val().trim();;
+                $("#query_search").val(JSON.stringify(
+                    [{ field: 'StudentsName', value: CustomerName },
+                        { field: 'InstitutName', value: InstitutName }]));
+            }
+            else {
+                $("#query_search").val("");
+            }
+            $(this).closest('form').submit();
+        }
+
+        function restoreFilter() {
+            var filter = $("#query_search").val();
+            if (filter == null || filter == "") return;
+            filter = JSON.parse(filter);
+            for (var i = 0, len = filter.length; i < len; i++) {
+                if (filter[i] != null) $("#" + filter[i].field).val(filter[i].value);
+            }
+        }
+
+    </script>
+}
+
+
+

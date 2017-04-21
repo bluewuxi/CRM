@@ -15,16 +15,17 @@ namespace CRM.Domain.Entities
         public string Name { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
+        [Display(Name = "Prefer Name")]
         public string PreferName { get; set; }
 
         public GenderEnum Gender { get; set; }
 
-        [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Birthdate")]
-        public DateTime Birthdate { get; set; }
+        [Display(Name = "DOB")]
+        public DateTime? Birthdate { get; set; }
 
         [StringLength(200)]
+        [Display(Name = "Academic B/G")]
         public string AcademicBackground { get; set; }
 
         [StringLength(50)]
@@ -32,7 +33,6 @@ namespace CRM.Domain.Entities
 
         [StringLength(30)]
         public string Mobile { get; set; }
-
 
         [StringLength(200)]
         public string Address { get; set; }
@@ -44,11 +44,15 @@ namespace CRM.Domain.Entities
 
         [Display(Name = "Customer Owner")]
         public ApplicationUser CustomerOwner { get; set; }
+        [Display(Name = "Customer Owner")]
         public string CustomerOwnerID { get; set; }
 
+        [Display(Name = "Modified Time")]
         public DateTime ModifiedTime { get; set; }
         public ApplicationUser ModifiedBy { get; set; }
         public string ModifiedByID { get; set; }
+
+        [Display(Name = "Created Time")]
         public DateTime CreatedTime { get; set; }
         public ApplicationUser CreatedBy { get; set; }
         public string CreatedByID { get; set; }

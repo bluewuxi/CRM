@@ -28,7 +28,7 @@ namespace CRM.WebUI.ApiControllers
         }
 
         [HttpGet("api/leads")]
-        public async Task<IActionResult> ListLead(int limit = 10, int offset = 0, string search = "", string sort = "", string order = "")
+        public async Task<IActionResult> ListLead(int limit = 0, int offset = 0, string search = "", string sort = "", string order = "")
         {
             IQueryable<Lead> records;
             List<QuerySetting> aSearch = null;

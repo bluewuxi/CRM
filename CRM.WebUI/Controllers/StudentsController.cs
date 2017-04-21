@@ -62,12 +62,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students
-                .Include(s => s.CreatedBy)
-                .Include(s => s.CustomerOwner)
-                .Include(s => s.ModifiedBy)
-                .Include(s => s.Agent)
-                .SingleOrDefaultAsync(m => m.CustomerID == id);
+            var student = await _repo.GetAsync(id.GetValueOrDefault());
             if (student == null)
             {
                 return NotFound();
@@ -77,11 +72,11 @@ namespace CRM.WebUI.Controllers
         }
 
         // GET: Students/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["AgentID"] = new SelectList(_context.Accounts, "AccountID", "Name");
-            return View();
+            Student newStudent = new Student() { CustomerOwnerID = await GetUserContextAsync() };
+            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName", newStudent.CustomerOwnerID);
+            return View(newStudent);
         }
 
         // POST: Students/Create
@@ -89,16 +84,15 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Rating,Nationality,PassportNumber,ClientNumber,ContactName,AgentID,CustomerID,Name,PreferName,Gender,Birthdate,AcademicBackground,EMail,Mobile,Address,Note,CustomerOwnerID,ModifiedTime,CreatedTime,ModifiedByID,CreatedByID")] Student student)
+        public async Task<IActionResult> Create([Bind("Rating,Nationality,PassportNumber,ClientNumber,ContactName,AgentID,CustomerID,Name,PreferName,Gender,Birthdate,AcademicBackground,EMail,Mobile,Address,Note,CustomerOwnerID")] Student student)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
+                BindUserContext(_repo);
+                await _repo.AddAsync(student);
                 return RedirectToAction("Index");
             }
-            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "Id", student.CustomerOwnerID);
-            ViewData["AgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", student.AgentID);
+            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName", student.CustomerOwnerID);
             return View(student);
         }
 
@@ -110,13 +104,12 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.SingleOrDefaultAsync(m => m.CustomerID == id);
+            var student = await _repo.GetAsync(id.GetValueOrDefault());
             if (student == null)
             {
                 return NotFound();
             }
-            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "Id", student.CustomerOwnerID);
-            ViewData["AgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", student.AgentID);
+            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName", student.CustomerOwnerID);
             return View(student);
         }
 
@@ -136,8 +129,7 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
+                    await _repo.UpdateAsync(student);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -152,41 +144,17 @@ namespace CRM.WebUI.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "Id", student.CustomerOwnerID);
-            ViewData["AgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", student.AgentID);
+            ViewData["CustomerOwnerID"] = new SelectList(_context.Users, "Id", "UserName", student.CustomerOwnerID);
             return View(student);
         }
 
-        // GET: Students/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var student = await _context.Students
-                .Include(s => s.CreatedBy)
-                .Include(s => s.CustomerOwner)
-                .Include(s => s.ModifiedBy)
-                .Include(s => s.Agent)
-                .SingleOrDefaultAsync(m => m.CustomerID == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            return View(student);
-        }
 
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Students.SingleOrDefaultAsync(m => m.CustomerID == id);
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
+            await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 

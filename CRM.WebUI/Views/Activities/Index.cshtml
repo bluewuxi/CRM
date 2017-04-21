@@ -31,7 +31,7 @@
 }
 
 
-<form asp-area="" asp-controller="Activities" asp-action="Create" method="post" id="toolForm">
+<form asp-area="" asp-controller="Activities" asp-action="Create" method="get" id="toolForm">
     <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
     <button type="submit" class="btn btn-success">
         <i class="glyphicon glyphicon-plus"></i> Create
@@ -42,6 +42,8 @@
 @section Scripts
 {
     <script>
+        $("#crm-activities").addClass('active');
+
         restoreFilter();
 
         $("#crm-Activities").addClass('active');

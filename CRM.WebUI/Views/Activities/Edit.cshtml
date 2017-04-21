@@ -2,7 +2,7 @@
 @model CRM.Domain.Entities.Activity
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Activity";
     ViewData["Action"] = "Edit";
 }
 
@@ -38,9 +38,9 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts
-{
-<script>
-    initActivityPartial()
-</script>
+@section Scripts{
+    <script>$("#crm-activities").addClass('active');</script>
+
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+
 }

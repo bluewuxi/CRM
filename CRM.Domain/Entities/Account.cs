@@ -20,12 +20,14 @@ namespace CRM.Domain.Entities
         public string Name { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
+        [Display(Name = "Short Name")]
         public string ShortName { get; set; }
 
 
         public AccountTypeEnum AccountType { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
+        [Display(Name = "Contact")]
         public string ContactName { get; set; }
 
         public GenderEnum ContactGender { get; set; }
@@ -43,6 +45,7 @@ namespace CRM.Domain.Entities
 
         //[DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Register Date")]
         public DateTime RegisterDate { get; set; }
 
         public string Address { get; set; }
@@ -53,9 +56,12 @@ namespace CRM.Domain.Entities
         [Display(Name = "Account Owner")]
         public ApplicationUser AccountOwner { get; set; }
 
+        [Display(Name = "Modified Time")]
         public DateTime ModifiedTime { get; set; }
         public ApplicationUser ModifiedBy { get; set; }
         public string ModifiedByID { get; set; }
+
+        [Display(Name = "Created Time")]
         public DateTime CreatedTime { get; set; }
         public ApplicationUser CreatedBy { get; set; }
         public string CreatedByID { get; set; }

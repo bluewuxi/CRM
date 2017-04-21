@@ -53,6 +53,24 @@ namespace CRM.WebUI.ApiControllers
                 return Json(new {total=count, rows= records.Skip(offset).Take(limit)});
         }
 
+        //For searching and filling agent code, used by agent list modal
+        [HttpGet("api/agents")]
+        public IActionResult ListAgents()
+        {
+            IQueryable<Account> records;
+            records = _Repo.GetAll().Where(a=>a.AccountType==Account.AccountTypeEnum.Agent);
+            return Json(records);
+        }
+
+        //For searching and filling agent code, used by agent list modal
+        [HttpGet("api/institutes")]
+        public IActionResult ListInstitutes()
+        {
+            IQueryable<Account> records;
+            records = _Repo.GetAll().Where(a => a.AccountType == Account.AccountTypeEnum.Institute);
+            return Json(records);
+        }
+
         private IActionResult Json(IQueryable<ApplicationUser> queryable, object allowGet)
         {
             throw new NotImplementedException();

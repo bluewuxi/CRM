@@ -5,7 +5,6 @@
     ViewData["Action"] = "Edit";
 }
 
-<h2>Edit Student</h2>
 @section SideBar {
     <li class="sidebar-info">
         <div class="panel panel-primary" style="margin:5px;">
@@ -38,4 +37,5 @@
     <script>
         $("#crm-students").addClass('active');
     </script>
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
 }

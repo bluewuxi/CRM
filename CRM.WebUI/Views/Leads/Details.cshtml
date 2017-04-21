@@ -35,11 +35,12 @@
     <div class="panel-heading">
         <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.CustomerID">
             <div class="btn-group pull-right">
-                <a style="margin-left:10px;margin-right:10px;" class="btn btn-success" asp-action="Edit" asp-route-id="@Model.CustomerID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
-                <a asp-action="Index" class="btn btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
-                <a id="deleteButton" href="#" onclick="deleteLead()" class="btn btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+                <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.CustomerID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a id="convertButton" href="#" onclick="convertLead()" class="btn btn-sm btn-warning" style="margin-left:10px;"><i class="fa fa-fw fa-thumbs-o-up"></i>Convert</a>
+                <a id="deleteButton" href="#" onclick="deleteLead()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
             </div>
-            <p style="font-size:21px; margin-top:0px; margin-bottom:0px;">Lead Details</p>
+            <p style="font-size:18px; margin-top:0px; margin-bottom:0px;">Lead Details</p>
         </form>
     </div>
     <div class="panel-body">
@@ -122,12 +123,14 @@
         </div>
     </div>
 
+<div class="well well-sm info" style="margin:0px;">
     <form asp-area="" asp-controller="Activities" asp-action="Create" method="post" id="toolForm">
         <span class="h4">Activities</span>&nbsp;&nbsp;
-        <button type="submit" class="btn btn-success">
+        <button type="submit" class="btn btn-sm btn-success pull-right">
             <i class="glyphicon glyphicon-plus"></i> Create
         </button>
     </form>
+</div>
     <table id="activityTable"></table>
 
     @section Scripts {
@@ -139,10 +142,14 @@
                 }
             };
 
+            function convertLead() {
+                alert("Not Implemented Yet.");
+            }
+
             $table = $("#activityTable");
             $table.bootstrapTable({
                 url: "/api/activities/leads/@Model.CustomerID ",
-                    height: 250,
+                    height: CRM.getHeight() - 350,
                     clickToSelect: true,
                     sidePagination: 'client',
                     queryParamType: "",
@@ -154,13 +161,17 @@
                         title: '',
                         radio: true,
                     }, {
-                        field: 'customerID',
-                        title: 'Customer ID',
+                        field: 'activityID',
+                        title: 'activity ID',
                         visible: false
                     }, {
                         field: 'activityType',
                         title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
                         formatter: CRM.convertActivityType,
+                    }, {
+                        field: 'status',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Status)',
+                        formatter: CRM.convertActivityStatus,
                     }, {
                         field: 'subject',
                         title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
@@ -170,10 +181,11 @@
                     }, {
                         field: 'startTime',
                         title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
-                        formatter: CRM.convertAccountType,
+                        formatter: CRM.formatDatetime,
                     }, {
                         field: 'endTime',
                         title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                        formatter: CRM.formatDatetime,
                     },]
                 });
 
