@@ -11,65 +11,71 @@ namespace CRM.Domain.Concrete
 {
     public class EnrollmentRepository: BaseRepository, IEnrollmentRepository
     {
-        private EFDbContext context;
-        private DbSet<Enrollment> enrollmentEntity;
+        private EFDbContext _context;
+        private DbSet<Enrollment> _entity;
 
         public EnrollmentRepository(EFDbContext dbcontext)
         {
-            this.context = dbcontext;
-            enrollmentEntity = context.Set<Enrollment>();
+            this._context = dbcontext;
+            _entity = _context.Set<Enrollment>();
         }
 
         public int Add(Enrollment enrollment)
         {
-            context.Entry(enrollment).State = EntityState.Added;
+            _context.Entry(enrollment).State = EntityState.Added;
             SetCreatedSignature(enrollment);
-            return context.SaveChanges();
+            return _context.SaveChanges();
         }
         public int Delete(int id)
         {
-            throw new NotImplementedException();
+            Enrollment item = Get(id);
+            _entity.Remove(item);
+            return _context.SaveChanges();
         }
         public Enrollment Get(int id)
         {
-            return enrollmentEntity.Include(u => u.Student).SingleOrDefault(s => s.EnrollmentID == id);
+            return _entity.Include(u => u.Student).Include(a => a.EnrollmentAgent).Include(i=>i.Institute).SingleOrDefault(s => s.EnrollmentID == id);
         }
         public IQueryable<Enrollment> GetAll()
         {
-            return enrollmentEntity.Include(u => u.Student).AsQueryable();
+            return _entity.Include(u => u.Student).Include(a=>a.EnrollmentAgent).Include(i => i.Institute).AsQueryable();
         }
         public IQueryable<Enrollment> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            return enrollmentEntity.Include(u => u.Student).AsQueryable();
+            return _entity.Include(u => u.Student).Include(a => a.EnrollmentAgent).Include(i => i.Institute).AsQueryable();
         }
         public int Update(Enrollment Item)
         {
             SetModifiedSignature(Item);
-            context.Update(Item);
-            return context.SaveChanges();
+            _context.Update(Item);
+            return _context.SaveChanges();
         }
 
-        public Task<int> AddAsync(Enrollment enrollment)
+        public async Task<int> AddAsync(Enrollment enrollment)
         {
-            context.Entry(enrollment).State = EntityState.Added;
+            _context.Entry(enrollment).State = EntityState.Added;
             SetCreatedSignature(enrollment);
-            return context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
-        public Task<int> DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Enrollment item = Get(id);
+            _entity.Remove(item);
+            return await _context.SaveChangesAsync();
         }
-        public Task<Enrollment> GetAsync(int id)
+        public async Task<Enrollment> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _entity.Include(u => u.Student).Include(a => a.EnrollmentAgent).Include(i => i.Institute).SingleOrDefaultAsync(s => s.EnrollmentID == id);
         }
         public Task<IQueryable<Enrollment>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
-        public Task<int> UpdateAsync(Enrollment Item)
+        public async Task<int> UpdateAsync(Enrollment Item)
         {
-            throw new NotImplementedException();
+            SetModifiedSignature(Item);
+            _context.Update(Item);
+            return await _context.SaveChangesAsync();
         }
     }
 }

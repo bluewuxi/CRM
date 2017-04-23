@@ -11,68 +11,74 @@ namespace CRM.Domain.Concrete
 {
     public class ApplicationRepository: BaseRepository, IApplicationRepository
     {
-        private EFDbContext context;
-        private DbSet<Application> applicationEntity;
+        private EFDbContext _context;
+        private DbSet<Application> _entity;
 
         public ApplicationRepository(EFDbContext dbcontext)
         {
-            this.context = dbcontext;
-            applicationEntity = context.Set<Application>();
+            this._context = dbcontext;
+            _entity = _context.Set<Application>();
         }
 
         public int Add(Application application)
         {
-            context.Entry(application).State = EntityState.Added;
+            _context.Entry(application).State = EntityState.Added;
             SetCreatedSignature(application);
-            return context.SaveChanges();
+            return _context.SaveChanges();
         }
         public int Delete(int id)
         {
-            throw new NotImplementedException();
+            Application item = Get(id);
+            _entity.Remove(item);
+            return _context.SaveChanges();
         }
         public Application Get(int id)
         {
-            return applicationEntity.Include(u => u.Institute).SingleOrDefault(s => s.ApplicationID == id);
+            return _entity.Include(u => u.Institute).Include(s=>s.Student).Include(a=>a.ApplicationAgent).SingleOrDefault(s => s.ApplicationID == id);
         }
 
         public IQueryable<Application> GetAll()
         {
-            return applicationEntity.Include(u => u.Institute).AsQueryable();
+            return _entity.Include(u => u.Institute).Include(s => s.Student).Include(a => a.ApplicationAgent).AsQueryable();
         }
         public IQueryable<Application> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            return applicationEntity.Include(u => u.Institute).AsQueryable();
+            return _entity.Include(u => u.Institute).Include(s => s.Student).Include(a => a.ApplicationAgent).AsQueryable();
         }
 
         public int Update(Application Item)
         {
             SetModifiedSignature(Item);
-            context.Update(Item);
-            return context.SaveChanges();
+            _context.Update(Item);
+            return _context.SaveChanges();
         }
 
         public Task<int> AddAsync(Application application)
         {
-            context.Entry(application).State = EntityState.Added;
+            _context.Entry(application).State = EntityState.Added;
             SetCreatedSignature(application);
-            return context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
 
-        public Task<int> DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Application item = Get(id);
+            _entity.Remove(item);
+            return await _context.SaveChangesAsync();
         }
-        public Task<Application> GetAsync(int id)
+        public async Task<Application> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _entity.Include(u => u.Institute).Include(s => s.Student).Include(a => a.ApplicationAgent).SingleOrDefaultAsync(s => s.ApplicationID == id);
         }
         public Task<IQueryable<Application>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
-        public Task<int> UpdateAsync(Application Item)
+        public async Task<int> UpdateAsync(Application Item)
         {
-            throw new NotImplementedException();
+            SetModifiedSignature(Item);
+            _context.Update(Item);
+            return await _context.SaveChangesAsync();
         }
     }
 }

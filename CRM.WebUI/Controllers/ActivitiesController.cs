@@ -59,6 +59,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
+            BindUserContext(_repo);
             var activity = await _repo.GetAsync(id.GetValueOrDefault());
             if (activity == null)
             {
@@ -101,6 +102,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
+            BindUserContext(_repo);
             var activity = await _repo.GetAsync(id.GetValueOrDefault());
             if (activity == null)
             {
@@ -146,28 +148,12 @@ namespace CRM.WebUI.Controllers
             return View(activity);
         }
 
-        // GET: Activities/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var activity = await _repo.GetAsync(id.GetValueOrDefault());
-            if (activity == null)
-            {
-                return NotFound();
-            }
-
-            return View(activity);
-        }
-
         // POST: Activities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            BindUserContext(_repo);
             await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }

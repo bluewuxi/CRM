@@ -14,6 +14,7 @@ namespace CRM.Domain.Entities
 
         public Student Student { get; set; }
         [Required]
+        [Display(Name = "Student")]
         public int StudentID { get; set; }
 
         [StringLength(20, MinimumLength = 8)]

@@ -29,7 +29,6 @@ namespace CRM.WebUI.Controllers
         // GET: Enrollments
         public IActionResult Index()
         {
-            var eFDbContext = _context.Enrollments.Include(e => e.CreatedBy).Include(e => e.EnrollmentAgent).Include(e => e.Institute).Include(e => e.ModifiedBy).Include(e => e.Student);
             //We use RESPful WebApi do list accounts, leave here empty.
             var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ActivitiesList");
             if (querySetting == null)
@@ -62,13 +61,8 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var enrollment = await _context.Enrollments
-                .Include(e => e.CreatedBy)
-                .Include(e => e.EnrollmentAgent)
-                .Include(e => e.Institute)
-                .Include(e => e.ModifiedBy)
-                .Include(e => e.Student)
-                .SingleOrDefaultAsync(m => m.EnrollmentID == id);
+            BindUserContext(_repo);
+            var enrollment = await _repo.GetAsync(id.GetValueOrDefault());
             if (enrollment == null)
             {
                 return NotFound();
@@ -80,10 +74,6 @@ namespace CRM.WebUI.Controllers
         // GET: Enrollments/Create
         public IActionResult Create()
         {
-            ViewData["EnrollmentAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name");
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name");
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name");
-
             Enrollment newRecord = new Enrollment() {  Status = Enrollment.EnrollmentStatusEnum.Actived };
             return View(newRecord);
         }
@@ -93,17 +83,14 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EnrollmentID,StudentID,InstituteID,PaymentDate,DueDate,EndDate,Tuition,EnrollmentAgentID,Status,Note,ModifiedTime,CreatedTime,ModifiedByID,CreatedByID")] Enrollment enrollment)
+        public async Task<IActionResult> Create([Bind("EnrollmentID,StudentID,InstituteID,PaymentDate,DueDate,EndDate,Tuition,EnrollmentAgentID,Status,Note")] Enrollment enrollment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(enrollment);
-                await _context.SaveChangesAsync();
+                BindUserContext(_repo);
+                await _repo.AddAsync(enrollment);
                 return RedirectToAction("Index");
             }
-            ViewData["EnrollmentAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", enrollment.EnrollmentAgentID);
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name", enrollment.InstituteID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", enrollment.StudentID);
             return View(enrollment);
         }
 
@@ -115,14 +102,12 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var enrollment = await _context.Enrollments.SingleOrDefaultAsync(m => m.EnrollmentID == id);
+            BindUserContext(_repo);
+            var enrollment = await _repo.GetAsync(id.GetValueOrDefault());
             if (enrollment == null)
             {
                 return NotFound();
             }
-            ViewData["EnrollmentAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", enrollment.EnrollmentAgentID);
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name", enrollment.InstituteID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", enrollment.StudentID);
             return View(enrollment);
         }
 
@@ -131,7 +116,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentID,StudentID,InstituteID,PaymentDate,DueDate,EndDate,Tuition,EnrollmentAgentID,Status,Note,ModifiedTime,CreatedTime,ModifiedByID,CreatedByID")] Enrollment enrollment)
+        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentID,StudentID,InstituteID,PaymentDate,DueDate,EndDate,Tuition,EnrollmentAgentID,Status,Note")] Enrollment enrollment)
         {
             if (id != enrollment.EnrollmentID)
             {
@@ -142,8 +127,8 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    _context.Update(enrollment);
-                    await _context.SaveChangesAsync();
+                    BindUserContext(_repo);
+                    await _repo.UpdateAsync(enrollment);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -158,32 +143,6 @@ namespace CRM.WebUI.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["EnrollmentAgentID"] = new SelectList(_context.Accounts, "AccountID", "Name", enrollment.EnrollmentAgentID);
-            ViewData["InstituteID"] = new SelectList(_context.Accounts, "AccountID", "Name", enrollment.InstituteID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", enrollment.StudentID);
-            return View(enrollment);
-        }
-
-        // GET: Enrollments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var enrollment = await _context.Enrollments
-                .Include(e => e.CreatedBy)
-                .Include(e => e.EnrollmentAgent)
-                .Include(e => e.Institute)
-                .Include(e => e.ModifiedBy)
-                .Include(e => e.Student)
-                .SingleOrDefaultAsync(m => m.EnrollmentID == id);
-            if (enrollment == null)
-            {
-                return NotFound();
-            }
-
             return View(enrollment);
         }
 
@@ -192,9 +151,8 @@ namespace CRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var enrollment = await _context.Enrollments.SingleOrDefaultAsync(m => m.EnrollmentID == id);
-            _context.Enrollments.Remove(enrollment);
-            await _context.SaveChangesAsync();
+            BindUserContext(_repo);
+            await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 

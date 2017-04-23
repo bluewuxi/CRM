@@ -60,7 +60,7 @@ namespace CRM.WebUI.Controllers
             {
                 return NotFound();
             }
-
+            BindUserContext(_repo);
             var visaApplication = await _repo.GetAsync(id.GetValueOrDefault());
             if (visaApplication == null)
             {
@@ -100,6 +100,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
+            BindUserContext(_repo);
             var visaApplication = await _repo.GetAsync(id.GetValueOrDefault());
             if (visaApplication == null)
             {
@@ -148,6 +149,7 @@ namespace CRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            BindUserContext(_repo);
             await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }

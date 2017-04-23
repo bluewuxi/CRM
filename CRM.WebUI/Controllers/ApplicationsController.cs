@@ -1,17 +1,15 @@
-using System;
+using CRM.Domain.Abstract;
+using CRM.Domain.Concrete;
+using CRM.Domain.Entities;
+using CRM.WebUI.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CRM.Domain.Concrete;
-using CRM.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-using CRM.Domain.Abstract;
-using CRM.WebUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
 
 namespace CRM.WebUI.Controllers
 {
@@ -29,8 +27,6 @@ namespace CRM.WebUI.Controllers
         // GET: Applications
         public IActionResult Index()
         {
-            var eFDbContext = _context.Applications.Include(a => a.ApplicationAgent).Include(a => a.CreatedBy).Include(a => a.Institute).Include(a => a.ModifiedBy).Include(a => a.Student);
-            
             //We use RESPful WebApi do list accounts, leave here empty.
             var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ApplicatiosnList");
             if (querySetting == null)
@@ -63,14 +59,8 @@ namespace CRM.WebUI.Controllers
             {
                 return NotFound();
             }
-
-            var application = await _context.Applications
-                .Include(a => a.ApplicationAgent)
-                .Include(a => a.CreatedBy)
-                .Include(a => a.Institute)
-                .Include(a => a.ModifiedBy)
-                .Include(a => a.Student)
-                .SingleOrDefaultAsync(m => m.ApplicationID == id);
+            BindUserContext(_repo);
+            var application = await _repo.GetAsync(id.GetValueOrDefault());
             if (application == null)
             {
                 return NotFound();
@@ -82,10 +72,6 @@ namespace CRM.WebUI.Controllers
         // GET: Applications/Create
         public IActionResult Create()
         {
-            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts.Where(a=>a.AccountType==Account.AccountTypeEnum.Agent), "AccountID", "Name");
-            ViewData["InstituteID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Institute), "AccountID", "Name");
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name");
-
             Application newRecord = new Application() { Status = Application.ApplicationStatusEnum.Draft };
             return View(newRecord);
         }
@@ -95,12 +81,12 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationID,StudentID,InstituteID,Tuition,ApplicationAgentID,Status,Note,ModifiedTime")] Application application)
+        public async Task<IActionResult> Create([Bind("ApplicationID,SubmittedDate,StudentID,InstituteID,Tuition,ApplicationAgentID,Status,Note")] Application application)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(application);
-                await _context.SaveChangesAsync();
+                BindUserContext(_repo);
+                await _repo.AddAsync(application);
                 return RedirectToAction("Index");
             }
             return View(application);
@@ -114,14 +100,12 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var application = await _context.Applications.SingleOrDefaultAsync(m => m.ApplicationID == id);
+            BindUserContext(_repo);
+            var application = await _repo.GetAsync(id.GetValueOrDefault());
             if (application == null)
             {
                 return NotFound();
             }
-            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Agent), "AccountID", "Name");
-            ViewData["InstituteID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Institute), "AccountID", "Name");
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", application.StudentID);
             return View(application);
         }
 
@@ -130,7 +114,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicationID,StudentID,InstituteID,Tuition,ApplicationAgentID,Status,Note,ModifiedTime,CreatedTime,ModifiedByID,CreatedByID")] Application application)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicationID,SubmittedDate,Status,StudentID,InstituteID,Tuition,ApplicationAgentID,Status,Note")] Application application)
         {
             if (id != application.ApplicationID)
             {
@@ -141,8 +125,8 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    _context.Update(application);
-                    await _context.SaveChangesAsync();
+                    BindUserContext(_repo);
+                    await _repo.UpdateAsync(application);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -157,43 +141,17 @@ namespace CRM.WebUI.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["ApplicationAgentID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Agent), "AccountID", "Name");
-            ViewData["InstituteID"] = new SelectList(_context.Accounts.Where(a => a.AccountType == Account.AccountTypeEnum.Institute), "AccountID", "Name");
-            ViewData["StudentID"] = new SelectList(_context.Students, "CustomerID", "Name", application.StudentID);
             return View(application);
         }
 
-        // GET: Applications/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var application = await _context.Applications
-                .Include(a => a.ApplicationAgent)
-                .Include(a => a.CreatedBy)
-                .Include(a => a.Institute)
-                .Include(a => a.ModifiedBy)
-                .Include(a => a.Student)
-                .SingleOrDefaultAsync(m => m.ApplicationID == id);
-            if (application == null)
-            {
-                return NotFound();
-            }
-
-            return View(application);
-        }
 
         // POST: Applications/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var application = await _context.Applications.SingleOrDefaultAsync(m => m.ApplicationID == id);
-            _context.Applications.Remove(application);
-            await _context.SaveChangesAsync();
+            BindUserContext(_repo);
+            await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 

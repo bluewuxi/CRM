@@ -55,6 +55,16 @@ namespace CRM.WebUI.ApiControllers
                 return Json(new { total = count, rows = records.Skip(offset).Take(limit) });
         }
 
+        [HttpGet("api/Enrollments/student/{id}")]
+        public IActionResult StudentEnrollment([FromRoute] int id)
+        {
+            IQueryable<Enrollment> records;
+
+            BindUserContext(_Repo);
+            records = _Repo.GetAll().Where(a => a.StudentID == id).OrderByDescending(a => a.CreatedTime);
+            return Json(records);
+        }
+
         private IActionResult Json(IQueryable<ApplicationUser> queryable, object allowGet)
         {
             throw new NotImplementedException();

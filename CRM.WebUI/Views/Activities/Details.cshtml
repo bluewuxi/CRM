@@ -8,7 +8,7 @@
     <li class="sidebar-info">
         <div class="panel panel-primary" style="margin:5px;">
             <div class="panel-heading">
-                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+                <span class="h4"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message</span>
             </div>
             <div class="panel-body">
                 <div class="form-actions no-color">
@@ -82,19 +82,19 @@
                         @Html.DisplayFor(model => model.EndTime)
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.ActivityOwner)
+                        @Html.DisplayNameFor(model => model.ActivityOwnerID)
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.ActivityOwner.UserName)
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.AttendedAccount)
+                        @Html.DisplayNameFor(model => model.AttendedAccountID)
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.AttendedAccount.Name)
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.AttendedCustomer)
+                        @Html.DisplayNameFor(model => model.AttendedCustomerID)
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.AttendedCustomer.Name)

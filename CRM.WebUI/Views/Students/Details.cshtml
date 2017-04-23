@@ -4,13 +4,16 @@
 @{
     ViewData["Title"] = "Student Details";
     Activity activityDisplay = new Activity();
+    Application applicationDisplay = new Application();
+    VisaApplication visaDisplay = new VisaApplication();
+    Enrollment enrollmentDisplay = new Enrollment();
 }
 
 @section SideBar {
     <li class="sidebar-info">
         <div class="panel panel-primary" style="margin:5px;">
             <div class="panel-heading">
-                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+                <span class="h4"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message</span>
             </div>
             <div class="panel-body">
                 <div class="form-actions no-color">
@@ -134,7 +137,7 @@
                         @Html.DisplayFor(model => model.Note)
                     </dd>
                     <dt>
-                        Student Owner
+                        @Html.DisplayNameFor(model => model.CustomerOwnerID)
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.CustomerOwner.UserName)
@@ -159,7 +162,7 @@
         </button>
     </form>
 </div>
-<table id="activityTable"></table>
+<table id="activitiesTable"></table>
 
 <div class="well well-sm info" style="margin:0px; margin-top:10px;">
     <form asp-area="" asp-controller="Applications" asp-action="Create" method="post" id="toolFormApplication">
@@ -170,7 +173,7 @@
     </form>
 </div>
 
-<table id="applicationTable"></table>
+<table id="applicationsTable"></table>
 
 <div class="well well-sm info" style="margin:0px; margin-top:10px;">
     <form asp-area="" asp-controller="VisaApplications" asp-action="Create" method="post" id="toolFormVisa">
@@ -190,7 +193,7 @@
         </button>
     </form>
 </div>
-<table id="enrollmentTable"></table>
+<table id="enrollmentsTable"></table>
 
     @section Scripts {
         <script>
@@ -201,10 +204,10 @@
                 }
             };
 
-            $table = $("#activityTable");
+            $table = $("#activitiesTable");
             $table.bootstrapTable({
-                url: "/api/activities/students/@Model.CustomerID ",
-                    height: 250,
+                url: "/api/activities/student/@Model.CustomerID ",
+                    height: 300,
                     clickToSelect: true,
                     sidePagination: 'client',
                     queryParamType: "",
@@ -224,6 +227,10 @@
                         title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
                         formatter: CRM.convertActivityType,
                     }, {
+                        field: 'status',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Status)',
+                        formatter: CRM.convertActivityStatus,
+                    }, {
                         field: 'subject',
                         title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
                     }, {
@@ -232,126 +239,150 @@
                     }, {
                         field: 'startTime',
                         title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
-                        formatter: CRM.convertAccountType,
+                        formatter: CRM.formatDatetime,
                     }, {
                         field: 'endTime',
                         title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                        formatter: CRM.formatDatetime,
                     },]
                 });
 
-            $table = $("#applicationTable");
-            $table.bootstrapTable({
-                url: "/api/activities/students/@Model.CustomerID ",
-                    height: 250,
-                    clickToSelect: true,
-                    sidePagination: 'client',
-                    queryParamType: "",
-                    pagination: true,
-                    //toolbar: "#toolForm",
-                    idField: "activityID",
-                    columns: [{
-                        field: 'state',
-                        title: '',
-                        radio: true,
-                    }, {
-                        field: 'customerID',
-                        title: 'Customer ID',
-                        visible: false
-                    }, {
-                        field: 'activityType',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
-                        formatter: CRM.convertActivityType,
-                    }, {
-                        field: 'subject',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
-                    }, {
-                        field: 'activityOwner.userName',
-                        title: 'Activity Owner',
-                    }, {
-                        field: 'startTime',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
-                        formatter: CRM.convertAccountType,
-                    }, {
-                        field: 'endTime',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
-                    },]
-                });
+        $table = $("#applicationsTable");
+        $table.bootstrapTable({
+                url: "/api/applications/student/@Model.CustomerID ",
+                height: 250,
+                clickToSelect: true,
+                sidePagination: 'client',
+                pagination: true,
+                //toolbar: "#toolForm",
+                idField: "applicationID",
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'applicationID',
+                    title: 'applicationID',
+                    visible: false
+                }, {
+                    field: 'institute.name',
+                    title: '@Html.DisplayNameFor(model => applicationDisplay.InstituteID)',
+                }, {
+                    field: 'status',
+                    title: '@Html.DisplayNameFor(model => applicationDisplay.Status)',
+                    formatter: CRM.convertApplicationStatus,
+                }, {
+                    field: 'tuition',
+                    title: '@Html.DisplayNameFor(model => applicationDisplay.Tuition)',
+                }, {
+                    field: 'note',
+                    title: '@Html.DisplayNameFor(model => applicationDisplay.Note)',
+                }, {
+                    field: 'submittedDate',
+                    title: '@Html.DisplayNameFor(model => applicationDisplay.SubmittedDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'createdTime',
+                    title: '@Html.DisplayNameFor(model => applicationDisplay.CreatedTime)',
+                    formatter: CRM.formatDatetime,
+                }, {
+                    field: 'modifiedTime',
+                    title: '@Html.DisplayNameFor(model => applicationDisplay.ModifiedTime)',
+                    formatter: CRM.formatDatetime,
+                },]
+            });
 
             $table = $("#visaTable");
-            $table.bootstrapTable({
-                url: "/api/activities/students/@Model.CustomerID ",
-                    height: 250,
-                    clickToSelect: true,
-                    sidePagination: 'client',
-                    queryParamType: "",
-                    pagination: true,
-                    //toolbar: "#toolForm",
-                    idField: "activityID",
-                    columns: [{
-                        field: 'state',
-                        title: '',
-                        radio: true,
-                    }, {
-                        field: 'customerID',
-                        title: 'Customer ID',
-                        visible: false
-                    }, {
-                        field: 'activityType',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
-                        formatter: CRM.convertActivityType,
-                    }, {
-                        field: 'subject',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
-                    }, {
-                        field: 'activityOwner.userName',
-                        title: 'Activity Owner',
-                    }, {
-                        field: 'startTime',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
-                        formatter: CRM.convertAccountType,
-                    }, {
-                        field: 'endTime',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
-                    },]
-                });
+        $table.bootstrapTable({
+                url: "/api/VisaApplications/student/@Model.CustomerID ",
+                height: 250,
+                clickToSelect: true,
+                sidePagination: 'client',
+                pagination: true,
+                //toolbar: "#toolForm",
+                idField: "visaApplicationID",
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'visaApplicationID',
+                    title: 'visaApplicationID',
+                    visible: false
+                }, {
+                    field: 'institute.name',
+                    title: '@Html.DisplayNameFor(model => visaDisplay.InstituteID)',
+                }, {
+                    field: 'visaAppliedType',
+                    title: 'Visa Type',
+                }, {
+                    field: 'submittedDate',
+                    title: '@Html.DisplayNameFor(model => visaDisplay.SubmittedDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'receivedDate',
+                    title: '@Html.DisplayNameFor(model => visaDisplay.ReceivedDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'expiredDate',
+                    title: '@Html.DisplayNameFor(model => visaDisplay.ExpiredDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'note',
+                    title: '@Html.DisplayNameFor(model => visaDisplay.Note)',
+                },]
+            });
 
-            $table = $("#enrollmentTable");
-            $table.bootstrapTable({
-                url: "/api/activities/students/@Model.CustomerID ",
-                    height: 250,
-                    clickToSelect: true,
-                    sidePagination: 'client',
-                    queryParamType: "",
-                    pagination: true,
-                    //toolbar: "#toolForm",
-                    idField: "activityID",
-                    columns: [{
-                        field: 'state',
-                        title: '',
-                        radio: true,
-                    }, {
-                        field: 'customerID',
-                        title: 'Customer ID',
-                        visible: false
-                    }, {
-                        field: 'activityType',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
-                        formatter: CRM.convertActivityType,
-                    }, {
-                        field: 'subject',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
-                    }, {
-                        field: 'activityOwner.userName',
-                        title: 'Activity Owner',
-                    }, {
-                        field: 'startTime',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
-                        formatter: CRM.convertAccountType,
-                    }, {
-                        field: 'endTime',
-                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
-                    },]
-                });
+
+        $table = $("#enrollmentTable");
+        $table.bootstrapTable({
+            url: "/api/enrollments/student/@Model.CustomerID",
+                height: 250,
+                clickToSelect: true,
+                sidePagination: 'client',
+                pagination: true,
+                //toolbar: "#toolForm",
+                idField: "enrollmentID",
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'enrollmentID',
+                    title: 'enrollmentID',
+                    visible: false
+                }, {
+                    field: 'institute.name',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.InstituteID)',
+                }, {
+                    field: 'paymentDate',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.PaymentDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'dueDate',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.DueDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'endDate',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.EndDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'tuition',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.Tuition)',
+                }, {
+                    field: 'status',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.Status)',
+                    formatter: CRM.convertEnrollmentStatus,
+                }, {
+                    field: 'createdTime',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.CreatedTime)',
+                    formatter: CRM.formatDatetime,
+                }, {
+                    field: 'modifiedTime',
+                    title: '@Html.DisplayNameFor(model => enrollmentDisplay.ModifiedTime)',
+                    formatter: CRM.formatDatetime,
+                },]
+            });
         </script>
 
     }

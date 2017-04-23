@@ -51,7 +51,7 @@ namespace CRM.Domain.Concrete
 
         public IQueryable<Activity> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            return activityEntity.Include(a => a.ActivityOwner).Include(a => a.AttendedAccount).Include("AttendedCustomer");
+            return activityEntity.Include(a => a.ActivityOwner).Include(a => a.AttendedAccount).Include(a=>a.AttendedCustomer);
             //return activityEntity;
         }
 

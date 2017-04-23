@@ -82,3 +82,30 @@ textarea {
     margin: 2px;
     padding: 0px;
 }
+
+.sidebar .panel-heading i {
+    margin: 0px;
+    padding: 0px;
+}
+.sidebar .panel-heading{
+    padding: 2px;
+}
+
+#page-wrapper .panel {
+    margin-right: 5px;
+    padding-right:0px;
+}
+
+#page-wrapper .panel-heading {
+    padding-top: 1px;
+    padding-bottom: 6px;
+}
+#page-wrapper .well {
+    padding-top: 0px;
+    padding-bottom: 12px;
+    margin-bottom:0px;
+}
+    #page-wrapper  .btn {
+        margin-top: 1px;
+        margin-bottom: 3px;
+    }

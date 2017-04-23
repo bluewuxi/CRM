@@ -27,13 +27,11 @@ namespace CRM.WebUI.Controllers
     public class AccountsController : BaseController
     {
         //private readonly EFDbContext _context;
-        private IAccountRepository _accountRepo;
-        //private IQueryable<ApplicationUser> _userList;
-        //private UserManager<ApplicationUser> _userManager;
+        private IAccountRepository _repo;
 
         public AccountsController(IAccountRepository accountRepo, UserManager<ApplicationUser> userManager):base(userManager)
         {
-            _accountRepo = accountRepo;
+            _repo = accountRepo;
         }
 
         // GET: Accounts
@@ -71,7 +69,8 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            var account = await _accountRepo.GetAsync(id.GetValueOrDefault());
+            BindUserContext(_repo);
+            var account = await _repo.GetAsync(id.GetValueOrDefault());
                 
             if (account == null)
             {
@@ -97,12 +96,12 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountID,Name,PreferName,Gender,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note,AccountType,AccountOwner")] Account account)
+        public async Task<IActionResult> Create([Bind("AccountID,Name,PreferName,ContactGender,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note,AccountType,AccountOwner")] Account account)
         {
             if (ModelState.IsValid)
             {
-                BindUserContext(_accountRepo);
-                await _accountRepo.AddAsync(account);
+                BindUserContext(_repo);
+                await _repo.AddAsync(account);
                 return RedirectToAction("Index");
             }
             return View(account);
@@ -118,7 +117,8 @@ namespace CRM.WebUI.Controllers
 
             ViewData["Userlist"] = new SelectList(GetUsers(), "Id", "UserName");
 
-            var account = await _accountRepo.GetAsync(id.GetValueOrDefault());
+            BindUserContext(_repo);
+            var account = await _repo.GetAsync(id.GetValueOrDefault());
             if (account == null)
             {
                 return NotFound();
@@ -131,7 +131,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccountID,Name,ShortName,PreferName,Gender,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note, AccountType,AccountOwnerID")] Account account)
+        public async Task<IActionResult> Edit(int id, [Bind("AccountID,Name,ShortName,PreferName,ContactGender,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note, AccountType,AccountOwnerID")] Account account)
         {
             if (id != account.AccountID)
             {
@@ -142,8 +142,8 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
-                    BindUserContext(_accountRepo);
-                    await _accountRepo.UpdateAsync(account);
+                    BindUserContext(_repo);
+                    await _repo.UpdateAsync(account);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -161,42 +161,21 @@ namespace CRM.WebUI.Controllers
             return View(account);
         }
 
-        // GET: Accounts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var account = await _accountRepo.GetAsync(id.GetValueOrDefault());
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            return View(account);
-        }
 
         // POST: Accounts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _accountRepo.DeleteAsync(id);
+            BindUserContext(_repo);
+            await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 
         private bool AccountExists(int id)
         {
-            return _accountRepo.GetAll().Any(e => e.AccountID == id);
+            return _repo.GetAll().Any(e => e.AccountID == id);
         }
-
-        //private Task<ApplicationUser> GetCurrentUserAsync()
-        //{
-        //    if (HttpContext.User == null) return null;
-        //    return _userManager.GetUserAsync(HttpContext.User);
-        //}
 
     }
 }

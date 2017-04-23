@@ -15,9 +15,25 @@
 <vc:codes-list crm-code="users" value-ref="value2" display-ref="display2" button-ref="b2" on-select-func="">
 </vc:codes-list>
 
+<input id="tx" value="sample"/>
+<button type="button" onclick="set()">Set</button>
+<button type="button" onclick="get()">Get</button>
 
 @section Scripts{
-<script>$("#crm-about").addClass('active');</script>
+<script>
+    $("#crm-about").addClass('active');
+    function set()
+    {
+        alert("set: " + $('#tx').val());
+        CRM.setCookie('test', $('#tx').val(), 1);
+    }
+
+    function get() {
+        alert('get: '+CRM.getCookie('test'));
+    }
+
+</script>
+
 
 @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
 

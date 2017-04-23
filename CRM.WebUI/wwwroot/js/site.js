@@ -108,22 +108,6 @@ CRM.convertApplicationStatus =
         }
     };
 
-CRM.formatDate =
-    function (value, row, index) {
-        if (value!==undefined && value !== null && value !== "")
-            return value.toString().substring(0, 10);
-        else
-            return value;
-    };
-
-CRM.formatDatetime =
-    function (value, row, index) {
-        if (value !== undefined && value !== null && value !== "")
-            return value.toString().replace(/T/g, " ");
-        else
-            return value;
-    };
-
 CRM.convertAccountType =
     function (value, row, index) {
         switch (value) {
@@ -136,7 +120,153 @@ CRM.convertAccountType =
         }
     };
 
+CRM.convertEnrollmentStatus =
+    function (value, row, index) {
+        switch (value) {
+            case 0:
+                return "Activate";
+            case 1:
+                return "Closed";
+            default:
+                return "Unknown";
+        }
+    };
+
+
+CRM.formatDate =
+    function (value, row, index) {
+        if (value!==undefined && value !== null && value !== "")
+            return value.toString().substring(0, 10);
+        else
+            return value;
+    };
+
+CRM.formatDatetime =
+    function (value, row, index) {
+        if (value !== undefined && value !== null && value !== "")
+            return value.toString().substring(0,19).replace(/T/g, " ");
+        else
+            return value;
+    };
+
 CRM.getHeight =
     function () {
         return $(window).height() - 80;
+    };
+
+CRM.setCookie =
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";path=/";
+    };
+
+CRM.getCookie =
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return decodeURIComponent(c.substring(name.length, c.length));
+            }
+        }
+        return "";
+    };
+
+CRM.saveFilter =
+    function (key) {
+        $user = $("#crm-user");
+        if ($user != null)
+        {
+            key = $user.val() + "-" + key;
+        }
+        var items = [];
+        $("#side-menu .crm-query").each(function (index, elem) {
+            items.push({ "Field": elem.id, "Value": elem.value });
+        });
+        localStorage.setItem(key, JSON.stringify(items));
+    };
+
+CRM.getFilter =
+    function (key) {
+        $user = $("#crm-user");
+        if ($user !== null) {
+            key = $user.val() + "-" + key;
+        }
+        v = localStorage.getItem(key);
+        if (v == null) v = "";
+        return v;
+    };
+
+CRM.restoreFilter =
+    function (key) {
+        var filter = CRM.getFilter(key);
+        if (filter == null || filter == "") { return; }
+        filter = JSON.parse(filter);
+        for (var i = 0, len = filter.length; i < len; i++) {
+            if (filter[i] != null) $("#side-menu #" + filter[i].field).val(filter[i].value);
+        }
+    };
+
+CRM.savePagination =
+    function (key,page) {
+        $user = $("#crm-user");
+        if ($user !== null) {
+            key = $user.val() + "-" + key +"-page";
+        }
+        var item = JSON.stringify(page); 
+        localStorage.setItem(key, item);
+    };
+
+CRM.getPagination =
+    function (key) {
+        $user = $("#crm-user");
+        if ($user !== null) {
+            key = $user.val() + "-" + key + "-page";
+        }
+        v = localStorage.getItem(key);
+        if (v == null)
+        {
+            var defaultPage = {};
+            defaultPage.pageNumber = 1;
+            defaultPage.pageSize = 10;
+            return defaultPage;
+        }
+        else {
+            return JSON.parse(v);
+        }
+    };
+
+CRM.savePagination =
+    function (key, page) {
+        $user = $("#crm-user");
+        if ($user != null) {
+            key = $user.val() + "-" + key + "-page";
+        }
+        var items = [];
+        localStorage.setItem(key, page);
+    };
+
+CRM.getSort =
+    function (key) {
+        $user = $("#crm-user");
+        if ($user !== null) {
+            key = $user.val() + "-" + key + "-sort";
+        }
+        return localStorage.getItem(key);
+    };
+
+CRM.saveSort =
+    function (key, sort) {
+        $user = $("#crm-user");
+        if ($user != null) {
+            key = $user.val() + "-" + key + "-sort";
+        }
+        var items = [];
+        localStorage.setItem(key, page);
     };

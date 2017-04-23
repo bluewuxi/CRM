@@ -35,11 +35,11 @@ namespace CRM.WebUI.ApiControllers
             return Json(records);
         }
 
-        [HttpGet("api/activities/students/{id}")]
+        [HttpGet("api/activities/student/{id}")]
         public IActionResult ListStudentActivities([FromRoute] int id)
         {
             IQueryable<Activity> records;
-            records = _Repo.GetAll().Where(u => u.AttendedCustomer.CustomerID == id);
+            records = _Repo.GetAll().Where(u => u.AttendedCustomer.CustomerID == id).OrderByDescending(s=>s.StartTime);
             return Json(records);
         }
 

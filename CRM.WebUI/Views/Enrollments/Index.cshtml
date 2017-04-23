@@ -8,7 +8,7 @@
 @section SideBar {
     <div class="panel panel-primary" style="margin:5px;">
         <div class="panel-heading">
-            <i class="fa fa-filter fa-fw" aria-hidden="true"></i> <span class="h4">Filter</span>
+             <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
         </div>
         <div class="panel-body">
             <form asp-action="SetQuery" method="post">
@@ -23,20 +23,17 @@
                     <label for="InstitutName">Institut Name:</label>
                     <input id="InstitutName" class="form-control" placeholder="Institut Name" />
                     <br class="divider" />
-                    <button onclick="applyFilter(true)" class="btn btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button onclick="applyFilter(false)" class="btn btn-default"><i class="fa fa-fw fa-remove"></i>Clear</button>
+                    <button onclick="applyFilter(true)" class="btn btn-sm btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button onclick="applyFilter(false)" class="btn btn-sm btn-default"><i class="fa fa-fw fa-eraser"></i>Clear</button>
                 </div>
             </form>
         </div>
     </div>
 }
 
-
-
-
 <form asp-area="" asp-controller="Enrollments" asp-action="Create" method="get" id="toolForm">
     <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
-    <button type="submit" class="btn btn-success">
+    <button type="submit" class="btn btn-sm btn-success pull-right">
         <i class="glyphicon glyphicon-plus"></i> Create
     </button>
 </form>
@@ -68,17 +65,18 @@
                     visible: false
                 }, {
                     field: 'student.name',
-                    title: 'student name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.StudentID)',
                 }, {
-                    field: 'institut.name',
-                    title: 'Institut Name',
+                    field: 'institute.name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.InstituteID)',
                 }, {
                     field: 'paymentDate',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.PaymentDate)',
-                    formatter: CRM.convertAccountType,
+                    formatter: CRM.formatDate,
                 }, {
                     field: 'dueDate',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.DueDate)',
+                    formatter: CRM.formatDate,
                 }, {
                     field: 'endDate',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.EndDate)',
@@ -89,6 +87,7 @@
                 }, {
                     field: 'status',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.Status)',
+                    formatter: CRM.convertEnrollmentStatus,
                 }, {
                     field: 'createdTime',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.CreatedTime)',
@@ -108,7 +107,7 @@
         function enrollment_onSelect(eSelect)
         {
             if (eSelect != null) {
-                window.location.href = "/Enrollments/Details/"+eSelect[0].customerID.toString().trim();
+                window.location.href = "/Enrollments/Details/"+eSelect[0].enrollmentID.toString().trim();
             }
         }
 

@@ -2,59 +2,16 @@
 
 @{
     ViewData["Title"] = "Create Application";
+    ViewData["Action"] = "Create";
 }
 
-<form asp-action="Create">
-    <div class="form-horizontal">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="StudentID" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="StudentID" class ="form-control" asp-items="ViewBag.StudentID"></select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="InstituteID" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="InstituteID" class ="form-control" asp-items="ViewBag.InstituteID"></select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Tuition" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Tuition" class="form-control" />
-                <span asp-validation-for="Tuition" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="ApplicationAgentID" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="ApplicationAgentID" class ="form-control" asp-items="ViewBag.ApplicationAgentID"></select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Status" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Note" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Note" class="form-control" />
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@{await Html.RenderPartialAsync("_ApplicationsPartial", Model, ViewData);}
 
+@section Scripts
+{
+    <script>
+        $("#crm-applications").addClass('active');
+    </script>
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+}

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit Enrollment";
+    ViewData["Action"] = "Edit";
 }
 
 @section SideBar {
@@ -29,83 +30,12 @@
     </li>
 }
 
+@{await Html.RenderPartialAsync("_EnrollmentsPartial", Model, ViewData);}
 
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="EnrollmentID" />
-        <div class="form-group">
-            <label asp-for="StudentID" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="StudentID" class="form-control" asp-items="ViewBag.StudentID"></select>
-                <span asp-validation-for="StudentID" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="InstituteID" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="InstituteID" class="form-control" asp-items="ViewBag.InstituteID"></select>
-                <span asp-validation-for="InstituteID" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="PaymentDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="PaymentDate" class="form-control" />
-                <span asp-validation-for="PaymentDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="DueDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="DueDate" class="form-control" />
-                <span asp-validation-for="DueDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="EndDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Tuition" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Tuition" class="form-control" />
-                <span asp-validation-for="Tuition" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="EnrollmentAgentID" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="EnrollmentAgentID" class="form-control" asp-items="ViewBag.EnrollmentAgentID"></select>
-                <span asp-validation-for="EnrollmentAgentID" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Status" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Note" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Note" class="form-control" />
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts{
+    <script>$("#crm-enrollments").addClass('active');</script>
 
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+
+}

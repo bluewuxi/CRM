@@ -8,7 +8,7 @@
     <li class="sidebar-info">
         <div class="panel panel-primary" style="margin:5px;">
             <div class="panel-heading">
-                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+                <span class="h4"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message</span>
             </div>
             <div class="panel-body">
                 <div class="form-actions no-color">
@@ -29,67 +29,92 @@
     </li>
 }
 
-<h2>Enrollment Details</h2>
 
-<div>
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PaymentDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DueDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DueDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Tuition)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Tuition)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Note)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Note)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EnrollmentAgent)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EnrollmentAgent.Name)
-        </dd>
-        <dt>
-            Institute Name
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Institute.Name)
-        </dd>
-        <dt>
-            Student Name
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Student.Name)
-        </dd>
-    </dl>
+<div class="panel panel-info" style="margin:5px;">
+    <div class="panel-heading">
+        <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.EnrollmentID">
+            <div class="btn-group pull-right">
+                <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.EnrollmentID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a id="deleteButton" href="#" onclick="deleteEnrollment()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+            </div>
+            <p style="font-size:18px; margin-top:0px; margin-bottom:0px;">@ViewData["Title"]</p>
+        </form>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6 crm-style">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Student)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Student.Name)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Status)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.PaymentDate)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.PaymentDate)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DueDate)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.DueDate)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EndDate)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EndDate)
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-6 crm-style">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EnrollmentAgentID)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EnrollmentAgent.Name)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Institute)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Institute.Name)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Tuition)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Tuition)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Note)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Note)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.EnrollmentID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    <script>
+        $("#crm-enrollment").addClass('active');
+        function deleteEnrollment() {
+            if (confirm("Are you sure to delete the Visa Enrollment?")) {
+                $("#confirmForm").submit();
+            }
+        };
+    </script>
+}

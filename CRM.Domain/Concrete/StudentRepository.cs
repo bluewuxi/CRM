@@ -76,7 +76,7 @@ namespace CRM.Domain.Concrete
         {
             return await StudentEntity.Include(u => u.CustomerOwner).Include(a => a.Agent).SingleOrDefaultAsync(s => s.CustomerID == id);
         }
-        public async Task<IQueryable<Student>> GetAllAsync()
+        public Task<IQueryable<Student>> GetAllAsync()
         {
             throw new NotImplementedException();
         }

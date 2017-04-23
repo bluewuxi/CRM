@@ -34,7 +34,8 @@ namespace CRM.WebUI.Models
         public int BindUserContext(IBaseRepository iRepo)
         {
             if (HttpContext.User == null) return -1;
-            iRepo.UserContext = _userMnger.GetUserId(HttpContext.User);
+            iRepo.UserContext = HttpContext.User.Identity.Name;
+            //iRepo.UserContext = _userMnger.GetUserId(HttpContext.User);
             return 0;
         }
 

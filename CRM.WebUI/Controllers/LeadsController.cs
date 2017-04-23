@@ -62,6 +62,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
+            BindUserContext(_repo);
             var lead = await _repo.GetAsync(id.GetValueOrDefault());
             if (lead == null)
             {
@@ -104,6 +105,7 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
+            BindUserContext(_repo);
             var lead = await _repo.GetAsync( id.GetValueOrDefault());
             if (lead == null)
             {
@@ -129,6 +131,7 @@ namespace CRM.WebUI.Controllers
             {
                 try
                 {
+                    BindUserContext(_repo);
                     await _repo.UpdateAsync(lead);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -153,6 +156,7 @@ namespace CRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            BindUserContext(_repo);
             await _repo.DeleteAsync(id);
             return RedirectToAction("Index");
         }

@@ -14,10 +14,12 @@ namespace CRM.Domain.Entities
 
         public int EnrollmentID { get; set; }
         public Student Student { get; set; }
+        [Display(Name = "Student")]
         public int StudentID { get; set; }
 
         public Account Institute { get; set; }
         [Required]
+        [Display(Name = "Institute")]
         public int InstituteID { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -35,6 +37,7 @@ namespace CRM.Domain.Entities
         public Decimal Tuition { get; set; }
 
         public Account EnrollmentAgent { get; set; }
+        [Display(Name = "Agent")]
         public int? EnrollmentAgentID { get; set; }
         public EnrollmentStatusEnum Status {get; set;}
         public string Note { get; set; }

@@ -24,12 +24,14 @@ namespace CRM.Domain.Entities
         public string ShortName { get; set; }
 
 
+        [Display(Name = "Type")]
         public AccountTypeEnum AccountType { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
         [Display(Name = "Contact")]
         public string ContactName { get; set; }
 
+        [Display(Name = "Gender")]
         public GenderEnum ContactGender { get; set; }
 
         //[DataType(DataType.Date)]
@@ -52,8 +54,8 @@ namespace CRM.Domain.Entities
 
         public string Note { get; set; }
 
-        public string AccountOwnerID { get; set; }
         [Display(Name = "Account Owner")]
+        public string AccountOwnerID { get; set; }
         public ApplicationUser AccountOwner { get; set; }
 
         [Display(Name = "Modified Time")]

@@ -8,21 +8,20 @@
 @section SideBar {
     <div class="panel panel-primary" style="margin:5px;">
         <div class="panel-heading">
-            <i class="fa fa-filter fa-fw" aria-hidden="true" ></i> <span class="h4">Filter</span>
+             <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
         </div>
         <div class="panel-body">
             <form asp-action="SetQuery" method="post" >
                 <div class="form-actions no-color">
                     @Html.Hidden("search", Newtonsoft.Json.JsonConvert.SerializeObject(Model.search), new { id = "query_search" })
-                    <input id="query_sort" type="hidden" name="sort" value="" />
-                    <input id="query_search2" type="hidden" name="search" value="" />
-                    <input id="query_offset" type="hidden" name="offset" value="0" />
+                    @Html.Hidden("sort", Newtonsoft.Json.JsonConvert.SerializeObject(Model.sort), new { id = "query_sort" })
+                    @Html.Hidden("offset", Model.offset.ToString(), new { id = "query_offset" })
 
                     <label for="AccountName">Account Name:</label>
-                    <input id="AccountName" class="form-control" placeholder="Name" />
+                    <input id="AccountName " class="form-control crm-query" placeholder="Name" />
                     <br class="divider" />
                     <label for="AccountType">Account Type:</label>
-                    <select class="form-control" id="AccountType">
+                    <select class="form-control crm-query" id="AccountType">
                         <option value="">-- Select a type --</option>
                         <option value="0">Agent</option>
                         <option value="1">Institut</option>
@@ -30,10 +29,11 @@
                     </select>
                     <br class="divider" />
                     <label for="AccountOwner">Account Owner:</label>
-                    <input id="AccountOwner" class="form-control" placeholder="User Name" />
+                    <input id="AccountOwner" class="form-control crm-query" placeholder="User Name" />
                     <br class="divider"/>
                     <button onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-remove"></i>Clear</button>
+                    <button onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                    <button type="button" class="btn btn-sm" onclick="CRM.saveFilter()"></button>
                 </div>
             </form>
         </div>
@@ -43,7 +43,7 @@
 
     <form asp-area="" asp-controller="Accounts" asp-action="Create" method="get" id="toolForm" >
         <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
-        <button type="submit" class="btn btn-success">
+        <button type="submit" class="btn btn-sm btn-success pull-right">
             <i class="glyphicon glyphicon-plus"></i> Create
         </button>
     </form>
@@ -65,7 +65,9 @@
                 pagination: true,
                 toolbar: "#toolForm",
                 idField: "accountID",
-                queryParams: function (Param) { Param.search = $("#query_search").val(); return Param;},
+                queryParams: function (Param) { Param.search = CRM.getFilter(); Param.sort = CRM.getSort; return Param;},
+                pageNumber: CRM.getPagination().pageNumber,
+                pageSize: CRM.getPagination().pageSize,
                 columns: [{
                     field: 'state',
                     title: '',
@@ -103,7 +105,7 @@
                     formatter: CRM.formatDate,
                 }, {
                     field: 'accountOwner.userName',
-                    title: '@Html.DisplayNameFor(model => accountDisplay.AccountOwner)',
+                    title: '@Html.DisplayNameFor(model => accountDisplay.AccountOwnerID)',
                 },]
             });
 
@@ -111,6 +113,10 @@
             accounts_onSelect($table.bootstrapTable('getSelections'));
             //$table.bootstrapTable("destory");
         });
+
+        $table.on('page-change.bs.table', function (number, size) {
+            CRM.savePagination("AccountsList", { pageNumber: number, pageSize: size });
+        }); 
 
         function accounts_onSelect(eSelect)
         {
@@ -143,10 +149,8 @@
             var filter = $("#query_search").val();
             if (filter == null || filter == "") return;
             filter = JSON.parse(filter);
-            if (filter != null) {
-                if (filter[0] !=null) $("#" + filter[0].field).val(filter[0].value);
-                if (filter[1] != null) $("#" + filter[1].field).val(filter[1].value);
-                if (filter[2] != null)$("#" + filter[2].field).val(filter[2].value);
+            for (var i = 0, len = filter.length; i < len; i++) {
+                if (filter[i] != null) $("#" + filter[i].Field).val(filter[i].Value);
             }
         }
 
