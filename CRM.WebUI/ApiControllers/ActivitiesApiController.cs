@@ -1,20 +1,20 @@
+using CRM.Domain.Abstract;
+using CRM.Domain.Concrete;
+using CRM.Domain.Entities;
+using CRM.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using CRM.Domain.Entities;
-using CRM.Domain.Abstract;
-using Microsoft.AspNetCore.Identity;
-using System.Net;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using CRM.WebUI.Models;
-using CRM.Domain.Concrete;
 
 namespace CRM.WebUI.ApiControllers
 {
+    [Authorize]
     [Produces("application/json")]
     //[Route("api/LeadsApi")]
     public class ActivitiesApiController : BaseController
@@ -27,29 +27,77 @@ namespace CRM.WebUI.ApiControllers
             _Repo = aRepo;
         }
 
-        [HttpGet("api/activities/leads/{id}")]
-        public IActionResult ListLeadActivities([FromRoute] int id)
+        [HttpGet("api/activities/leads/{id}/{status}")]
+        public IActionResult ListLeadActivities([FromRoute] int id, [FromRoute] string status="")
         {
             IQueryable<Activity> records;
-            records = _Repo.GetAll().Where(u=>u.AttendedCustomer.CustomerID==id);
+            records = _Repo.GetAll().Where(u=>u.AttendedCustomer.CustomerID==id).OrderByDescending(s => s.StartTime);
+
+            if (status.Trim().ToLower() == "open")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask || 
+                        (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event) );
+
+            if (status.Trim().ToLower() == "close")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
+                        (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+
             return Json(records);
         }
 
-        [HttpGet("api/activities/student/{id}")]
-        public IActionResult ListStudentActivities([FromRoute] int id)
+        [HttpGet("api/activities/student/{id}/{status}")]
+        public IActionResult ListStudentActivities([FromRoute] int id, [FromRoute] string status="")
         {
             IQueryable<Activity> records;
             records = _Repo.GetAll().Where(u => u.AttendedCustomer.CustomerID == id).OrderByDescending(s=>s.StartTime);
+
+            if (status.Trim().ToLower() == "open")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask ||
+                        (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+
+            if (status.Trim().ToLower() == "close")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
+                        (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
             return Json(records);
         }
 
-        [HttpGet("api/activities/accounts/{id}")]
-        public IActionResult ListAccountActivities(int accountID)
+        [HttpGet("api/activities/accounts/{id}/{status}")]
+        public IActionResult ListAccountActivities([FromRoute] int id, [FromRoute] string status="")
         {
             IQueryable<Activity> records;
-            records = _Repo.GetAll().Where(u => u.AttendedAccount.AccountID == accountID);
+            records = _Repo.GetAll().Where(u => u.AttendedAccount.AccountID == id).OrderByDescending(s => s.StartTime);
+
+            if (status.Trim().ToLower() == "open")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask ||
+                        (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+
+            if (status.Trim().ToLower() == "close")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
+                        (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+
             return Json(records);
         }
+
+
+        [HttpGet("api/activities/my/{status}")]
+        public async Task<IActionResult> ListMyActivities([FromRoute] string status = "")
+        {
+            IQueryable<Activity> records;
+            ApplicationUser user = await GetCurrentUserAsync();
+            if (user == null) return NotFound();
+
+            records = _Repo.GetAll().Where(u => u.ActivityOwnerID == user.Id ).OrderByDescending(s => s.StartTime);
+
+            if (status.Trim().ToLower() == "open")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask ||
+                        (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+
+            if (status.Trim().ToLower() == "close")
+                records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
+                        (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+
+            return Json(records);
+        }
+
 
         [HttpGet("api/activities")]
         public async Task<IActionResult> ListActivities(int limit = 0, int offset = 0, string search = "", string sort = "")

@@ -12,13 +12,14 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using CRM.Domain.Abstract;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebUI.Controllers
 {
+    [Authorize]
     public class LeadsController : BaseController
     {
         private readonly EFDbContext _context;
-
         private readonly ILeadRepository _repo;
 
         public LeadsController(EFDbContext context, ILeadRepository repo, UserManager<ApplicationUser> userManager):base(userManager)
@@ -31,27 +32,7 @@ namespace CRM.WebUI.Controllers
         public IActionResult Index()
         {
             //We use RESPful WebApi do list accounts, leave here empty.
-            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("LeadsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            return View(querySetting);
-        }
-
-        // POST: Set Accounts Filter
-        [HttpPost]
-        public void SetQuery(string search = "", string sort = "", long offset = 0)
-        {
-            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("LeadsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            else
-                querySetting.search.Clear();
-
-            if (search != null && search != "")
-                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
-            HttpContext.Session.Set<QuerySettingViewModel>("LeadsList", querySetting);
-            string a = HttpContext.Session.GetString("LeadsList");
-            Response.Redirect("/Leads/Index");
+            return View();
         }
 
         // GET: Leads/Details/5

@@ -17,9 +17,11 @@ namespace CRM.WebUI.Models.ManageViewModels
     {
         public string Id { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
         [Display(Name = "User Name")]
-        //[EmailAddress]
+        [Required(AllowEmptyStrings = false)]
+        public string UserName { get; set; }
+
+        [EmailAddress]
         public string Email { get; set; }
 
         //[Required] //not required here, leave it empty means not to change password.

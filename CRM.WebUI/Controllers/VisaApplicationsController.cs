@@ -1,20 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using CRM.Domain.Abstract;
 using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
-using CRM.Domain.Abstract;
-using Microsoft.AspNetCore.Identity;
 using CRM.WebUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace CRM.WebUI.Controllers
 {
+    [Authorize]
     public class VisaApplicationsController : BaseController
     {
         private readonly EFDbContext _context;
@@ -30,27 +26,7 @@ namespace CRM.WebUI.Controllers
         public IActionResult Index()
         {
             //We use RESPful WebApi do list accounts, leave here empty.
-            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("VisaApplicationsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            return View(querySetting);
-        }
-
-        // POST: Set VisaApplications Filter
-        [HttpPost]
-        public void SetQuery(string search = "", string sort = "", long offset = 0)
-        {
-            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("VisaApplicationsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            else
-                querySetting.search.Clear();
-
-            if (search != null && search != "")
-                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
-            HttpContext.Session.Set<QuerySettingViewModel>("VisaApplicationsList", querySetting);
-            string a = HttpContext.Session.GetString("VisaApplicationsList");
-            Response.Redirect("/VisaApplications/Index");
+            return View();
         }
 
         // GET: VisaApplications/Details/5
@@ -73,7 +49,7 @@ namespace CRM.WebUI.Controllers
         // GET: VisaApplications/Create
         public IActionResult Create()
         {
-            return View(new VisaApplication() {VisaAppliedType="student"});
+            return View(new VisaApplication() {VisaType="student"});
         }
 
         // POST: VisaApplications/Create
@@ -81,7 +57,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VisaApplicationID,InstituteID,StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
+        public async Task<IActionResult> Create([Bind("VisaApplicationID,InstituteID,Status, VisaType, StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
         {
             if (ModelState.IsValid)
             {
@@ -114,7 +90,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VisaApplicationID,InstituteID,StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
+        public async Task<IActionResult> Edit(int id, [Bind("VisaApplicationID, Status, VisaType,InstituteID,StudentID,PassportNumber,EamilInForm,PhysicalAddress,PostalAddress,VisaAppliedType,Documents,SubmittedDate,ReceivedDate,ExpiredDate,Note,ModifiedTime,CreatedTime")] VisaApplication visaApplication)
         {
             if (id != visaApplication.VisaApplicationID)
             {

@@ -11,19 +11,11 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using CRM.Domain.Concrete;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebUI.Controllers
 {
-    public static class AccountQueryExtender
-    {
-        public static IQueryable<Account> ApplyFilter(this IQueryable<Account> c, string Filter="")
-        {
-            if (Filter == null || Filter == "") return c;
-            string nameFilter = Filter.ToLower();
-            return c.Where(p => p.Name.ToLower().Contains(nameFilter));
-        }
-    }
-
+    [Authorize]
     public class AccountsController : BaseController
     {
         //private readonly EFDbContext _context;
@@ -38,27 +30,7 @@ namespace CRM.WebUI.Controllers
         public IActionResult Index(string Filter="", string Sorter="")
         {
             //We use RESPful WebApi do list accounts, leave here empty.
-            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("AccountsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            return View(querySetting);
-        }
-
-        // POST: Set Accounts Filter
-        [HttpPost]
-        public void SetQuery(string search = "", string sort = "", long offset=0)
-        {
-            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("AccountsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            else
-                querySetting.search.Clear();
-
-            if (search !=null && search != "")
-                querySetting.search= JsonConvert.DeserializeObject<List<QuerySetting>>(search);
-            HttpContext.Session.Set<QuerySettingViewModel>("AccountsList", querySetting);
-            string a = HttpContext.Session.GetString("AccountsList");
-            Response.Redirect("/Accounts/Index");
+            return View();
         }
 
         // GET: Accounts/Details/5
@@ -96,7 +68,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountID,Name,PreferName,ContactGender,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note,AccountType,AccountOwner")] Account account)
+        public async Task<IActionResult> Create([Bind("AccountID,Name,PreferName,ContactGender,ContactName,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note,AccountType,AccountOwner")] Account account)
         {
             if (ModelState.IsValid)
             {
@@ -131,7 +103,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccountID,Name,ShortName,PreferName,ContactGender,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note, AccountType,AccountOwnerID")] Account account)
+        public async Task<IActionResult> Edit(int id, [Bind("AccountID,Name,ShortName,PreferName,ContactGender,ContactName,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note, AccountType,AccountOwnerID")] Account account)
         {
             if (id != account.AccountID)
             {

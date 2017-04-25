@@ -1,3 +1,4 @@
+@using CRM.Domain.Entities
 @model CRM.WebUI.Models.QuerySettingViewModel
 
 @{
@@ -6,37 +7,32 @@
 }
 
 @section SideBar {
-    <div class="panel panel-primary" style="margin:5px;">
+    <div class="panel panel-primary" style="margin:5px; ">
         <div class="panel-heading">
              <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
         </div>
         <div class="panel-body">
-            <form asp-action="SetQuery" method="post" >
-                <div class="form-actions no-color">
-                    @Html.Hidden("search", Newtonsoft.Json.JsonConvert.SerializeObject(Model.search), new { id = "query_search" })
-                    @Html.Hidden("sort", Newtonsoft.Json.JsonConvert.SerializeObject(Model.sort), new { id = "query_sort" })
-                    @Html.Hidden("offset", Model.offset.ToString(), new { id = "query_offset" })
-
-                    <label for="AccountName">Account Name:</label>
-                    <input id="AccountName " class="form-control crm-query" placeholder="Name" />
-                    <br class="divider" />
-                    <label for="AccountType">Account Type:</label>
-                    <select class="form-control crm-query" id="AccountType">
-                        <option value="">-- Select a type --</option>
-                        <option value="0">Agent</option>
-                        <option value="1">Institut</option>
-                        <option value="2">Other</option>
-                    </select>
-                    <br class="divider" />
-                    <label for="AccountOwner">Account Owner:</label>
-                    <input id="AccountOwner" class="form-control crm-query" placeholder="User Name" />
-                    <br class="divider"/>
-                    <button onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
-                    <button type="button" class="btn btn-sm" onclick="CRM.saveFilter()"></button>
+            <div class="form-horizontal" >
+                <div class="form-group" >
+                    <label for="AccountName" class="col-sm-4">Name:</label>
+                    <input id="AccountName" class="col-sm-7 crm-query" placeholder="Name" />
                 </div>
-            </form>
-        </div>
+                <div class="form-group">
+                    <label for="AccountType" class="col-sm-4" >Type: </label>
+                    <select class="col-sm-7 crm-query" id="AccountType" value="" asp-items="Html.GetEnumSelectList<Account.AccountTypeEnum>()">
+                        <option value="">-- Select a type --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="AccountOwner" class="col-sm-4">Owner:</label>
+                    <input id="AccountOwner" class="col-sm-7 crm-query" placeholder="User Name" />
+                </div>
+                <div class="form-group" style="text-align:center;">
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                </div>
+            </div>
+       </div>
     </div>
 }
 
@@ -53,10 +49,26 @@
 @section Scripts
 {
     <script>
-        restoreFilter();
-
+        //Highlight the current menu
         $("#crm-accounts").addClass('active');
+
+        //The base key name for store query conditions and pagination data
+        storeKey = "AccountsList";
         $table = $("#accountsTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
         $table.bootstrapTable({
             url: "/api/Accounts",
                 height: CRM.getHeight(),
@@ -65,9 +77,14 @@
                 pagination: true,
                 toolbar: "#toolForm",
                 idField: "accountID",
-                queryParams: function (Param) { Param.search = CRM.getFilter(); Param.sort = CRM.getSort; return Param;},
-                pageNumber: CRM.getPagination().pageNumber,
-                pageSize: CRM.getPagination().pageSize,
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                pageNumber: CRM.getPagination(storeKey).pageNumber,
+                pageSize: CRM.getPagination(storeKey).pageSize,
                 columns: [{
                     field: 'state',
                     title: '',
@@ -109,50 +126,16 @@
                 },]
             });
 
-        $table.on('check.bs.table', function () {
-            accounts_onSelect($table.bootstrapTable('getSelections'));
-            //$table.bootstrapTable("destory");
+
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/Accounts/Details/" + row["accountID"].toString().trim();
         });
 
-        $table.on('page-change.bs.table', function (number, size) {
-            CRM.savePagination("AccountsList", { pageNumber: number, pageSize: size });
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
         }); 
-
-        function accounts_onSelect(eSelect)
-        {
-            if (eSelect != null) {
-                window.location.href = "/Accounts/Details/"+eSelect[0].accountID.toString().trim();
-            }
-        }
-
-        function applyFilter(enable) {
-            var item = {};
-            item.field = "";
-            item.value = "";
-
-            if (enable){
-                AccountType = $("#AccountType").val();
-                AccountName = $("#AccountName").val().trim();
-                AccountOwner = $("#AccountOwner").val().trim();;
-                $("#query_search").val(JSON.stringify(
-                    [{ field: 'AccountType', value: AccountType },
-                        { field: 'AccountName', value: AccountName },
-                        { field: 'AccountOwner', value: AccountOwner }]));
-            }
-            else {
-                $("#query_search").val("");
-            }
-            $(this).closest('form').submit();
-        }
-
-        function restoreFilter() {
-            var filter = $("#query_search").val();
-            if (filter == null || filter == "") return;
-            filter = JSON.parse(filter);
-            for (var i = 0, len = filter.length; i < len; i++) {
-                if (filter[i] != null) $("#" + filter[i].Field).val(filter[i].Value);
-            }
-        }
 
 </script>
 }

@@ -6,18 +6,34 @@ using Microsoft.AspNetCore.Mvc;
 using CRM.Domain.Abstract;
 using CRM.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using CRM.Domain.Concrete;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using CRM.WebUI.Models;
 
 namespace CRM.WebUI.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+
+        [Authorize]
+        public async Task<IActionResult> Index([FromServices] EFDbContext context)
         {
-            //HttpContext.Session.SetString("AccountList", "");
-            //string a = HttpContext.Session.GetString("AccountList");
-            return View();
+            DashboardViewModel model = new DashboardViewModel();
+
+            var openRecords = context.Activities.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask ||
+                        (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+            var closedRecords = context.Activities.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
+                        (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
+            model.openActivitiesNum = await openRecords.CountAsync();
+            model.closedActivitiesNum = await closedRecords.CountAsync();
+            model.studentsNum = await context.Students.CountAsync();
+            model.leadsNum = await context.Leads.CountAsync();
+            return View(model);
         }
 
+        [AllowAnonymous]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -37,9 +53,5 @@ namespace CRM.WebUI.Controllers
             return View();
         }
 
-        public string test()
-        {
-            return "Hello World!";
-        }
     }
 }

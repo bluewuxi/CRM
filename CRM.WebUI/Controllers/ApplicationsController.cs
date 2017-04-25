@@ -2,17 +2,16 @@ using CRM.Domain.Abstract;
 using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
 using CRM.WebUI.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CRM.WebUI.Controllers
 {
+    [Authorize]
     public class ApplicationsController : BaseController
     {
         private readonly EFDbContext _context;
@@ -27,30 +26,9 @@ namespace CRM.WebUI.Controllers
         // GET: Applications
         public IActionResult Index()
         {
-            //We use RESPful WebApi do list accounts, leave here empty.
-            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ApplicatiosnList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            return View(querySetting);
+            //We use RESPful WebApi do list , leave here empty.
+            return View();
         }
-
-        // POST: Set Application Filter
-        [HttpPost]
-        public void SetQuery(string search = "", string sort = "", long offset = 0)
-        {
-            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ApplicationsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            else
-                querySetting.search.Clear();
-
-            if (search != null && search != "")
-                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
-            HttpContext.Session.Set<QuerySettingViewModel>("ApplicationsList", querySetting);
-            string a = HttpContext.Session.GetString("ApplicationsList");
-            Response.Redirect("/Applications/Index");
-        }
-
 
         // GET: Applications/Details/5
         public async Task<IActionResult> Details(int? id)

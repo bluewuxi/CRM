@@ -22,9 +22,9 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $("#crm-accounts").addClass('active');
         $('.datepicker-here').datepicker({ clearButton: true });
     </script>
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

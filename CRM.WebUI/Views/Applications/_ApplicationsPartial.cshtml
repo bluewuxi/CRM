@@ -98,14 +98,16 @@
     </div>
 </form>
 
-<vc:codes-list crm-code="students" value-ref="studentid" display-ref="studentname" button-ref="btnStudent" on-select-func="fillForm">
-</vc:codes-list>
+<div>
+    <vc:codes-list crm-code="students" value-ref="studentid" display-ref="studentname" button-ref="btnStudent" on-select-func="fillForm">
+    </vc:codes-list>
 
-<vc:codes-list crm-code="institutes" value-ref="InstituteID" display-ref="institutename" button-ref="btnInstitute" on-select-func="">
-</vc:codes-list>
+    <vc:codes-list crm-code="institutes" value-ref="InstituteID" display-ref="institutename" button-ref="btnInstitute" on-select-func="">
+    </vc:codes-list>
 
-<vc:codes-list crm-code="agents" value-ref="ApplicationAgentID" display-ref="ApplicationAgentName" button-ref="btnAgent" on-select-func="">
-</vc:codes-list>
+    <vc:codes-list crm-code="agents" value-ref="ApplicationAgentID" display-ref="ApplicationAgentName" button-ref="btnAgent" on-select-func="">
+    </vc:codes-list>
+</div>
 
 <script>
     function fillForm(sel) {

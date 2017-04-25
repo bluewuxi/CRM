@@ -8,8 +8,12 @@ namespace CRM.WebUI.Models.AccountViewModels
 {
     public class RegisterViewModel
     {
+        [Display(Name = "User Name")]
+        [Required(AllowEmptyStrings = false)]
+        public string UserName { get; set; }
+
         [Required]
-        //[EmailAddress]
+        [EmailAddress]
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
         [Display(Name = "User Name")]
         public string Email { get; set; }

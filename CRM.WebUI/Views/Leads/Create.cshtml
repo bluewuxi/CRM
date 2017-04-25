@@ -7,12 +7,16 @@
     ViewData["Action"] = "Create";
 }
 
-@{await Html.RenderPartialAsync("_LeadsPartial", Model, ViewData);}
-
+<div>
+    @{await Html.RenderPartialAsync("_LeadsPartial", Model, ViewData);}
+</div>
 
 @section Scripts
 {
     <script>
         $("#crm-leads").addClass('active');
     </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
 }

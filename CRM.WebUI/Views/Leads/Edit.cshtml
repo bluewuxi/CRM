@@ -14,29 +14,23 @@
                 <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
             </div>
             <div class="panel-body">
-                <div class="form-actions no-color">
-
-                    <label>Open Activities:</label>
-                    <br class="divider" />
-                    <label>Closed Activities:</label>
-                    <br class="divider" />
-                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
-                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
-                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
-                    <br class="divider" />
-                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
-                    <br class="divider" />
-                </div>
+                <vc:activity-info query-code="customer" reference-id="@Model.CustomerID">
+                </vc:activity-info>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
             </div>
         </div>
     </li>
 }
 
-@{await Html.RenderPartialAsync("_LeadsPartial", Model, ViewData);}
-
+<div class="container-fluid">
+    @{await Html.RenderPartialAsync("_LeadsPartial", Model, ViewData);}
+</div>
 
 @section Scripts
 {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $("#crm-leads").addClass('active');
     </script>

@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using CRM.WebUI.Models;
 
 namespace CRM.WebUI.ViewComponents
 {
@@ -49,10 +44,6 @@ namespace CRM.WebUI.ViewComponents
             return output;
         }
 
-
-        public CodesListViewComponent()
-        {
-        }
 
         public IViewComponentResult Invoke(string crmCode, string valueRef, string displayRef, string buttonRef, string onSelectFunc)
         {

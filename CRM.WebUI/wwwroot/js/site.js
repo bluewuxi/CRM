@@ -131,7 +131,55 @@ CRM.convertEnrollmentStatus =
                 return "Unknown";
         }
     };
+CRM.convertVisaStatus =
+    function (value, row, index) {
+        switch (value) {
+            case 0:
+                return "Draft";
+            case 1:
+                return "Submitted";
+            case 2:
+                return "approved";
+            case 3:
+                return "declined";
+            case 4:
+                return "closed";
+            default:
+                return "Unknown";
+        }
+    };
 
+CRM.convertVisaAppliedType =
+    function (value, row, index) {
+        switch (value) {
+            case 0:
+                return "Post";
+            case 1:
+                return "Online";
+            case 2:
+                return "Agent";
+            default:
+                return "Unknown";
+        }
+    };
+
+CRM.convertStudentRating =
+    function (value, row, index) {
+        switch (value) {
+            case "0":
+                return "Default";
+            case "1":
+                return "Acquired";
+            case "2":
+                return "Active";
+            case "1":
+                return "Valued";
+            case "2":
+                return "Shut Down";
+            default:
+                return "Unknown";
+        }
+    };
 
 CRM.formatDate =
     function (value, row, index) {
@@ -178,27 +226,31 @@ CRM.getCookie =
         return "";
     };
 
-CRM.saveFilter =
+CRM.getUserKey = function (key) {
+    $user = $("#crm-user");
+    if ($user != null) {
+        key = $user.val() + "-" + key;
+    }
+    return key;
+};
+
+CRM.setFilter =
     function (key) {
-        $user = $("#crm-user");
-        if ($user != null)
-        {
-            key = $user.val() + "-" + key;
-        }
+        CRM.removePagination(key);
+        key = CRM.getUserKey(key);
         var items = [];
-        $("#side-menu .crm-query").each(function (index, elem) {
+        $(".sidebar .crm-query").each(function (index, elem) {
             items.push({ "Field": elem.id, "Value": elem.value });
         });
-        localStorage.setItem(key, JSON.stringify(items));
+        sessionStorage.setItem(key, JSON.stringify(items));
+        
+        CRM._reloadFilter = true;
     };
 
 CRM.getFilter =
     function (key) {
-        $user = $("#crm-user");
-        if ($user !== null) {
-            key = $user.val() + "-" + key;
-        }
-        v = localStorage.getItem(key);
+        key = CRM.getUserKey(key);
+        v = sessionStorage.getItem(key);
         if (v == null) v = "";
         return v;
     };
@@ -208,28 +260,40 @@ CRM.restoreFilter =
         var filter = CRM.getFilter(key);
         if (filter == null || filter == "") { return; }
         filter = JSON.parse(filter);
+        
         for (var i = 0, len = filter.length; i < len; i++) {
-            if (filter[i] != null) $("#side-menu #" + filter[i].field).val(filter[i].value);
+            $item = $(".sidebar #" + filter[i].Field);
+            if (filter[i] != null) $item.val(filter[i].Value);
         }
+    };
+
+CRM.removeFilter =
+    function (key) {
+        CRM.removePagination(key);
+        key=CRM.getUserKey(key); 
+        sessionStorage.removeItem(key);
+        $(".sidebar .crm-query").each(function (index, elem) {
+            elem.value="";
+        });
+        CRM._reloadFilter = true;
     };
 
 CRM.savePagination =
     function (key,page) {
-        $user = $("#crm-user");
-        if ($user !== null) {
-            key = $user.val() + "-" + key +"-page";
-        }
-        var item = JSON.stringify(page); 
-        localStorage.setItem(key, item);
+        key = CRM.getUserKey(key) + "-page";
+        sessionStorage.setItem(key, JSON.stringify(page));
+    };
+
+CRM.removePagination =
+    function (key) {
+        key = CRM.getUserKey(key) + "-page";
+        sessionStorage.removeItem(key);
     };
 
 CRM.getPagination =
     function (key) {
-        $user = $("#crm-user");
-        if ($user !== null) {
-            key = $user.val() + "-" + key + "-page";
-        }
-        v = localStorage.getItem(key);
+        key = CRM.getUserKey(key) + "-page";
+        v = sessionStorage.getItem(key);
         if (v == null)
         {
             var defaultPage = {};
@@ -242,31 +306,25 @@ CRM.getPagination =
         }
     };
 
-CRM.savePagination =
-    function (key, page) {
-        $user = $("#crm-user");
-        if ($user != null) {
-            key = $user.val() + "-" + key + "-page";
-        }
-        var items = [];
-        localStorage.setItem(key, page);
-    };
-
 CRM.getSort =
     function (key) {
-        $user = $("#crm-user");
-        if ($user !== null) {
-            key = $user.val() + "-" + key + "-sort";
-        }
-        return localStorage.getItem(key);
+        key = CRM.getUserKey(key) + "-sort";
+        return sessionStorage.getItem(key);
     };
 
-CRM.saveSort =
+CRM.setSort =
     function (key, sort) {
-        $user = $("#crm-user");
-        if ($user != null) {
-            key = $user.val() + "-" + key + "-sort";
-        }
+        key = CRM.getUserKey(key) + "-sort";
         var items = [];
-        localStorage.setItem(key, page);
+        sessionStorage.setItem(key, page);
+    };
+
+CRM._reloadFilter = false;
+CRM.isFilterReroaded =
+    function () {
+        if (CRM._reloadFilter) {
+            CRM._reloadFilter = false;
+            return true;
+        }
+        return false;
     };

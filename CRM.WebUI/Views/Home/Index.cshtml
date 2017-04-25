@@ -1,77 +1,180 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Rendering;
+@using CRM.Domain.Entities
+@model DashboardViewModel
 @{
-    ViewData["Title"] = "Home Page-Dash Board";
+    ViewData["Title"] = "Home -Dash Board";
+    Activity activityDisplay = new Activity();
 }
 
-<br />
-<br />
-
-<div class="container" >
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel">
-                <br />
-                <span>Open Activities</span>
-                <br />
-                <br /><input id="ddd" class="form-control"/>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+@section SideBar {
+    <li class="sidebar-info -bottom-center-">
+        <h4 style="margin:5px 8px 5px 10px;"><span class="label label-success">Wellcome !</span>&nbsp;&nbsp; <span style="color:grey;">user:</span> @User.Identity.Name</h4>
+    </li>
+    <li class="sidebar-info" >
+        <div class="datepicker-here" data-language='en' style="margin:5px 8px 5px 1px;"></div>
+    </li>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Dashboard</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-rocket fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.openActivitiesNum</div>
+                        <div>Open Activities</div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="panel">
-                <br />
-                <br />
-                <span>Accounts</span>
-                <br />
-                <br />
-                <button onclick="mytest()">ddd</button>
-                <br />
-                <br />
-                <br />
-                <br />
-            </div>
+            <a href="/Activities">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel">
-                <br />
-                <span>Students</span>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-tasks fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.closedActivitiesNum</div>
+                        <div>Closed Activities</div>
+                    </div>
+                </div>
             </div>
+            <a href="/Activities">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
         </div>
-
-        <div class="col-md-6">
-            <div class="panel">
-                <br />
-                <span>Notes</span>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-user-circle fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.leadsNum</div>
+                        <div>Leads Number</div>
+                    </div>
+                </div>
             </div>
+            <a href="/Leads">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
         </div>
-
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-get-pocket fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.studentsNum</div>
+                        <div>Students Number</div>
+                    </div>
+                </div>
+            </div>
+            <a href="/Students">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 
+<div class="panel panel-info" style="margin-top:5px;">
+    <div id="activityTool"><span class="h4">&nbsp;&nbsp; My Open Activities</span></div>
+    <table id="openActivitiesTable"
+           data-toolbar="#activityTool"
+           data-search="true"
+           data-show-refresh="true"
+           data-show-toggle="true"
+           data-show-columns="true"
+           data-detail-view="true"
+           data-minimum-count-columns="2"
+           data-show-pagination-switch="true"
+           data-pagination="true"
+           data-id-field="id"
+           data-page-list="[10, 25, 50, 100, ALL]"
+           data-show-footer="false"
+           data-side-pagination="client"></table>
+</div>
 
+@section Scripts{
+    <script>
+            $table = $("#openActivitiesTable");
+            $table.bootstrapTable({
+                url: "/api/activities/student/my/open",
+                height: CRM.getHeight()-230,
+                sidePagination: 'client',
+                queryParamType: "",
+                pagination: true,
+                idField: "activityID",
+                columns: [{
+                field: 'state',
+                title: '',
+                radio: true,
+                }, {
+                field: 'customerID',
+                title: 'Customer ID',
+                visible: false
+                }, {
+                field: 'activityType',
+                title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
+                formatter: CRM.convertActivityType,
+                }, {
+                field: 'status',
+                title: '@Html.DisplayNameFor(model => activityDisplay.Status)',
+                formatter: CRM.convertActivityStatus,
+                }, {
+                field: 'subject',
+                title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
+                }, {
+                field: 'startTime',
+                title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
+                formatter: CRM.formatDatetime,
+                }, {
+                field: 'endTime',
+                title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                formatter: CRM.formatDatetime,
+                }, {
+                field: 'createdTime',
+                title: '@Html.DisplayNameFor(model => activityDisplay.CreatedTime)',
+                formatter: CRM.formatDatetime,
+                }, {
+                field: 'modifiedTime',
+                title: '@Html.DisplayNameFor(model => activityDisplay.ModifiedTime)',
+                formatter: CRM.formatDatetime,
+                },]
+                });
+    </script>
+}

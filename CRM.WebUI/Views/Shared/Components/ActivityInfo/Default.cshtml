@@ -1,0 +1,12 @@
+@model string[]
+@{
+    string s0 = Model[0];
+    string s1 = Model[1];
+}
+
+<div class="col-sm-12" style="margin-left:-10px;">
+    <h5><span>Open Activities </span>&nbsp;<span class="badge warning">@s0</span></h5>
+    <hr  style="margin: 10px 10px 10px -10px;">
+    <h5><span>Closed Activities </span>&nbsp;<span class="badge">@s1</span></h5>
+    <hr style="margin: 10px 10px 10px -10px;">
+</div>

@@ -61,6 +61,7 @@
     <Folder Include="Data\Migrations\" />
     <Folder Include="ApiControllers\" />
     <Folder Include="TagHelpers\" />
+    <Folder Include="Views\Shared\Components\ActivityInfo\" />
     <Folder Include="Views\UsersAdmin\" />
     <Folder Include="Views\RolesAdmin\" />
   </ItemGroup>

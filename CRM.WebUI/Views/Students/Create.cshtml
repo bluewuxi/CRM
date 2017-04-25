@@ -4,8 +4,9 @@
     ViewData["Title"] = "Create Student";
     ViewData["Action"] = "Create";
 }
-
-@{await Html.RenderPartialAsync("_StudentsPartial", Model, ViewData);}
+<div>
+    @{await Html.RenderPartialAsync("_StudentsPartial", Model, ViewData);}
+</div>
 
 @section Scripts
 {
@@ -13,4 +14,5 @@
         $("#crm-students").addClass('active');
     </script>
     @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -55,16 +55,9 @@
                         <div class="form-group">
                             <label asp-for="Birthdate" class="col-md-4 control-label"></label>
                             <div class="col-md-8">
-                                <input asp-for="Birthdate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
-                                       data-date-format="yyyy-mm-dd" data-clearButton="true" data-autoClose="true" data-language="en" />
+                                <input asp-for="Birthdate" class="form-control datepicker-here" placeholder="Date of Birth"
+                                       data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="Birthdate" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="AcademicBackground" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
-                                <input asp-for="AcademicBackground" class="form-control" />
-                                <span asp-validation-for="AcademicBackground" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -82,6 +75,37 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label asp-for="AcademicBackground" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <textarea rows="2" asp-for="AcademicBackground" class="form-control"></textarea>
+                                <span asp-validation-for="AcademicBackground" class="text-danger"></span>
+                            </div>
+                        </div>
+                       <div class="form-group">
+                            <label asp-for="Note" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <textarea rows="5" asp-for="Note" class="form-control" ></textarea>
+                                <span asp-validation-for="Note" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label asp-for="Rating" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <select asp-for="Rating" class="form-control">
+                                    <option value="0">0-Default</option>
+                                    <option value="1">1-Acquired</option>
+                                    <option value="2">2-Active</option>
+                                    <option value="3">3-Valued</option>
+                                    <option value="-1">(-1)-Shut Down</option>
+                                </select>
+                                <span asp-validation-for="Rating" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label asp-for="PassportNumber" class="col-md-4 control-label"></label>
                             <div class="col-md-8">
                                 <input asp-for="PassportNumber" class="form-control" />
@@ -93,23 +117,6 @@
                             <div class="col-md-8">
                                 <input asp-for="ClientNumber" class="form-control" />
                                 <span asp-validation-for="ClientNumber" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label asp-for="Rating" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
-                                <select asp-for="Rating" class="form-control">
-                                    <option value="0">-None-</option>
-                                    <option value="1">Acquired</option>
-                                    <option value="2">Active</option>
-                                    <option value="3">Valued</option>
-                                    <option value="-1">Shut Down</option>
-                                </select>
-                                <span asp-validation-for="Rating" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -146,13 +153,6 @@
                             <div class="col-md-8">
                                 <input asp-for="Address" class="form-control" />
                                 <span asp-validation-for="Address" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Note" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
-                                <input asp-for="Note" class="form-control" />
-                                <span asp-validation-for="Note" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">

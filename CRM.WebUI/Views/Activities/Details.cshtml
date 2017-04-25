@@ -1,3 +1,5 @@
+@using CRM.Domain.Entities
+@using Microsoft.EntityFrameworkCore;
 @model CRM.Domain.Entities.Activity
 
 @{
@@ -11,19 +13,29 @@
                 <span class="h4"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message</span>
             </div>
             <div class="panel-body">
-                <div class="form-actions no-color">
-
-                    <label>Open Activities:</label>
-                    <br class="divider" />
-                    <label>Closed Activities:</label>
-                    <br class="divider" />
-                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
-                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
-                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
-                    <br class="divider" />
-                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
-                    <br class="divider" />
+                <div class="col-sm-12" style="margin-left:-10px;">
+                    @{
+                        if (Model.AttendedCustomer != null && Model.AttendedCustomer.GetType() == typeof(Student))
+                        {
+                            <h5><span>Student: <a href="/Students/Details/@Model.AttendedCustomerID">@Model.AttendedCustomer.Name</a></span></h5>
+                            <hr style="margin: 10px 10px 10px -10px;">
+                        }
+                        else if (Model.AttendedCustomer != null && Model.AttendedCustomer.GetType() == typeof(Lead))
+                        {
+                            <h5><span>Student: <a href="/Leads/Details/@Model.AttendedCustomerID">@Model.AttendedCustomer.Name</a></span></h5>
+                        }
+                    }
+                    @{
+                        if (Model.AttendedAccount != null)
+                        {
+                            <h5><span>Account: <a href="/Accounts/Details/@Model.AttendedAccountID">@Model.AttendedAccount.ShortName</a></span></h5>
+                            <hr style="margin: 10px 10px 10px -10px;">
+                        }
+                    }
                 </div>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
             </div>
         </div>
     </li>

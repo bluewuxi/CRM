@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Identity;
 using CRM.WebUI.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebUI.Controllers
 {
+    [Authorize]
     public class StudentsController : BaseController
     {
         private readonly EFDbContext _context;
@@ -30,28 +32,8 @@ namespace CRM.WebUI.Controllers
         // GET: Students
         public IActionResult Index()
         {
-            //We use RESPful WebApi do list accounts, leave here empty.
-            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("StudentsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            return View(querySetting);
-        }
-
-        // POST: Set Accounts Filter
-        [HttpPost]
-        public void SetQuery(string search = "", string sort = "", long offset = 0)
-        {
-            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("StudentsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            else
-                querySetting.search.Clear();
-
-            if (search != null && search != "")
-                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
-            HttpContext.Session.Set<QuerySettingViewModel>("StudentsList", querySetting);
-            string a = HttpContext.Session.GetString("StudentsList");
-            Response.Redirect("/Students/Index");
+            //We use RESPful WebApi do list , leave here empty.
+            return View();
         }
 
         // GET: Students/Details/5
@@ -70,6 +52,31 @@ namespace CRM.WebUI.Controllers
             }
 
             return View(student);
+        }
+
+        // GET: Students/Details/5
+        public async Task<IActionResult> Convert(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var student = await _repo.GetAsync(id.GetValueOrDefault());
+
+            if (student != null) return View(student);
+
+            int x = await _context.Database.ExecuteSqlCommandAsync(
+            "update Customers set Discriminator = 'Student', Rating='1',Note = 'Source:' + ISNULL(\"Source\",'') + '; Convert from lead ' + convert(varchar(25), getdate(), 120)+'; '+ISNULL(\"Note\",''), \"Source\" = null where \"CustomerID\" = 1;");
+
+            BindUserContext(_repo);
+            student = await _repo.GetAsync(id.GetValueOrDefault());
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View("Edit",student);
         }
 
         // GET: Students/Create

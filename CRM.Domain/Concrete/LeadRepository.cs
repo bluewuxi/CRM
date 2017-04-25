@@ -28,22 +28,47 @@ namespace CRM.Domain.Concrete
         }
         public int Delete(int id)
         {
-            throw new NotImplementedException();
+            Lead lead = Get(id);
+            leadEntity.Remove(lead);
+            return context.SaveChanges();
         }
         public Lead Get(int id)
         {
-            return leadEntity.Include(u => u.CustomerOwner).SingleOrDefault(s => s.CustomerID == id);
+            return leadEntity.Include(u => u.CustomerOwner)
+                .Include(a => a.ModifiedBy)
+                .Include(a => a.CreatedBy)
+                .SingleOrDefault(s => s.CustomerID == id);
+        }
+        public async Task<Lead> GetAsync(int id)
+        {
+            return await leadEntity.Include(u => u.CustomerOwner)
+                .Include(a => a.ModifiedBy)
+                .Include(a => a.CreatedBy)
+                .SingleOrDefaultAsync(s => s.CustomerID == id);
         }
         public IQueryable<Lead> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
+            string sLeadName, sMobile, sSource, sBirthdate;
             IQueryable<Lead> records= leadEntity.Include(u => u.CustomerOwner).AsQueryable();
             if (search != null && search.Count() > 0)
             {
-                string searchName, searchOwner;
-                searchName = search.Where<QuerySetting>(u => u.Field == "leadName").Select(p => p.Value).SingleOrDefault();
-                if (searchName != null && searchName != "") records = records.Where(u => u.Name.ToLower().Contains(searchName.ToLower()) || u.PreferName.ToLower().Contains(searchName.ToLower()));
-                searchOwner = search.Where<QuerySetting>(u => u.Field == "customerOwner").Select(p => p.Value).SingleOrDefault();
-                if (searchOwner != null && searchOwner != "") records = records.Where(u => u.CustomerOwner.UserName.ToLower().Contains(searchOwner.ToLower()));
+                sLeadName = search.Where<QuerySetting>(u => u.Field == "LeadName").Select(p => p.Value).SingleOrDefault().Trim();
+                if (sLeadName != null && sLeadName != "") records = records.Where(u => u.Name.ToLower().Contains(sLeadName.ToLower())
+                    || u.PreferName.ToLower().Contains(sLeadName.ToLower()));
+
+                sMobile = search.Where<QuerySetting>(u => u.Field == "Mobile").Select(p => p.Value).SingleOrDefault().Trim();
+                if (sMobile != null && sMobile != "") records = records.Where(u => u.Mobile.Contains(sMobile));
+
+                sSource = search.Where<QuerySetting>(u => u.Field == "Source").Select(p => p.Value).SingleOrDefault().Trim();
+                if (sSource != null && sSource != "") records = records.Where(u => u.Source.ToLower().Contains(sSource.ToLower()));
+
+                sBirthdate = search.Where<QuerySetting>(u => u.Field == "Birthdate").Select(p => p.Value).SingleOrDefault();
+                if (sBirthdate != null && sBirthdate != "")
+                {
+                    DatetimeRange r = new DatetimeRange(sBirthdate);
+                    if (r.dBegin != null) records = records.Where(u => u.Birthdate >= r.dBegin);
+                    if (r.dEnd != null) records = records.Where(u => u.Birthdate <= r.dEnd);
+                }
             }
             return records;
         }
@@ -64,21 +89,21 @@ namespace CRM.Domain.Concrete
             SetCreatedSignature(lead);
             return context.SaveChangesAsync();
         }
-        public Task<int> DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
-        }
-        public async Task<Lead> GetAsync(int id)
-        {
-            return await leadEntity.Include(u => u.CustomerOwner).SingleOrDefaultAsync(s => s.CustomerID == id);
+            Lead lead = Get(id);
+            leadEntity.Remove(lead);
+            return await context.SaveChangesAsync();
         }
         public Task<IQueryable<Lead>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
-        public Task<int> UpdateAsync(Lead Item)
+        public async Task<int> UpdateAsync(Lead Item)
         {
-            throw new NotImplementedException();
+            SetModifiedSignature(Item);
+            context.Update(Item);
+            return await context.SaveChangesAsync();
         }
     }
 }

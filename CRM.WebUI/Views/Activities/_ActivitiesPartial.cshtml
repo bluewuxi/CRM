@@ -1,6 +1,6 @@
 @using CRM.Domain.Entities
 @model CRM.Domain.Entities.Activity
-<form asp-action="@ViewData["Action"]">
+<form asp-action="@ViewData["Action"]" autocomplete="off">
     @{if (ViewData["Action"].ToString() == "Edit")
         {
             <input type="hidden" asp-for="ActivityID" />
@@ -37,13 +37,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Status" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
-                                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityStatusEnum>()"></select>
-                                <span asp-validation-for="Status" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label asp-for="Subject" class="col-md-4 control-label"></label>
                             <div class="col-md-8">
                                 <input asp-for="Subject" class="form-control" />
@@ -53,7 +46,7 @@
                         <div class="form-group">
                             <label asp-for="Content" class="col-md-4 control-label"></label>
                             <div class="col-md-8">
-                                <textarea rows="4" asp-for="Content" class="form-control"></textarea>
+                                <textarea rows="8" asp-for="Content" class="form-control"></textarea>
                                 <span asp-validation-for="Content" class="text-danger"></span>
                             </div>
                         </div>
@@ -62,10 +55,10 @@
                 <div class="col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label asp-for="ActivityOwnerID" class="control-label col-md-4"></label>
+                            <label asp-for="Status" class="col-md-4 control-label"></label>
                             <div class="col-md-8">
-                                <select asp-for="ActivityOwnerID" class="form-control" asp-items="ViewBag.ActivityOwnerID"></select>
-                                <span asp-validation-for="ActivityOwnerID" class="text-danger"></span>
+                                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityStatusEnum>()"></select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -94,6 +87,13 @@
                             <label asp-for="AttendedCustomerID" class="control-label col-md-4"></label>
                             <div class="col-md-8 form-inline">
                                 <input type="hidden" asp-for="AttendedCustomerID" /><input id="customername" class="form-control" asp-for="AttendedCustomer.Name" readonly />  <button type="button" id="btnCustomer" class="btn btn-sm">...</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ActivityOwnerID" class="control-label col-md-4"></label>
+                            <div class="col-md-8">
+                                <select asp-for="ActivityOwnerID" class="form-control" asp-items="ViewBag.ActivityOwnerID"></select>
+                                <span asp-validation-for="ActivityOwnerID" class="text-danger"></span>
                             </div>
                         </div>
                     </div>

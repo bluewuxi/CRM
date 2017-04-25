@@ -1,20 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using CRM.Domain.Abstract;
 using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
-using CRM.Domain.Abstract;
-using Microsoft.AspNetCore.Identity;
 using CRM.WebUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CRM.WebUI.Controllers
 {
+    [Authorize]
     public class EnrollmentsController : BaseController
     {
         private readonly EFDbContext _context;
@@ -29,28 +26,8 @@ namespace CRM.WebUI.Controllers
         // GET: Enrollments
         public IActionResult Index()
         {
-            //We use RESPful WebApi do list accounts, leave here empty.
-            var querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ActivitiesList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            return View(querySetting);
-        }
-
-        // POST: Set Enrollments Filter
-        [HttpPost]
-        public void SetQuery(string search = "", string sort = "", long offset = 0)
-        {
-            QuerySettingViewModel querySetting = HttpContext.Session.Get<QuerySettingViewModel>("ErollmentsList");
-            if (querySetting == null)
-                querySetting = new QuerySettingViewModel();
-            else
-                querySetting.search.Clear();
-
-            if (search != null && search != "")
-                querySetting.search = JsonConvert.DeserializeObject<List<QuerySetting>>(search);
-            HttpContext.Session.Set<QuerySettingViewModel>("ErollmentsList", querySetting);
-            string a = HttpContext.Session.GetString("ErollmentsList");
-            Response.Redirect("/Erollments/Index");
+            //We use RESPful WebApi do list , leave here empty.
+            return View();
         }
 
         // GET: Enrollments/Details/5

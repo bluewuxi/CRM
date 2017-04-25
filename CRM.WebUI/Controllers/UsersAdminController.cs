@@ -12,7 +12,7 @@ using CRM.WebUI.Models.AccountViewModels;
 
 namespace CRM.WebUI.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class UsersAdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -66,7 +66,7 @@ namespace CRM.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = userViewModel.Email, Email = userViewModel.Email };
+                var user = new ApplicationUser { UserName = userViewModel.UserName, Email = userViewModel.Email };
                 var adminresult = await _userManager.CreateAsync(user, userViewModel.Password);
 
                 //Add User to the selected Roles 
@@ -114,6 +114,7 @@ namespace CRM.WebUI.Controllers
 
             return View(new EditUserViewModel()
             {
+                UserName = user.UserName,
                 Id = user.Id.ToString(),
                 Email = user.Email,
                 RolesList = _roleManager.Roles.ToList().Select(x => new SelectListItem()
@@ -129,7 +130,7 @@ namespace CRM.WebUI.Controllers
         // POST: /Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind("Email,Id,Password,ConfirmPassword")] EditUserViewModel editUser, params string[] selectedRole)
+        public async Task<ActionResult> Edit([Bind("UserName, Email,Id,Password,ConfirmPassword")] EditUserViewModel editUser, params string[] selectedRole)
         {
             if (ModelState.IsValid)
             {
@@ -139,7 +140,7 @@ namespace CRM.WebUI.Controllers
                     return NotFound();
                 }
 
-                user.UserName = editUser.Email;
+                user.UserName = editUser.UserName;
                 user.Email = editUser.Email;
 
                 var userRoles = await _userManager.GetRolesAsync(user);

@@ -1,3 +1,4 @@
+@using CRM.Domain.Entities
 @model CRM.WebUI.Models.QuerySettingViewModel
 
 @{
@@ -11,22 +12,48 @@
              <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
         </div>
         <div class="panel-body">
-            <form asp-action="SetQuery" method="post">
-                <div class="form-actions no-color">
-                    @Html.Hidden("search", Newtonsoft.Json.JsonConvert.SerializeObject(Model.search), new { id = "query_search" })
-                    <input id="query_sort" type="hidden" name="sort" value="" />
-                    <input id="query_offset" type="hidden" name="offset" value="0" />
-
-                    <label for="StudentName">Student Name:</label>
-                    <input id="StudentName" class="form-control" placeholder="Student Name" />
-                    <br class="divider" />
-                    <label for="InstitutName">Institut Name:</label>
-                    <input id="InstitutName" class="form-control" placeholder="Institut Name" />
-                    <br class="divider" />
-                    <button onclick="applyFilter(true)" class="btn btn-sm btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button onclick="applyFilter(false)" class="btn btn-sm btn-default"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="StudentName" class="col-sm-4">Student:</label>
+                    <input id="StudentName" class="col-sm-7 crm-query" placeholder="Student Name" />
                 </div>
-            </form>
+                <div class="form-group">
+                    <label for="InstituteName" class="col-sm-4">Institute:</label>
+                    <input id="InstituteName" class="col-sm-7 crm-query" placeholder="Institute Name" />
+                </div>
+                <div class="form-group">
+                    <label for="AgentName" class="col-sm-4">Institute:</label>
+                    <input id="AgentName" class="col-sm-7 crm-query" placeholder="Agent Name" />
+                </div>
+                <div class="form-group">
+                    <label for="Status" class="col-sm-4">Status: </label>
+                    <select class="col-sm-7 crm-query" id="Status" value="" asp-items="Html.GetEnumSelectList<Enrollment.EnrollmentStatusEnum>()">
+                        <option value="">-- Select a Status --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="PaymentDate" class="col-sm-3">Pay:</label>
+                    <input id="PaymentDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group">
+                    <label for="DueDate" class="col-sm-3">Due:</label>
+                    <input id="DueDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group">
+                    <label for="EndDate" class="col-sm-3">End:</label>
+                    <input id="EndDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group" style="text-align:center;">
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                </div>
+            </div>
         </div>
     </div>
 }
@@ -42,10 +69,26 @@
 @section Scripts
 {
     <script>
-        restoreFilter();
-
+        //Highlight the current menu
         $("#crm-enrollments").addClass('active');
+
+        //The base key name for store query conditions and pagination data
+        storeKey = "EnrollmentsList";
         $table = $("#enrollmentsTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
         $table.bootstrapTable({
             url: "/api/enrollments",
                 height: CRM.getHeight(),
@@ -54,7 +97,14 @@
                 pagination: true,
                 toolbar: "#toolForm",
                 idField: "enrollmentID",
-                queryParams: function (Param) { Param.search = $("#query_search").val(); return Param;},
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                pageNumber: CRM.getPagination(storeKey).pageNumber,
+                pageSize: CRM.getPagination(storeKey).pageSize,
                 columns: [{
                     field: 'state',
                     title: '',
@@ -91,52 +141,24 @@
                 }, {
                     field: 'createdTime',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.CreatedTime)',
-                    formatter: CRM.formatDate,
+                    formatter: CRM.formatDatetime,
                 }, {
                     field: 'modifiedTime',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.ModifiedTime)',
-                    formatter: CRM.formatDate,
+                    formatter: CRM.formatDatetime,
                 },]
             });
 
-        $table.on('check.bs.table', function () {
-            enrollment_onSelect($table.bootstrapTable('getSelections'));
-            //$table.bootstrapTable("destory");
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/Enrollments/Details/" + row["enrollmentID"].toString().trim();
         });
 
-        function enrollment_onSelect(eSelect)
-        {
-            if (eSelect != null) {
-                window.location.href = "/Enrollments/Details/"+eSelect[0].enrollmentID.toString().trim();
-            }
-        }
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
+        });
 
-        function applyFilter(enable) {
-            var item = {};
-            item.field = "";
-            item.value = "";
-
-            if (enable){
-                CustomerName = $("#StudentsName").val().trim();
-                InstitueName = $("#InstitutName").val().trim();;
-                $("#query_search").val(JSON.stringify(
-                    [{ field: 'StudentsName', value: CustomerName },
-                    { field: 'InstitutName', value: InstitueName }]));
-            }
-            else {
-                $("#query_search").val("");
-            }
-            $(this).closest('form').submit();
-        }
-
-        function restoreFilter() {
-            var filter = $("#query_search").val();
-            if (filter == null || filter == "") return;
-            filter = JSON.parse(filter);
-            for (var i = 0, len = filter.length; i < len; i++) {
-                if (filter[i] != null) $("#" + filter[i].field).val(filter[i].value);
-            }
-        }
 
     </script>
 }

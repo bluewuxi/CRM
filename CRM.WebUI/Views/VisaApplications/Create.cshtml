@@ -5,8 +5,11 @@
     ViewData["Action"] = "Create";
 }
 
+<div>
+    @{await Html.RenderPartialAsync("_VisaPartial", Model, ViewData);}
+</div>
 
-@{await Html.RenderPartialAsync("_VisaPartial", Model, ViewData);}
+
 
 @section Scripts
 {
@@ -14,4 +17,5 @@
         $("#crm-visa").addClass('active');
     </script>
     @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

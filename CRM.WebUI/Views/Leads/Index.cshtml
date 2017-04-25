@@ -11,22 +11,30 @@
                  <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
             </div>
             <div class="panel-body">
-                <form asp-action="SetQuery" method="post">
-                    <div class="form-actions no-color">
-                        @Html.Hidden("search", Newtonsoft.Json.JsonConvert.SerializeObject(Model.search), new { id = "query_search" })
-                        <input id="query_sort" type="hidden" name="sort" value="" />
-                        <input id="query_offset" type="hidden" name="offset" value="0" />
-
-                        <label for="CustomerName">Lead Name:</label>
-                        <input id="CustomerName" class="form-control" placeholder="Name" />
-                        <br class="divider" />
-                        <label for="CustomerOwner">Lead Owner:</label>
-                        <input id="CustomerOwner" class="form-control" placeholder="User Name" />
-                        <br class="divider" />
-                        <button onclick="applyFilter(true)" class="btn btn-sm btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                        <button onclick="applyFilter(false)" class="btn btn-sm btn-default"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="LeadName" class="col-sm-4">Name:</label>
+                        <input id="LeadName" class="col-sm-7 crm-query" placeholder="Name" />
                     </div>
-                </form>
+                    <div class="form-group">
+                        <label for="Mobile" class="col-sm-4">Mobile:</label>
+                        <input id="Mobile" class="col-sm-7 crm-query" placeholder="Mobile" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Source" class="col-sm-4">Source:</label>
+                        <input id="Source" class="col-sm-7 crm-query" placeholder="Source" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Birthdate" class="col-sm-3">DOB:</label>
+                        <input id="Birthdate" class="col-sm-8 crm-query datepicker-here" placeholder="date range" 
+                               data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                               data-range="true"  />
+                    </div>
+                </div>
+                <div class="form-group"  style="text-align:center;">
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                </div>
             </div>
         </div>
 }
@@ -42,10 +50,26 @@
 @section Scripts
 {
     <script>
-        restoreFilter();
-
+        //Highlight the current menu
         $("#crm-leads").addClass('active');
+
+        //The base key name for store query conditions and pagination data
+        storeKey = "LeadsList";
         $table = $("#leadsTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
         $table.bootstrapTable({
             url: "/api/leads",
                 height: CRM.getHeight(),
@@ -54,7 +78,14 @@
                 pagination: true,
                 toolbar: "#toolForm",
                 idField: "customerID",
-                queryParams: function (Param) { Param.search = $("#query_search").val(); return Param;},
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                pageNumber: CRM.getPagination(storeKey).pageNumber,
+                pageSize: CRM.getPagination(storeKey).pageSize,
                 columns: [{
                     field: 'state',
                     title: '',
@@ -100,44 +131,15 @@
                 },]
             });
 
-        $table.on('check.bs.table', function () {
-            leads_onSelect($table.bootstrapTable('getSelections'));
-            //$table.bootstrapTable("destory");
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/Leads/Details/" + row["customerID"].toString().trim();
         });
 
-        function leads_onSelect(eSelect)
-        {
-            if (eSelect != null) {
-                window.location.href = "/Leads/Details/"+eSelect[0].customerID.toString().trim();
-            }
-        }
-
-        function applyFilter(enable) {
-            var item = {};
-            item.field = "";
-            item.value = "";
-
-            if (enable){
-                CustomerName = $("#CustomerName").val().trim();
-                CustomerOwner = $("#CustomerOwner").val().trim();;
-                $("#query_search").val(JSON.stringify(
-                    [   { field: 'CustomerName', value: CustomerName },
-                        { field: 'CustomerOwner', value: CustomerOwner }]));
-            }
-            else {
-                $("#query_search").val("");
-            }
-            $(this).closest('form').submit();
-        }
-
-        function restoreFilter() {
-            var filter = $("#query_search").val();
-            if (filter == null || filter == "") return;
-            filter = JSON.parse(filter);
-            for (var i = 0, len = filter.length; i < len; i++) {
-                if (filter[i] != null) $("#" + filter[i].field).val(filter[i].value);
-            }
-        }
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
+        });
 
     </script>
 }

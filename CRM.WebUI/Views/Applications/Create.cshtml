@@ -5,8 +5,10 @@
     ViewData["Action"] = "Create";
 }
 
-
+<div>
 @{await Html.RenderPartialAsync("_ApplicationsPartial", Model, ViewData);}
+</div>
+
 
 @section Scripts
 {

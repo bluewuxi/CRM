@@ -6,16 +6,28 @@ namespace CRM.Domain.Entities
 {
     public class VisaApplication : IEntity
     {
-        public enum AppliedVisaTypeEnum
+        public enum AppliedVisaTypeEnum: int
         {
-            post, online, agent
+            post=0, online, agent
         }
+
+        public enum VisaStatusEnum : int
+        {
+            draft = 0, submitted, approved, declined, closed
+        }
+
         public int VisaApplicationID { get; set; }
 
         public Student Student { get; set; }
         [Required]
         [Display(Name = "Student")]
         public int StudentID { get; set; }
+
+        public VisaStatusEnum Status { get; set; }
+
+        [StringLength(20)]
+        [Display(Name = "Visa Type")]
+        public string VisaType { get; set; }
 
         [StringLength(20, MinimumLength = 8)]
         [Display(Name = "Passport No.")]
@@ -33,9 +45,8 @@ namespace CRM.Domain.Entities
         [Display(Name = "Postal Addr.")]
         public string PostalAddress { get; set; }
 
-        [StringLength(50)]
-        [Display(Name = "Visa Type")]
-        public string VisaAppliedType { get; set; }
+        [Display(Name = "Visa Applied Type")]
+        public AppliedVisaTypeEnum VisaAppliedType { get; set; }
 
         public Account Institute { get; set; }
         [Required]
@@ -47,15 +58,15 @@ namespace CRM.Domain.Entities
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Submitted Date")]
-        public DateTime SubmittedDate { get; set; }
+        public DateTime? SubmittedDate { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Received Date")]
-        public DateTime ReceivedDate { get; set; }
+        public DateTime? ReceivedDate { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Expired Date")]
-        public DateTime ExpiredDate { get; set; }
+        public DateTime? ExpiredDate { get; set; }
 
         [StringLength(50)]
         public string Note { get; set; }

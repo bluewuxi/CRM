@@ -143,7 +143,7 @@ namespace CRM.WebUI.Data
 
                     b.Property<int>("StudentID");
 
-                    b.Property<DateTime>("SubmittedDate");
+                    b.Property<DateTime?>("SubmittedDate");
 
                     b.Property<decimal>("Tuition")
                         .HasColumnType("money");
@@ -282,9 +282,9 @@ namespace CRM.WebUI.Data
 
                     b.Property<DateTime>("CreatedTime");
 
-                    b.Property<DateTime>("DueDate");
+                    b.Property<DateTime?>("DueDate");
 
-                    b.Property<DateTime>("EndDate");
+                    b.Property<DateTime?>("EndDate");
 
                     b.Property<int?>("EnrollmentAgentID");
 
@@ -296,7 +296,7 @@ namespace CRM.WebUI.Data
 
                     b.Property<string>("Note");
 
-                    b.Property<DateTime>("PaymentDate");
+                    b.Property<DateTime?>("PaymentDate");
 
                     b.Property<int>("Status");
 
@@ -335,7 +335,7 @@ namespace CRM.WebUI.Data
                     b.Property<string>("EamilInForm")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("ExpiredDate");
+                    b.Property<DateTime?>("ExpiredDate");
 
                     b.Property<int>("InstituteID");
 
@@ -355,14 +355,18 @@ namespace CRM.WebUI.Data
                     b.Property<string>("PostalAddress")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("ReceivedDate");
+                    b.Property<DateTime?>("ReceivedDate");
+
+                    b.Property<int>("Status");
 
                     b.Property<int>("StudentID");
 
-                    b.Property<DateTime>("SubmittedDate");
+                    b.Property<DateTime?>("SubmittedDate");
 
-                    b.Property<string>("VisaAppliedType")
-                        .HasMaxLength(50);
+                    b.Property<int>("VisaAppliedType");
+
+                    b.Property<string>("VisaType")
+                        .HasMaxLength(20);
 
                     b.HasKey("VisaApplicationID");
 

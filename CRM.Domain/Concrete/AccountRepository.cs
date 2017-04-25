@@ -20,6 +20,7 @@ namespace CRM.Domain.Concrete
 
         public int Add(Account account)
         {
+            SetCreatedSignature(account);
             context.Entry(account).State = EntityState.Added;
             return context.SaveChanges();
         }
@@ -69,12 +70,12 @@ namespace CRM.Domain.Concrete
 
         public Account Get(int id)
         {
-            return accountEntity.Include(u => u.AccountOwner).SingleOrDefault(s => s.AccountID == id);
+            return accountEntity.Include(u => u.AccountOwner).Include(u=>u.ModifiedBy).Include(u=>u.CreatedBy).SingleOrDefault(s => s.AccountID == id);
         }
 
         public Task<Account> GetAsync(int id)
         {
-            return accountEntity.Include(u => u.AccountOwner).SingleOrDefaultAsync(s => s.AccountID == id);
+            return accountEntity.Include(u => u.AccountOwner).Include(u => u.ModifiedBy).Include(u => u.CreatedBy).SingleOrDefaultAsync(s => s.AccountID == id);
         }
 
         public int Delete(int id)
@@ -100,6 +101,7 @@ namespace CRM.Domain.Concrete
 
         public Task<int> UpdateAsync(Account account)
         {
+            SetModifiedSignature(account);
             context.Update(account);
             return context.SaveChangesAsync();
         }

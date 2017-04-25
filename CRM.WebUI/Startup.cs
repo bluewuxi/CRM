@@ -5,6 +5,7 @@ using CRM.WebUI.Services;
 using CRM.WebUI.TagHelpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -141,7 +142,7 @@ namespace CRM.WebUI
                 );
             });
 
-            DbInitializer.Initialize(context);
+            DbInitializer.InitializeAsync(context,app.ApplicationServices.GetService<UserManager<ApplicationUser>>());
         }
     }
 }

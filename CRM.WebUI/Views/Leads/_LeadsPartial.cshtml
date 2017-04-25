@@ -61,10 +61,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="AcademicBackground" class="col-md-4 control-label"></label>
+                            <label asp-for="Note" class="col-md-4 control-label"></label>
                             <div class="col-md-8">
-                                <input asp-for="AcademicBackground" class="form-control" />
-                                <span asp-validation-for="AcademicBackground" class="text-danger"></span>
+                                <textarea rows="3" asp-for="Note" class="form-control" ></textarea>
+                                <span asp-validation-for="Note" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -100,10 +100,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Note" class="col-md-4 control-label"></label>
+                            <label asp-for="AcademicBackground" class="col-md-4 control-label"></label>
                             <div class="col-md-8">
-                                <input asp-for="Note" class="form-control" />
-                                <span asp-validation-for="Note" class="text-danger"></span>
+                                <input asp-for="AcademicBackground" class="form-control" />
+                                <span asp-validation-for="AcademicBackground" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -122,9 +122,4 @@
     </div>
 </form>
 
-@section Scripts
-{
-        <script>
-            $("#crm-students").addClass('active');
-        </script>
-}
+

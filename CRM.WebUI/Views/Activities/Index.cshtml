@@ -1,3 +1,4 @@
+@using CRM.Domain.Entities
 @model CRM.WebUI.Models.QuerySettingViewModel
 
 @{
@@ -10,22 +11,52 @@
              <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
         </div>
         <div class="panel-body">
-            <form asp-action="SetQuery" method="post">
-                <div class="form-actions no-color">
-                    @Html.Hidden("search", Newtonsoft.Json.JsonConvert.SerializeObject(Model.search), new { id = "query_search" })
-                    <input id="query_sort" type="hidden" name="sort" value="" />
-                    <input id="query_offset" type="hidden" name="offset" value="0" />
-
-                    <label for="ActivitySubject">Subject:</label>
-                    <input id="ActivitySubject" class="form-control" placeholder="Subject" />
-                    <br class="divider" />
-                    <label for="ActivityOwner">Activity Owner:</label>
-                    <input id="ActivityOwner" class="form-control" placeholder="User Name" />
-                    <br class="divider" />
-                    <button onclick="applyFilter(true)" class="btn btn-sm btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button onclick="applyFilter(false)" class="btn btn-sm btn-default"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="Subject" class="col-sm-4">Subject:</label>
+                    <input id="Subject" class="col-sm-7 crm-query" placeholder="Subject" />
                 </div>
-            </form>
+                <div class="form-group">
+                    <label for="ActivityType" class="col-sm-4" >Type: </label>
+                    <select id="ActivityType" class="col-sm-7 crm-query"  asp-items="Html.GetEnumSelectList<Activity.ActivityTypeEnum>()">
+                        <option value="">-- Select a Type --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Status" class="col-sm-4">Status: </label>
+                    <select id="Status" class="col-sm-7 crm-query" asp-items="Html.GetEnumSelectList<Activity.ActivityStatusEnum>()" >
+                        <option value="">-- Select a Status --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ActivityOwner" class="col-sm-4">Owner:</label>
+                    <input id="ActivityOwner" class="col-sm-7 crm-query" placeholder="User Name" />
+                </div>
+                <div class="form-group">
+                    <label for="AttendedAccount" class="col-sm-4">Account:</label>
+                    <input id="AttendedAccount" class="col-sm-7 crm-query" placeholder="Attended Account" />
+                </div>
+                <div class="form-group">
+                    <label for="AttendedCustomer" class="col-sm-4">Customer:</label>
+                    <input id="AttendedCustomer" class="col-sm-7 crm-query" placeholder="Lead/Student Name" />
+                </div>
+                <div class="form-group">
+                    <label for="StartTime" class="col-sm-3">Start:</label>
+                    <input id="StartTime" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group">
+                    <label for="EndTime" class="col-sm-3">End:</label>
+                    <input id="EndTime" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+            </div>
+            <div class="form-group" style="text-align:center;">
+                <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+            </div>
         </div>
     </div>
 }
@@ -42,12 +73,27 @@
 @section Scripts
 {
     <script>
+
+        //Highlight the current menu
         $("#crm-activities").addClass('active');
 
-        restoreFilter();
-
-        $("#crm-Activities").addClass('active');
+        //The base key name for store query conditions and pagination data
+        storeKey = "ActivitiesList";
         $table = $("#activitiesTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
         $table.bootstrapTable({
             url: "/api/activities",
                 height: CRM.getHeight(),
@@ -56,7 +102,14 @@
                 pagination: true,
                 toolbar: "#toolForm",
                 idField: "activityID",
-                queryParams: function (Param) { Param.search = $("#query_search").val(); return Param;},
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                pageNumber: CRM.getPagination(storeKey).pageNumber,
+                pageSize: CRM.getPagination(storeKey).pageSize,
                 columns: [{
                     field: 'state',
                     title: '',
@@ -81,59 +134,32 @@
                     title: 'Content',
                 }, {
                     field: 'startTime',
-                    title: 'StartTime',
-                    formatter: CRM.formatDate,
+                    title: 'Start Time',
+                    formatter: CRM.formatDateTime,
                 }, {
                     field: 'endTime',
                     title: 'End Time',
+                    formatter: CRM.formatDateTime,
                 }, {
                     field: 'customerOwner.userName',
                     title: 'Activity Owner',
                 }, {
                     field: 'createdTime',
                     title: 'Created Time',
-                    formatter: CRM.formatDate,
+                    formatter: CRM.formatDateTime,
                 },]
             });
 
-        $table.on('check.bs.table', function () {
-            activities_onSelect($table.bootstrapTable('getSelections'));
-            //$table.bootstrapTable("destory");
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/Activities/Details/" + row["activityID"].toString().trim();
         });
 
-        function activities_onSelect(eSelect)
-        {
-            if (eSelect != null) {
-                window.location.href = "/Activities/Details/"+eSelect[0].attendedCustomerID.toString().trim();
-            }
-        }
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
+        }); 
 
-        function applyFilter(enable) {
-            var item = {};
-            item.field = "";
-            item.value = "";
-
-            if (enable){
-                LeadName = $("#Subject").val().trim();
-                CustomerOwner = $("#ActivityOwner").val().trim();;
-                $("#query_search").val(JSON.stringify(
-                    [   { field: 'Subject', value: CustomerName },
-                        { field: 'ActivityOwner', value: CustomerOwner }]));
-            }
-            else {
-                $("#query_search").val("");
-            }
-            $(this).closest('form').submit();
-        }
-
-        function restoreFilter() {
-            var filter = $("#query_search").val();
-            if (filter == null || filter == "") return;
-            filter = JSON.parse(filter);
-            for (var i = 0, len = filter.length; i < len; i++) {
-                if (filter[i] != null) $("#" + filter[i].Field).val(filter[i].Value);
-            }
-        }
 
     </script>
 }

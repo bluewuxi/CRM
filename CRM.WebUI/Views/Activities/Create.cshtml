@@ -6,7 +6,9 @@
     ViewData["Action"] = "Create";
 }
 
+<div>
 @{await Html.RenderPartialAsync("_ActivitiesPartial", Model, ViewData);}
+</div>
 
 
 @section Scripts{
@@ -14,4 +16,5 @@
 
     @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
 
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

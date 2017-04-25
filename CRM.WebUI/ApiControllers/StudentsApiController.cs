@@ -1,20 +1,20 @@
+using CRM.Domain.Abstract;
+using CRM.Domain.Concrete;
+using CRM.Domain.Entities;
+using CRM.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using CRM.Domain.Entities;
-using CRM.Domain.Abstract;
-using Microsoft.AspNetCore.Identity;
-using System.Net;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using CRM.Domain.Concrete;
-using CRM.WebUI.Models;
 
 namespace CRM.WebUI.ApiControllers
 {
+    [Authorize]
     [Produces("application/json")]
     //[Route("api/StudentsApi")]
     public class StudentsApiController : BaseController

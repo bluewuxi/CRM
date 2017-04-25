@@ -36,7 +36,7 @@ namespace CRM.Domain.Entities
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Submitted Date")]
-        public DateTime SubmittedDate { get; set; }
+        public DateTime? SubmittedDate { get; set; }
 
         public DateTime ModifiedTime { get; set; }
         [Display(Name = "Modified By")]

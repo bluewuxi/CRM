@@ -91,6 +91,18 @@ textarea {
     padding: 2px;
 }
 
+.sidebar .panel-body {
+    padding-right: 3px;
+}
+
+.sidebar .crm-query {
+    padding: 2px;
+    border: 1px solid darkgrey;
+    border-radius: 2px;
+    margin:  unset;
+    margin-left: 5px;
+}
+
 #page-wrapper .panel {
     margin-right: 5px;
     padding-right:0px;

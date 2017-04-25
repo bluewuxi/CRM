@@ -4,11 +4,9 @@ namespace CRM.WebUI.Models.AccountViewModels
 {
     public class LoginViewModel
     {
-        [Required]
-        //[EmailAddress]
-        [StringLength (20)]
         [Display(Name = "User Name")]
-        public string Email { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

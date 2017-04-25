@@ -13,19 +13,11 @@
                 <span class="h4"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message</span>
             </div>
             <div class="panel-body">
-                <div class="form-actions no-color">
-
-                    <label>Open Activities:</label>
-                    <br class="divider" />
-                    <label>Closed Activities:</label>
-                    <br class="divider" />
-                    @{ string createdBy;  if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
-                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
-                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
-                    <br class="divider" />
-                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
-                    <br class="divider" />
-                </div>
+                <vc:activity-info query-code="customer" reference-id="@Model.CustomerID">
+                </vc:activity-info>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
             </div>
         </div>
     </li>
@@ -124,14 +116,24 @@
     </div>
 
 <div class="well well-sm info" style="margin:0px;">
-    <form asp-area="" asp-controller="Activities" asp-action="Create" method="post" id="toolForm">
-        <span class="h4">Activities</span>&nbsp;&nbsp;
-        <button type="submit" class="btn btn-sm btn-success pull-right">
+    <form asp-area="" asp-controller="Activities" asp-action="Create" method="get" id="toolForm">
+        <span class="h4">Open Activities</span>&nbsp;&nbsp;
+        <button type="submit" class="hidden btn btn-sm btn-success pull-right">
             <i class="glyphicon glyphicon-plus"></i> Create
         </button>
     </form>
 </div>
-    <table id="activityTable"></table>
+<table id="activityOpenTable"></table>
+
+<div class="well well-sm info" style="margin:0px;margin-top:10px;">
+    <form asp-area="" asp-controller="Activities" asp-action="Create" method="get" id="toolForm">
+        <span class="h4">Closed Activities</span>&nbsp;&nbsp;
+        <button type="submit" class="hidden btn btn-sm btn-success pull-right">
+            <i class="glyphicon glyphicon-plus"></i> Create
+        </button>
+    </form>
+</div>
+<table id="activityClosedTable"></table>
 
     @section Scripts {
         <script>
@@ -143,13 +145,15 @@
             };
 
             function convertLead() {
-                alert("Not Implemented Yet.");
+                if (confirm("Are you sure to convert this Lead to a Student (Customer) ? ")) {
+                    window.location.href="/Students/Convert/@Model.CustomerID";
+                }
             }
 
-            $table = $("#activityTable");
+            $table = $("#activityOpenTable");
             $table.bootstrapTable({
-                url: "/api/activities/leads/@Model.CustomerID ",
-                    height: CRM.getHeight() - 350,
+                url: "/api/activities/leads/@Model.CustomerID/open",
+                    height: 270,
                     clickToSelect: true,
                     sidePagination: 'client',
                     queryParamType: "",
@@ -187,8 +191,60 @@
                         title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
                         formatter: CRM.formatDatetime,
                     },]
-                });
+            });
 
+            //Onclick jump to detail page
+            $table.on('check.bs.table', function (e, row) {
+                window.location.href = "/Activities/Details/" + row["activityID"].toString().trim();
+            });
+
+            $table = $("#activityClosedTable");
+            $table.bootstrapTable({
+                url: "/api/activities/leads/@Model.CustomerID/closed",
+                    height: 270,
+                    clickToSelect: true,
+                    sidePagination: 'client',
+                    queryParamType: "",
+                    pagination: true,
+                    //toolbar: "#toolForm",
+                    idField: "activityID",
+                    columns: [{
+                        field: 'state',
+                        title: '',
+                        radio: true,
+                    }, {
+                        field: 'activityID',
+                        title: 'activity ID',
+                        visible: false
+                    }, {
+                        field: 'activityType',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.ActivityType)',
+                        formatter: CRM.convertActivityType,
+                    }, {
+                        field: 'status',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Status)',
+                        formatter: CRM.convertActivityStatus,
+                    }, {
+                        field: 'subject',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.Subject)',
+                    }, {
+                        field: 'activityOwner.userName',
+                        title: 'Activity Owner',
+                    }, {
+                        field: 'startTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.StartTime)',
+                        formatter: CRM.formatDatetime,
+                    }, {
+                        field: 'endTime',
+                        title: '@Html.DisplayNameFor(model => activityDisplay.EndTime)',
+                        formatter: CRM.formatDatetime,
+                    },]
+            });
+
+            //Onclick jump to detail page
+            $table.on('check.bs.table', function (e, row) {
+                window.location.href = "/Activities/Details/" + row["activityID"].toString().trim();
+            });
         </script>
 
     }

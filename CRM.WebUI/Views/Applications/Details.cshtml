@@ -10,19 +10,17 @@
                 <span class="h4"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message</span>
             </div>
             <div class="panel-body">
-                <div class="form-actions no-color">
-
-                    <label>Open Activities:</label>
-                    <br class="divider" />
-                    <label>Closed Activities:</label>
-                    <br class="divider" />
-                    @{ string createdBy; if (Model.CreatedBy == null) { createdBy = ""; } else { createdBy = Model.CreatedBy.UserName; } }
-                    @{ string modifiedBy; if (Model.ModifiedBy == null) { modifiedBy = ""; } else { modifiedBy = Model.ModifiedBy.UserName; } }
-                    <label>Created: </label>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss") [@createdBy]
-                    <br class="divider" />
-                    <label>Modified: </label>@Model.ModifiedTime.ToString("yyyy-MM-dd HH:mm:ss") [@modifiedBy]
-                    <br class="divider" />
+                <div class="col-sm-12" style="margin-left:-10px;">
+                    <h5>Student: <a href="/Students/Details/@Model.StudentID">@Model.Student.Name</a></h5>
+                    <hr style="margin: 10px 10px 10px -10px;">
+                    <h5>Institute: <a href="/Accounts/Details/@Model.InstituteID">@Model.Institute.ShortName</a></h5>
+                    <hr style="margin: 10px 10px 10px -10px;">
+                    <h5><span>Agent: <a href="/Accounts/Details/@Model.ApplicationAgentID">@Model.ApplicationAgent.ShortName</a></span></h5>
+                    <hr style="margin: 10px 10px 10px -10px;">
                 </div>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
             </div>
         </div>
     </li>
@@ -95,6 +93,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script>
         $("#crm-applications").addClass('active');
