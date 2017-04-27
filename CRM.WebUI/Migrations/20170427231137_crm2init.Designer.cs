@@ -7,11 +7,11 @@ using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
 using CRM.Domain.Abstract;
 
-namespace CRM.WebUI.Data
+namespace CRM.WebUI.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20170415021946_activiy")]
-    partial class activiy
+    [Migration("20170427231137_crm2init")]
+    partial class crm2init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,15 +82,26 @@ namespace CRM.WebUI.Data
 
                     b.Property<int>("ActivityType");
 
-                    b.Property<int>("AttendedAccountID");
+                    b.Property<int?>("AttendedAccountID");
 
-                    b.Property<int>("AttendedCustomerID");
+                    b.Property<int?>("AttendedCustomerID");
 
                     b.Property<string>("Content");
 
-                    b.Property<DateTime>("EndTime");
+                    b.Property<string>("CreatedByID");
 
-                    b.Property<DateTime>("StartTime");
+                    b.Property<DateTime>("CreatedTime");
+
+                    b.Property<DateTime?>("EndTime");
+
+                    b.Property<string>("ModifiedByID");
+
+                    b.Property<DateTime>("ModifiedTime");
+
+                    b.Property<DateTime?>("StartTime")
+                        .IsRequired();
+
+                    b.Property<int>("Status");
 
                     b.Property<string>("Subject")
                         .IsRequired()
@@ -103,6 +114,10 @@ namespace CRM.WebUI.Data
                     b.HasIndex("AttendedAccountID");
 
                     b.HasIndex("AttendedCustomerID");
+
+                    b.HasIndex("CreatedByID");
+
+                    b.HasIndex("ModifiedByID");
 
                     b.ToTable("Activities");
                 });
@@ -129,6 +144,8 @@ namespace CRM.WebUI.Data
                     b.Property<int>("Status");
 
                     b.Property<int>("StudentID");
+
+                    b.Property<DateTime?>("SubmittedDate");
 
                     b.Property<decimal>("Tuition")
                         .HasColumnType("money");
@@ -213,7 +230,7 @@ namespace CRM.WebUI.Data
                     b.Property<string>("Address")
                         .HasMaxLength(200);
 
-                    b.Property<DateTime>("Birthdate");
+                    b.Property<DateTime?>("Birthdate");
 
                     b.Property<string>("CreatedByID");
 
@@ -267,9 +284,9 @@ namespace CRM.WebUI.Data
 
                     b.Property<DateTime>("CreatedTime");
 
-                    b.Property<DateTime>("DueDate");
+                    b.Property<DateTime?>("DueDate");
 
-                    b.Property<DateTime>("EndDate");
+                    b.Property<DateTime?>("EndDate");
 
                     b.Property<int?>("EnrollmentAgentID");
 
@@ -281,7 +298,7 @@ namespace CRM.WebUI.Data
 
                     b.Property<string>("Note");
 
-                    b.Property<DateTime>("PaymentDate");
+                    b.Property<DateTime?>("PaymentDate");
 
                     b.Property<int>("Status");
 
@@ -310,7 +327,7 @@ namespace CRM.WebUI.Data
                     b.Property<int>("VisaApplicationID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CreatedById");
+                    b.Property<string>("CreatedByID");
 
                     b.Property<DateTime>("CreatedTime");
 
@@ -320,13 +337,11 @@ namespace CRM.WebUI.Data
                     b.Property<string>("EamilInForm")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("ExpiredDate");
+                    b.Property<DateTime?>("ExpiredDate");
 
-                    b.Property<int?>("InstituteAccountID");
+                    b.Property<int>("InstituteID");
 
-                    b.Property<int?>("InstituteIDAccountID");
-
-                    b.Property<string>("ModifiedById");
+                    b.Property<string>("ModifiedByID");
 
                     b.Property<DateTime>("ModifiedTime");
 
@@ -342,24 +357,26 @@ namespace CRM.WebUI.Data
                     b.Property<string>("PostalAddress")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("ReceivedDate");
+                    b.Property<DateTime?>("ReceivedDate");
+
+                    b.Property<int>("Status");
 
                     b.Property<int>("StudentID");
 
-                    b.Property<DateTime>("SubmittedDate");
+                    b.Property<DateTime?>("SubmittedDate");
 
-                    b.Property<string>("VisaAppliedType")
-                        .HasMaxLength(50);
+                    b.Property<int>("VisaAppliedType");
+
+                    b.Property<string>("VisaType")
+                        .HasMaxLength(20);
 
                     b.HasKey("VisaApplicationID");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("CreatedByID");
 
-                    b.HasIndex("InstituteAccountID");
+                    b.HasIndex("InstituteID");
 
-                    b.HasIndex("InstituteIDAccountID");
-
-                    b.HasIndex("ModifiedById");
+                    b.HasIndex("ModifiedByID");
 
                     b.HasIndex("StudentID");
 
@@ -503,6 +520,9 @@ namespace CRM.WebUI.Data
                     b.Property<string>("PassportNumber")
                         .HasMaxLength(20);
 
+                    b.Property<string>("Rating")
+                        .HasMaxLength(20);
+
                     b.HasIndex("AgentID");
 
                     b.ToTable("Student");
@@ -533,13 +553,19 @@ namespace CRM.WebUI.Data
 
                     b.HasOne("CRM.Domain.Entities.Account", "AttendedAccount")
                         .WithMany()
-                        .HasForeignKey("AttendedAccountID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AttendedAccountID");
 
                     b.HasOne("CRM.Domain.Entities.Customer", "AttendedCustomer")
                         .WithMany("Activities")
-                        .HasForeignKey("AttendedCustomerID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AttendedCustomerID");
+
+                    b.HasOne("CRM.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedByID");
+
+                    b.HasOne("CRM.Domain.Entities.ApplicationUser", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedByID");
                 });
 
             modelBuilder.Entity("CRM.Domain.Entities.Application", b =>
@@ -609,19 +635,16 @@ namespace CRM.WebUI.Data
                 {
                     b.HasOne("CRM.Domain.Entities.ApplicationUser", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedByID");
 
                     b.HasOne("CRM.Domain.Entities.Account", "Institute")
                         .WithMany()
-                        .HasForeignKey("InstituteAccountID");
-
-                    b.HasOne("CRM.Domain.Entities.Account", "InstituteID")
-                        .WithMany()
-                        .HasForeignKey("InstituteIDAccountID");
+                        .HasForeignKey("InstituteID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CRM.Domain.Entities.ApplicationUser", "ModifiedBy")
                         .WithMany()
-                        .HasForeignKey("ModifiedById");
+                        .HasForeignKey("ModifiedByID");
 
                     b.HasOne("CRM.Domain.Entities.Student", "Student")
                         .WithMany("VisaApplications")

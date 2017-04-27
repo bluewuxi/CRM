@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CRM.WebUI.Data
+namespace CRM.WebUI.Migrations
 {
-    public partial class removeAbstract : Migration
+    public partial class crm2init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

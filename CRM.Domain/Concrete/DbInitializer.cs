@@ -11,6 +11,7 @@ namespace CRM.Domain.Concrete
 
         public static async void InitializeAsync(EFDbContext context, UserManager<ApplicationUser> userManager)
         {
+
             AccountRepository accountRep = new AccountRepository(context);
             if (accountRep.GetAll().Any())
             {

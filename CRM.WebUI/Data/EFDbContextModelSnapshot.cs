@@ -91,13 +91,14 @@ namespace CRM.WebUI.Data
 
                     b.Property<DateTime>("CreatedTime");
 
-                    b.Property<DateTime>("EndTime");
+                    b.Property<DateTime?>("EndTime");
 
                     b.Property<string>("ModifiedByID");
 
                     b.Property<DateTime>("ModifiedTime");
 
-                    b.Property<DateTime>("StartTime");
+                    b.Property<DateTime?>("StartTime")
+                        .IsRequired();
 
                     b.Property<int>("Status");
 
