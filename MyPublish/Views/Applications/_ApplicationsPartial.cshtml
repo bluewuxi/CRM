@@ -1,0 +1,117 @@
+@using CRM.Domain.Entities
+@using CRM.Domain.Abstract
+@model CRM.Domain.Entities.Application
+
+<form asp-action="@ViewData["Action"]" autocomplete="off">
+    @{if (ViewData["Action"].ToString() == "Edit")
+        {
+            <input type="hidden" asp-for="ApplicationID" />
+        }
+    }
+
+    <div class="panel panel-info" style="margin-top:5px;">
+        <div class="panel-heading">
+            <div class="btn-group pull-right form-inline">
+                <a type="button" class="btn btn-sm btn-info" href='/Applications' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <button type="submit" value="Save" class="btn btn-sm btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save"></i>Save</button>
+@{if (ViewData["Action"].ToString() == "Edit")
+    {
+                <a asp-action="Details" class="btn btn-sm btn-warning " asp-route-id="@Model.ApplicationID" style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
+    }
+    else
+    {
+                <a asp-action="Index" class="btn btn-sm btn-warning " style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
+    }
+}
+            </div>
+            <p style="font-size:18px; margin:0px; padding:0px;">@ViewData["Title"]</p>
+        </div>
+        <div class="panel-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row crm-style">
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label asp-for="StudentID" class="col-md-4 control-label"></label>
+                            <div class="col-md-8 form-inline">
+                                <input id="studentid" type="hidden" asp-for="StudentID" class="form-control" />
+                                <input id="studentname" readonly asp-for="Student.Name" class="form-control" />
+                                <button id="btnStudent" type="button" class="btn btn-sm btn-default">...</button>
+                            </div>
+                            <span asp-validation-for="StudentID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="InstituteID" class="col-md-4 control-label"></label>
+                            <div class="col-md-8 form-inline">
+                                <input type="hidden" asp-for="InstituteID" class="form-control" />
+                                <input id="institutename" readonly asp-for="Institute.Name" class="form-control" />
+                                <button id="btnInstitute" type="button" class="btn btn-sm btn-default">...</button>
+                            </div>
+                            <span asp-validation-for="InstituteID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Tuition" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="Tuition" class="form-control"/>
+                                <span asp-validation-for="Tuition" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SubmittedDate" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="SubmittedDate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
+                                       data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
+                                <span asp-validation-for="SubmittedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label asp-for="ApplicationAgentID" class="col-md-4 control-label"></label>
+                            <div class="col-md-8 form-inline">
+                                <input type="hidden" asp-for="ApplicationAgentID" class="form-control" />
+                                <input id="ApplicationAgentName" readonly asp-for="ApplicationAgent.Name" class="form-control" />
+                                <button id="btnAgent" type="button" class="btn btn-sm btn-default">...</button>
+                            </div>
+                            <span asp-validation-for="InstituteID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Application.ApplicationStatusEnum>()"></select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Note" class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <textarea asp-for="Note" rows="3" class="form-control"></textarea>
+                                <span asp-validation-for="Note" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <vc:codes-list crm-code="students" value-ref="studentid" display-ref="studentname" button-ref="btnStudent" on-select-func="fillForm">
+    </vc:codes-list>
+
+    <vc:codes-list crm-code="institutes" value-ref="InstituteID" display-ref="institutename" button-ref="btnInstitute" on-select-func="">
+    </vc:codes-list>
+
+    <vc:codes-list crm-code="agents" value-ref="ApplicationAgentID" display-ref="ApplicationAgentName" button-ref="btnAgent" on-select-func="">
+    </vc:codes-list>
+</div>
+
+<script>
+    function fillForm(sel) {
+        $("#ApplicationAgentID").val(sel[0].agent.accountID);
+        $("#ApplicationAgentName").val(sel[0].agent.name);
+    }
+</script>

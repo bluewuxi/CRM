@@ -1,0 +1,52 @@
+@using CRM.Domain.Entities
+@using CRM.Domain.Abstract
+@model CRM.Domain.Entities.Account
+
+@{
+    ViewData["Title"] = " Edit Account";
+    ViewData["Action"] = "Edit";
+}
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <vc:activity-info query-code="Account" reference-id="@Model.AccountID">
+                </vc:activity-info>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
+            </div>
+        </div>
+    </li>
+}
+
+
+<form asp-action="Edit" autocomplete="off"  style="margin-top:5px;">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="btn-group pull-right form-inline">
+                <a type="button" class="btn btn-info" href='/Accounts' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <button type="submit" value="Save" class="btn btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save" ></i>Save</button>
+                <a asp-action="Details" class="btn btn-warning " asp-route-id="@Model.AccountID" style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
+            </div>
+            <p style="font-size:21px; margin:0px; padding:0px;">@ViewData["Title"]</p>
+        </div>
+        <div class="panel-body">
+            <input type="hidden" asp-for="AccountID" />
+            @{await Html.RenderPartialAsync("_AccountsPartial", Model, ViewData);}
+        </div>
+    </div>
+</form>
+     
+
+
+@section Scripts {
+<script>
+        $("#crm-accounts").addClass('active');
+</script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

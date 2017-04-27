@@ -11,10 +11,10 @@ namespace CRM.Domain.Entities
         [Key]
         public int CustomerID { get; set; }
 
-        [Required, StringLength(50, MinimumLength = 3)]
+        [Required, StringLength(50, MinimumLength = 2)]
         public string Name { get; set; }
 
-        [StringLength(50, MinimumLength = 3)]
+        [StringLength(50, MinimumLength = 2)]
         [Display(Name = "Prefer Name")]
         public string PreferName { get; set; }
 

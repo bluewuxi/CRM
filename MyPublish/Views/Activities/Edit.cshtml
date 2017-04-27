@@ -1,0 +1,34 @@
+@using CRM.Domain.Entities
+@model CRM.Domain.Entities.Activity
+
+@{
+    ViewData["Title"] = "Edit Activity";
+    ViewData["Action"] = "Edit";
+}
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
+            </div>
+        </div>
+    </li>
+}
+<div class="container-fluid">
+    @{await Html.RenderPartialAsync("_ActivitiesPartial", Model, ViewData);}
+</div>
+
+@section Scripts{
+    <script>$("#crm-activities").addClass('active');</script>
+
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+}

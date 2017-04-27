@@ -1,0 +1,13 @@
+SET ASPNETCORE_URLS=https://*:80 && dotnet CRM.WebUI.dll
+
+dotnet ef migrations add correctVisaType
+
+dotnet ef database update
+
+dotnet restore
+
+dotnet publish -c release -r Win10-x64
+
+
+
+     <RuntimeIdentifiers>win10-x64;osx.10.11-x64</RuntimeIdentifiers>

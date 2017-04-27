@@ -1,0 +1,160 @@
+@model CRM.WebUI.Models.QuerySettingViewModel
+
+@{
+    ViewData["Title"] = "Students List";
+    CRM.Domain.Entities.Student fieldDisplay = new CRM.Domain.Entities.Student();
+}
+
+@section SideBar {
+    <div class="panel panel-primary" style="margin:5px;">
+        <div class="panel-heading">
+             <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="StudentName" class="col-sm-4">Student:</label>
+                    <input id="StudentName" class="col-sm-7 crm-query" placeholder="Student Name" />
+                </div>
+                <div class="form-group">
+                    <label for="PassportNumber" class="col-sm-4" >Passport:</label>
+                    <input id="PassportNumber" class="col-sm-7 crm-query" placeholder="Passport Number" />
+                </div>
+                <div class="form-group">
+                    <label for="ContactName" class="col-sm-4">Institute:</label>
+                    <input id="ContactName" class="col-sm-7 crm-query" placeholder="Contact's Name" />
+                </div>
+                <div class="form-group">
+                    <label for="Mobile" class="col-sm-4">Institute:</label>
+                    <input id="Mobile" class="col-sm-7 crm-query" placeholder="Mobile" />
+                </div>
+                <div class="form-group">
+                    <label for="Rating" class="col-sm-4">Rating: </label>
+                    <select class="col-sm-7 crm-query" id="Rating" value="">
+                        <option value="">-Select Rating-</option>
+                        <option value="0">Default</option>
+                        <option value="1">Acquired</option>
+                        <option value="2">Active</option>
+                        <option value="3">Valued</option>
+                        <option value="-1">Shut Down</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Birthdate" class="col-sm-3">DOB:</label>
+                    <input id="Birthdate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group" style="text-align:center;">
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-area="" asp-controller="Students" asp-action="Create" method="get" id="toolForm">
+    <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-sm btn-success pull-right">
+        <i class="glyphicon glyphicon-plus"></i> Create
+    </button>
+</form>
+<table id="studentsTable"></table>
+
+@section Scripts
+{
+    <script>
+        //Highlight the current menu
+        $("#crm-students").addClass('active');
+
+        //The base key name for store query conditions and pagination data
+        storeKey = "StudentsList";
+        $table = $("#studentsTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
+        $table.bootstrapTable({
+            url: "/api/students",
+                height: CRM.getHeight(),
+                clickToSelect: true,
+                sidePagination: 'server',
+                pagination: true,
+                toolbar: "#toolForm",
+                idField: "customerID",
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'customerID',
+                    title: 'Student ID',
+                    visible: false
+                }, {
+                    field: 'name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Name)',
+                }, {
+                    field: 'shortName',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.PreferName)',
+                }, {
+                    field: 'Gender',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Gender)',
+                    formatter: CRM.convertAccountType,
+                }, {
+                    field: 'rating',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Rating)',
+                    formatter: CRM.convertStudentRating,
+                }, {
+                    field: 'birthdate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Birthdate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'eMail',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.EMail)',
+                }, {
+                    field: 'mobile',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Mobile)',
+                }, {
+                    field: 'createdTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.CreatedTime)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'modifiedTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.ModifiedTime)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'customerOwner.userName',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.CustomerOwner)',
+                },]
+            });
+
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/Students/Details/" + row["customerID"].toString().trim();
+        });
+
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
+        });
+
+    </script>
+}
+

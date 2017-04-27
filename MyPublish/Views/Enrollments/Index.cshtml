@@ -1,0 +1,165 @@
+@using CRM.Domain.Entities
+@model CRM.WebUI.Models.QuerySettingViewModel
+
+@{
+    ViewData["Title"] = "Enrollments List";
+    CRM.Domain.Entities.Enrollment fieldDisplay = new CRM.Domain.Entities.Enrollment();
+}
+
+@section SideBar {
+    <div class="panel panel-primary" style="margin:5px;">
+        <div class="panel-heading">
+             <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="StudentName" class="col-sm-4">Student:</label>
+                    <input id="StudentName" class="col-sm-7 crm-query" placeholder="Student Name" />
+                </div>
+                <div class="form-group">
+                    <label for="InstituteName" class="col-sm-4">Institute:</label>
+                    <input id="InstituteName" class="col-sm-7 crm-query" placeholder="Institute Name" />
+                </div>
+                <div class="form-group">
+                    <label for="AgentName" class="col-sm-4">Institute:</label>
+                    <input id="AgentName" class="col-sm-7 crm-query" placeholder="Agent Name" />
+                </div>
+                <div class="form-group">
+                    <label for="Status" class="col-sm-4">Status: </label>
+                    <select class="col-sm-7 crm-query" id="Status" value="" asp-items="Html.GetEnumSelectList<Enrollment.EnrollmentStatusEnum>()">
+                        <option value="">-- Select a Status --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="PaymentDate" class="col-sm-3">Pay:</label>
+                    <input id="PaymentDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group">
+                    <label for="DueDate" class="col-sm-3">Due:</label>
+                    <input id="DueDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group">
+                    <label for="EndDate" class="col-sm-3">End:</label>
+                    <input id="EndDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group" style="text-align:center;">
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-area="" asp-controller="Enrollments" asp-action="Create" method="get" id="toolForm">
+    <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-sm btn-success pull-right">
+        <i class="glyphicon glyphicon-plus"></i> Create
+    </button>
+</form>
+<table id="enrollmentsTable"></table>
+
+@section Scripts
+{
+    <script>
+        //Highlight the current menu
+        $("#crm-enrollments").addClass('active');
+
+        //The base key name for store query conditions and pagination data
+        storeKey = "EnrollmentsList";
+        $table = $("#enrollmentsTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
+        $table.bootstrapTable({
+            url: "/api/enrollments",
+                height: CRM.getHeight(),
+                clickToSelect: true,
+                sidePagination: 'server',
+                pagination: true,
+                toolbar: "#toolForm",
+                idField: "enrollmentID",
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                pageNumber: CRM.getPagination(storeKey).pageNumber,
+                pageSize: CRM.getPagination(storeKey).pageSize,
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'enrollmentID',
+                    title: 'enrollmentID',
+                    visible: false
+                }, {
+                    field: 'student.name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.StudentID)',
+                }, {
+                    field: 'institute.name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.InstituteID)',
+                }, {
+                    field: 'paymentDate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.PaymentDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'dueDate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.DueDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'endDate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.EndDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'tuition',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Tuition)',
+                }, {
+                    field: 'status',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Status)',
+                    formatter: CRM.convertEnrollmentStatus,
+                }, {
+                    field: 'createdTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.CreatedTime)',
+                    formatter: CRM.formatDatetime,
+                }, {
+                    field: 'modifiedTime',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.ModifiedTime)',
+                    formatter: CRM.formatDatetime,
+                },]
+            });
+
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/Enrollments/Details/" + row["enrollmentID"].toString().trim();
+        });
+
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
+        });
+
+
+    </script>
+}
+

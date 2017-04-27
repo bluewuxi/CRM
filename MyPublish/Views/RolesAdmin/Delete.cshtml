@@ -1,0 +1,57 @@
+﻿@using CRM.Domain.Entities
+@model Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h3>Delete a Role</h3>
+
+<h3>Are you sure you want to delete this Role? </h3>
+<p>Deleting this Role will remove all users from this role. It will not delete the users.</p>
+<div>
+    <hr />
+    <input type="hidden" asp-for="Id" />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <span>Member User List:</span>
+            <table>
+                <tr>
+                    @{
+                        int cnt = 0;
+                        List<ApplicationUser> users = ViewBag.Users;
+                        
+                        foreach (var user in users)
+                        {
+                            if (cnt++ % 3 == 0)
+                            {
+                                @:</tr><tr>
+                            }
+                            @:<td>
+                                <label value="@user.Email"/>
+                                        @user.UserName
+                            @:</td>
+                            }
+                        @:</tr>
+                    }
+                </table>
+            </div>
+        </div>
+    <form asp-action="Delete">
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    </form>
+</div>

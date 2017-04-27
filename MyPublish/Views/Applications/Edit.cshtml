@@ -1,0 +1,44 @@
+@model CRM.Domain.Entities.Application
+
+@{
+    ViewData["Title"] = "Edit Application";
+    ViewData["Action"] = "Edit";
+}
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-12" style="margin-left:-10px;">
+                    <h5>Student: <a href="/Students/Details/@Model.StudentID">@Model.Student.Name</a></h5>
+                    <hr style="margin: 10px 10px 10px -10px;">
+                    <h5>Institute: <a href="/Accounts/Details/@Model.InstituteID">@Model.Institute.ShortName</a></h5>
+                    <hr style="margin: 10px 10px 10px -10px;">
+                    <h5><span>Agent: <a href="/Accounts/Details/@Model.ApplicationAgentID">@Model.ApplicationAgent.ShortName</a></span></h5>
+                    <hr style="margin: 10px 10px 10px -10px;">
+                </div>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
+            </div>
+        </div>
+    </li>
+}
+<div class="row">
+    <div class="col-xs-12">
+        @{await Html.RenderPartialAsync("_ApplicationsPartial", Model, ViewData);}
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $("#crm-applications").addClass('active');
+    </script>
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

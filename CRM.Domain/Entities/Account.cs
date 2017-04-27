@@ -16,10 +16,10 @@ namespace CRM.Domain.Entities
 
         public int AccountID { get; set; }
 
-        [Required, StringLength(50, MinimumLength = 3)]
+        [Required, StringLength(50, MinimumLength = 2)]
         public string Name { get; set; }
 
-        [StringLength(50, MinimumLength = 3)]
+        [StringLength(50, MinimumLength = 2)]
         [Display(Name = "Short Name")]
         public string ShortName { get; set; }
 
@@ -27,7 +27,7 @@ namespace CRM.Domain.Entities
         [Display(Name = "Type")]
         public AccountTypeEnum AccountType { get; set; }
 
-        [StringLength(50, MinimumLength = 3)]
+        [StringLength(50, MinimumLength = 2)]
         [Display(Name = "Contact")]
         public string ContactName { get; set; }
 

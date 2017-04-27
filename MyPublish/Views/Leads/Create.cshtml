@@ -1,0 +1,22 @@
+@using CRM.Domain.Entities
+@using CRM.Domain.Abstract
+@model CRM.Domain.Entities.Lead
+
+@{
+    ViewData["Title"] = "Create Lead";
+    ViewData["Action"] = "Create";
+}
+
+<div>
+    @{await Html.RenderPartialAsync("_LeadsPartial", Model, ViewData);}
+</div>
+
+@section Scripts
+{
+    <script>
+        $("#crm-leads").addClass('active');
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+}

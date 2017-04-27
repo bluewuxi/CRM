@@ -1,0 +1,99 @@
+@model String[]
+@{ 
+    string modalName = Model[0];
+    string valueRef = Model[1];
+    string displayRef = Model[2];
+    string buttonRef = Model[3];
+}
+
+<div id="@modalName" class="modal fade" data-backdrop="static" role="dialog">
+    <div class="modal-dialog modal-lg ">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body" style="padding:0px; margin:5px;">
+                <div class="toolForm form-group" style="margin:2px">
+                    <span style="margin-right:10px; font-size:medium;">Select an Student/Lead</span><button class="btn btn-sm empty" type="button" style="margin-right:10px;">Empty</button><button type="button" class="close" data-dismiss="modal" style="margin:5px">&times;</button>
+                </div>
+                <table></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var boundButton_@valueRef = function () {
+        var $modal = $('#@modalName');
+
+        $("#@buttonRef").attr("data-toggle", "modal");
+        $("#@buttonRef").attr("data-target", "#@modalName");
+
+        $modal.on('hidden.bs.modal', function () {
+            $table = $("#@modalName table");
+            $table.bootstrapTable("destroy");
+            $table.empty();
+        });
+
+        $("#@modalName table").on('check.bs.table', function () {
+            $modal.modal('toggle');
+            sel = $(this).bootstrapTable('getSelections');
+            $('#@valueRef').val(sel[0].customerID);
+            $('#@displayRef').val(sel[0].name);
+        });
+        $("#@modalName .empty").on("click", function () {
+            $modal.modal('toggle');
+            $('#@valueRef').val("");
+            $('#@displayRef').val("");
+        });
+
+    };
+
+    var initTable_@valueRef =
+    function () {
+        $('#@modalName').on('shown.bs.modal', function () {
+        $table = $("#@modalName table");
+        $table.bootstrapTable({
+            url: "/api/customers",
+            height: 400,
+            clickToSelect: true,
+            search: true,
+            searchAlign: 'left',
+            //sidePagination: 'client',
+            pagination: true,
+            queryParamsType: "",
+            toolbar: "#@modalName .toolForm",
+            toolbarAlign: 'right',
+            idField: "customerID",
+            //queryParams: function (Param) { Param.search = $("#query_search").val(); return Param; },
+            columns: [{
+                field: 'state',
+                title: '',
+                radio: true,
+            }, {
+                field: 'customerID',
+                title: 'Customer ID',
+                visible: false
+            }, {
+                field: 'name',
+                title: 'Name',
+            }, {
+                field: 'preferName',
+                title: 'prefer Name',
+            }, {
+                field: 'contactName',
+                title: 'Contact Name',
+            }, {
+                field: 'birthdate',
+                title: 'DOB',
+                formatter: CRM.formatDate,
+            }, {
+                field: 'eMail',
+                title: 'EMail',
+            }, {
+                field: 'mobile',
+                title: 'Mobile',
+            },]
+        });
+
+      });
+    }
+</script>

@@ -1,0 +1,169 @@
+@using CRM.Domain.Entities
+@model CRM.WebUI.Models.QuerySettingViewModel
+
+@{
+    ViewData["Title"] = "Visa Applications List";
+    CRM.Domain.Entities.VisaApplication fieldDisplay = new CRM.Domain.Entities.VisaApplication();
+}
+
+@section SideBar {
+    <div class="panel panel-primary" style="margin:5px;">
+        <div class="panel-heading">
+             <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="StudentName" class="col-sm-4">Student:</label>
+                    <input id="StudentName" class="col-sm-7 crm-query" placeholder="Student Name" />
+                </div>
+                <div class="form-group">
+                    <label for="InstituteName" class="col-sm-4">Institute:</label>
+                    <input id="InstituteName" class="col-sm-7 crm-query" placeholder="Institute Name" />
+                </div>
+                <div class="form-group">
+                    <label for="VisaAppliedType" class="col-sm-3">Apply: </label>
+                    <select class="col-sm-8 crm-query" id="VisaAppliedType" value="" asp-items="Html.GetEnumSelectList<VisaApplication.AppliedVisaTypeEnum>()">
+                        <option value="">-Select Applied Type-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Status" class="col-sm-3">Status: </label>
+                    <select class="col-sm-8 crm-query" id="Status" value="" asp-items="Html.GetEnumSelectList<VisaApplication.VisaStatusEnum>()">
+                        <option value="">-Select Visa Status-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="VisaType" class="col-sm-3">Visa: </label>
+                    <select class="col-sm-8 crm-query" id="VisaType" value="">
+                        <option value="">-Select Visa Type-</option>
+                        <option value="student">student</option>
+                        <option value="visitor">visitor</option>
+                        <option value="guardian">guardian</option>
+                        <option value="partner">partner</option>
+                        <option value="work">work</option>
+                        <option value="work holiday">work holiday</option>
+                        <option value="silver fern">silver fern</option>
+                        <option value="others">others</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="SubmittedDate" class="col-sm-3">Submit:</label>
+                    <input id="SubmittedDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group">
+                    <label for="ExpiredDate" class="col-sm-3">Expire:</label>
+                    <input id="ExpiredDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group" style="text-align:center;">
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-area="" asp-controller="VisaApplications" asp-action="Create" method="get" id="toolForm">
+    <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-sm btn-success pull-right">
+        <i class="glyphicon glyphicon-plus"></i> Create
+    </button>
+</form>
+<table id="visaApplicationsTable"></table>
+
+@section Scripts
+{
+    <script>
+        //Highlight the current menu
+        $("#crm-visa").addClass('active');
+
+        //The base key name for store query conditions and pagination data
+        storeKey = "StudentsList";
+        $table = $("#visaApplicationsTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
+        $table.bootstrapTable({
+            url: "/api/visaApplications",
+                height: CRM.getHeight(),
+                clickToSelect: true,
+                sidePagination: 'server',
+                pagination: true,
+                toolbar: "#toolForm",
+                idField: "visaApplicationID",
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'visaApplicationID',
+                    title: 'visaApplicationID',
+                    visible: false
+                }, {
+                    field: 'student.name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.StudentID)',
+                }, {
+                    field: 'institute.name',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.InstituteID)',
+                }, {
+                    field: 'visaAppliedType',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.VisaAppliedType)',
+                    formatter: CRM.convertVisaAppliedType,
+                }, {
+                    field: 'visaType',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.VisaType)',
+                }, {
+                    field: 'submittedDate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.SubmittedDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'receivedDate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.ReceivedDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'expiredDate',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.ExpiredDate)',
+                    formatter: CRM.formatDate,
+                }, {
+                    field: 'status',
+                    title: '@Html.DisplayNameFor(model => fieldDisplay.Status)',
+                    formatter: CRM.convertVisaStatus,
+                },]
+            });
+
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/VisaApplications/Details/" + row["visaApplicationID"].toString().trim();
+        });
+
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
+        });
+
+    </script>
+}
+
+

@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  crm.webui:
+    image: crm.webui
+    build:
+      context: ./CRM.WebUI
+      dockerfile: Dockerfile

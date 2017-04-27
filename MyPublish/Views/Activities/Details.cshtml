@@ -1,0 +1,129 @@
+@using CRM.Domain.Entities
+@using Microsoft.EntityFrameworkCore;
+@model CRM.Domain.Entities.Activity
+
+@{
+    ViewData["Title"] = "Activity Details";
+}
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <span class="h4"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message</span>
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-12" style="margin-left:-10px;">
+                    @{
+                        if (Model.AttendedCustomer != null && Model.AttendedCustomer.GetType() == typeof(Student))
+                        {
+                            <h5><span>Student: <a href="/Students/Details/@Model.AttendedCustomerID">@Model.AttendedCustomer.Name</a></span></h5>
+                            <hr style="margin: 10px 10px 10px -10px;">
+                        }
+                        else if (Model.AttendedCustomer != null && Model.AttendedCustomer.GetType() == typeof(Lead))
+                        {
+                            <h5><span>Student: <a href="/Leads/Details/@Model.AttendedCustomerID">@Model.AttendedCustomer.Name</a></span></h5>
+                        }
+                    }
+                    @{
+                        if (Model.AttendedAccount != null)
+                        {
+                            <h5><span>Account: <a href="/Accounts/Details/@Model.AttendedAccountID">@Model.AttendedAccount.ShortName</a></span></h5>
+                            <hr style="margin: 10px 10px 10px -10px;">
+                        }
+                    }
+                </div>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
+            </div>
+        </div>
+    </li>
+}
+
+
+<div class="panel panel-info" style="margin:5px;">
+    <div class="panel-heading">
+        <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.ActivityID">
+            <div class="btn-group pull-right">
+                <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.ActivityID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
+                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a id="deleteButton" href="#" onclick="deleteActivity()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
+            </div>
+            <p style="font-size:18px; margin-top:0px; margin-bottom:0px;">@ViewData["Title"]</p>
+        </form>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="crm-style">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ActivityType)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ActivityType)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Status)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Subject)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Subject)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Content)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Content)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StartTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.StartTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EndTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EndTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ActivityOwnerID)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ActivityOwner.UserName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.AttendedAccountID)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.AttendedAccount.Name)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.AttendedCustomerID)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.AttendedCustomer.Name)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("#crm-activities").addClass('active');
+        function deleteAccount() {
+            if (confirm("Are you sure to delete the Activity?")) {
+                $("#confirmForm").submit();
+            }
+        };
+    </script>
+}

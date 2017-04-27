@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "About";
+    if (User == null || User.Identity == null || !(User.Identity.IsAuthenticated)) { Layout = "_blankLayout"; }
+ }
+
+<div class="panel " style="margin-top:50px;background-color:transparent;" >
+    <div class="panel-body">
+        <span class="h3" > CRM For Education Agency</span>
+        <hr>
+        <br />
+        <span class="h4" style="color:blue;"> 26 March 2017,  Preview Edition&nbsp;&nbsp;<label class="label label-info"> v.0.1</label></span>
+        <br />
+        <br />
+        <span class="h4" style="color:gray; text-align:center;">This web site is designed by Ricky Yu. </span>
+        <br />
+        <br />
+        <span class="h4" style="color:gray; text-align:center;">If you have any issues or bugs to report, please send email to <a href="mailto:ricky.yu@outlook.com">ricky.yu@outlook.com</a></span>
+        <br />
+        <br />
+        <br />
+        <br />
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $("#crm-about").addClass('active');
+
+    </script>
+
+}

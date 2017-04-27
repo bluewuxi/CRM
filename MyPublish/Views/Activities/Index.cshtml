@@ -1,0 +1,165 @@
+@using CRM.Domain.Entities
+@model CRM.WebUI.Models.QuerySettingViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section SideBar {
+    <div class="panel panel-primary" style="margin:5px;">
+        <div class="panel-heading">
+             <span class="h4"><i class="fa fa-filter fa-fw" aria-hidden="true"></i>Filter</span>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="Subject" class="col-sm-4">Subject:</label>
+                    <input id="Subject" class="col-sm-7 crm-query" placeholder="Subject" />
+                </div>
+                <div class="form-group">
+                    <label for="ActivityType" class="col-sm-4" >Type: </label>
+                    <select id="ActivityType" class="col-sm-7 crm-query"  asp-items="Html.GetEnumSelectList<Activity.ActivityTypeEnum>()">
+                        <option value="">-- Select a Type --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Status" class="col-sm-4">Status: </label>
+                    <select id="Status" class="col-sm-7 crm-query" asp-items="Html.GetEnumSelectList<Activity.ActivityStatusEnum>()" >
+                        <option value="">-- Select a Status --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ActivityOwner" class="col-sm-4">Owner:</label>
+                    <input id="ActivityOwner" class="col-sm-7 crm-query" placeholder="User Name" />
+                </div>
+                <div class="form-group">
+                    <label for="AttendedAccount" class="col-sm-4">Account:</label>
+                    <input id="AttendedAccount" class="col-sm-7 crm-query" placeholder="Attended Account" />
+                </div>
+                <div class="form-group">
+                    <label for="AttendedCustomer" class="col-sm-4">Customer:</label>
+                    <input id="AttendedCustomer" class="col-sm-7 crm-query" placeholder="Lead/Student Name" />
+                </div>
+                <div class="form-group">
+                    <label for="StartTime" class="col-sm-3">Start:</label>
+                    <input id="StartTime" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+                <div class="form-group">
+                    <label for="EndTime" class="col-sm-3">End:</label>
+                    <input id="EndTime" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                           data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
+                           data-range="true" />
+                </div>
+            </div>
+            <div class="form-group" style="text-align:center;">
+                <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<form asp-area="" asp-controller="Activities" asp-action="Create" method="get" id="toolForm">
+    <span class="h3">@ViewData["Title"]</span>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-sm btn-success pull-right">
+        <i class="glyphicon glyphicon-plus"></i> Create
+    </button>
+</form>
+<table id="activitiesTable"></table>
+
+@section Scripts
+{
+    <script>
+
+        //Highlight the current menu
+        $("#crm-activities").addClass('active');
+
+        //The base key name for store query conditions and pagination data
+        storeKey = "ActivitiesList";
+        $table = $("#activitiesTable");
+
+        //All filter elements should has class "crm-query";
+        CRM.restoreFilter(storeKey);
+        //Set or Clear filter conditions (button event function)
+        function applyFilter(enable) {
+            if (enable) {
+                CRM.setFilter(storeKey);
+            }
+            else {
+                CRM.removeFilter(storeKey);
+            }
+            $table.bootstrapTable("refresh");
+        }
+
+        $table.bootstrapTable({
+            url: "/api/activities",
+                height: CRM.getHeight(),
+                clickToSelect: true,
+                sidePagination: 'server',
+                pagination: true,
+                toolbar: "#toolForm",
+                idField: "activityID",
+                queryParams: function (Param) {
+                    Param.search = CRM.getFilter(storeKey);
+                    Param.sort = CRM.getSort(storeKey);
+                    if (CRM.isFilterReroaded()) Param.offset = 0;
+                    return Param;
+                },
+                pageNumber: CRM.getPagination(storeKey).pageNumber,
+                pageSize: CRM.getPagination(storeKey).pageSize,
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'activityID',
+                    title: 'activity ID',
+                    visible: false
+                }, {
+                    field: 'status',
+                    title: 'Status',
+                    formatter: CRM.convertActivityStatus,
+                }, {
+                    field: 'activityType',
+                    title: 'Activity Type',
+                    formatter: CRM.convertActivityType,
+                }, {
+                    field: 'subject',
+                    title: 'Subject',
+                }, {
+                    field: 'content',
+                    title: 'Content',
+                }, {
+                    field: 'startTime',
+                    title: 'Start Time',
+                    formatter: CRM.formatDateTime,
+                }, {
+                    field: 'endTime',
+                    title: 'End Time',
+                    formatter: CRM.formatDateTime,
+                }, {
+                    field: 'customerOwner.userName',
+                    title: 'Activity Owner',
+                }, {
+                    field: 'createdTime',
+                    title: 'Created Time',
+                    formatter: CRM.formatDateTime,
+                },]
+            });
+
+        //Onclick jump to detail page
+        $table.on('check.bs.table', function (e, row) {
+            window.location.href = "/Activities/Details/" + row["activityID"].toString().trim();
+        });
+
+        //Save pagination data
+        $table.on('page-change.bs.table', function (e, page, pagesize) {
+            CRM.savePagination(storeKey, { pageNumber: page, pageSize: pagesize });
+        }); 
+
+
+    </script>
+}

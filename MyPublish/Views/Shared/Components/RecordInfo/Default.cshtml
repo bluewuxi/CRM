@@ -1,0 +1,16 @@
+@model string[]
+@{
+    string s0 = Model[0];
+    string s1 = Model[1];
+    string s2 = Model[2];
+    string s3 = Model[3];
+}
+
+<div class="col-sm-12" style="margin-left:-10px;">
+    <h4><span class="label label-info">Modified by :</span>&nbsp;@s2</h4>
+    <h6 style="color:gray;"> @s3 </h6>
+    <hr  style="margin: 10px 10px 10px -10px;">
+    <h4><span class="label label-default">Created by :</span>&nbsp;@s0</h4>
+    <h6 style="color:gray;">@s1</h6>
+    <hr style="margin: 10px 10px 10px -10px;">
+</div>

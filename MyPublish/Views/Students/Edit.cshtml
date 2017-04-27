@@ -1,0 +1,36 @@
+@model CRM.Domain.Entities.Student
+
+@{
+    ViewData["Title"] = "Edit Student";
+    ViewData["Action"] = "Edit";
+}
+
+@section SideBar {
+    <li class="sidebar-info">
+        <div class="panel panel-primary" style="margin:5px;">
+            <div class="panel-heading">
+                <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> Message
+            </div>
+            <div class="panel-body">
+                <vc:activity-info query-code="customer" reference-id="@Model.CustomerID">
+                </vc:activity-info>
+                <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
+                                created-time="@Model.CreatedTime" modified-time="@Model.ModifiedTime">
+                </vc:record-info>
+            </div>
+        </div>
+    </li>
+}
+
+<div class="container-fluid">
+    @{await Html.RenderPartialAsync("_StudentsPartial", Model, ViewData);}
+</div>
+
+@section Scripts
+{
+    <script>
+        $("#crm-students").addClass('active');
+    </script>
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

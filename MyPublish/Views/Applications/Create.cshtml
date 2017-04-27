@@ -1,0 +1,19 @@
+@model CRM.Domain.Entities.Application
+
+@{
+    ViewData["Title"] = "Create Application";
+    ViewData["Action"] = "Create";
+}
+
+<div>
+@{await Html.RenderPartialAsync("_ApplicationsPartial", Model, ViewData);}
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $("#crm-applications").addClass('active');
+    </script>
+    @Html.Raw(CRM.WebUI.ViewComponents.CodesListViewComponent.Register())
+}
