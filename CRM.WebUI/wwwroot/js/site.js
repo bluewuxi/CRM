@@ -56,6 +56,18 @@ CRM.convertAccountType =
         }
     };
 
+CRM.convertGender =
+    function (value, row, index) {
+        switch (value) {
+            case 1:
+                return "Male";
+            case 2:
+                return "Female";
+            default:
+                return "Unknown";
+        }
+    };
+
 CRM.convertActivityType =
     function (value, row, index) {
         switch (value) {

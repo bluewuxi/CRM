@@ -80,9 +80,19 @@ namespace CRM.Domain.Concrete
         {
             SetModifiedSignature(Item);
             context.Update(Item);
+            context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
             return context.SaveChanges();
         }
 
+        public async Task<int> UpdateAsync(Lead Item)
+        {
+            SetModifiedSignature(Item);
+            context.Update(Item);
+            context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return await context.SaveChangesAsync();
+        }
         public Task<int> AddAsync(Lead lead)
         {
             context.Entry(lead).State = EntityState.Added;
@@ -98,12 +108,6 @@ namespace CRM.Domain.Concrete
         public Task<IQueryable<Lead>> GetAllAsync()
         {
             throw new NotImplementedException();
-        }
-        public async Task<int> UpdateAsync(Lead Item)
-        {
-            SetModifiedSignature(Item);
-            context.Update(Item);
-            return await context.SaveChangesAsync();
         }
     }
 }

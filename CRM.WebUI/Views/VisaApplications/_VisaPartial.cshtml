@@ -32,22 +32,30 @@
                 <div class="col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label asp-for="StudentID" class="col-md-4 control-label"></label>
-                            <div class="col-md-8 form-inline">
-                                <input id="studentid" type="hidden" asp-for="StudentID" class="form-control" />
-                                <input id="studentname" readonly asp-for="Student.Name" class="form-control" />
-                                <button id="btnStudent" type="button" class="btn btn-sm btn-default">...</button>
-                            </div>
+                            <input type="hidden" asp-for="StudentID" class="form-control" />
                             <span asp-validation-for="StudentID" class="text-danger"></span>
+                            <label asp-for="StudentID" class="control-label col-md-4"></label>
+                            <div class="col-md-8 ">
+                                <div class="input-group">
+                                    <input id="studentname" class="form-control" asp-for="Student.Name"  data-val="false" readonly />
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnStudent" class="btn btn-default"><i class="fa fa-search fa-fw"></i></button>
+                                    </span>
+                                </div><!-- /input-group -->
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="InstituteID" class="col-md-4 control-label"></label>
-                            <div class="col-md-8 form-inline">
-                                <input type="hidden" asp-for="InstituteID" class="form-control" />
-                                <input id="institutename" readonly asp-for="Institute.Name" class="form-control" />
-                                <button id="btnInstitute" type="button" class="btn btn-sm btn-default">...</button>
-                            </div>
+                            <input type="hidden" asp-for="InstituteID" class="form-control" />
                             <span asp-validation-for="InstituteID" class="text-danger"></span>
+                            <label asp-for="InstituteID" class="control-label col-md-4"></label>
+                            <div class="col-md-8 ">
+                                <div class="input-group">
+                                    <input id="institutename" class="form-control" asp-for="Institute.Name"  data-val="false" readonly />
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnInstitute" class="btn btn-default"><i class="fa fa-search fa-fw"></i></button>
+                                    </span>
+                                </div><!-- /input-group -->
+                            </div>
                         </div>
                         <div class="form-group">
                             <label asp-for="PassportNumber" class="col-md-4 control-label"></label>
@@ -161,11 +169,22 @@
     </div>
 </form>
 
-<vc:codes-list crm-code="students" value-ref="studentid" display-ref="studentname" button-ref="btnStudent" on-select-func="fillForm" >
-</vc:codes-list>
-
-<vc:codes-list crm-code="institutes" value-ref="InstituteID" display-ref="institutename" button-ref="btnInstitute" on-select-func="">
-</vc:codes-list>
+@await Component.InvokeAsync("CodesList", new
+{
+    crmCode = "students",
+    valueRef = "StudentID",
+    displayRef = "studentname",
+    buttonRef = "btnStudent",
+    onSelectFunc = "FillForm"
+})
+@await Component.InvokeAsync("CodesList", new
+{
+    crmCode = "institutes",
+    valueRef = "InstituteID",
+    displayRef = "institutename",
+    buttonRef = "btnInstitute",
+    onSelectFunc = ""
+})
 
 <script>
     function fillForm(sel)

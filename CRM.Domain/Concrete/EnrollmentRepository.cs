@@ -107,7 +107,17 @@ namespace CRM.Domain.Concrete
         {
             SetModifiedSignature(Item);
             _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
             return _context.SaveChanges();
+        }
+        public async Task<int> UpdateAsync(Enrollment Item)
+        {
+            SetModifiedSignature(Item);
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> AddAsync(Enrollment enrollment)
@@ -125,12 +135,6 @@ namespace CRM.Domain.Concrete
         public Task<IQueryable<Enrollment>> GetAllAsync()
         {
             throw new NotImplementedException();
-        }
-        public async Task<int> UpdateAsync(Enrollment Item)
-        {
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            return await _context.SaveChangesAsync();
         }
     }
 }

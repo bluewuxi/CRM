@@ -127,7 +127,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Rating,Nationality,PassportNumber,ClientNumber,ContactName,AgentID,CustomerID,Name,PreferName,Gender,Birthdate,AcademicBackground,EMail,Mobile,Address,Note,CustomerOwnerID,ModifiedTime,CreatedTime,ModifiedByID,CreatedByID")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("Rating,Nationality,PassportNumber,ClientNumber,ContactName,AgentID,CustomerID,Name,PreferName,Gender,Birthdate,AcademicBackground,EMail,Mobile,Address,Note,CustomerOwnerID")] Student student)
         {
             if (id != student.CustomerID)
             {

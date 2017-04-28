@@ -11,26 +11,26 @@ namespace CRM.Domain.Concrete
 {
     public class VisaApplicationRepository: BaseRepository, IVisaApplicationRepository
     {
-        private EFDbContext context;
+        private EFDbContext _context;
         private DbSet<VisaApplication> visaEntity;
 
         public VisaApplicationRepository(EFDbContext dbcontext)
         {
-            this.context = dbcontext;
-            visaEntity = context.Set<VisaApplication>();
+            this._context = dbcontext;
+            visaEntity = _context.Set<VisaApplication>();
         }
 
         public int Add(VisaApplication visa)
         {
             SetCreatedSignature(visa);
-            context.Entry(visa).State = EntityState.Added;
-            return context.SaveChanges();
+            _context.Entry(visa).State = EntityState.Added;
+            return _context.SaveChanges();
         }
         public int Delete(int id)
         {
             VisaApplication item = Get(id);
             visaEntity.Remove(item);
-            return context.SaveChanges();
+            return _context.SaveChanges();
         }
         public VisaApplication Get(int id)
         {
@@ -98,31 +98,35 @@ namespace CRM.Domain.Concrete
         public int Update(VisaApplication Item)
         {
             SetModifiedSignature(Item);
-            context.Update(Item);
-            return context.SaveChanges();
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return _context.SaveChanges();
+        }
+        public async Task<int> UpdateAsync(VisaApplication Item)
+        {
+            SetModifiedSignature(Item);
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return await _context.SaveChangesAsync();
         }
 
         public Task<int> AddAsync(VisaApplication visa)
         {
-            context.Entry(visa).State = EntityState.Added;
+            _context.Entry(visa).State = EntityState.Added;
             SetCreatedSignature(visa);
-            return context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
         public async Task<int> DeleteAsync(int id)
         {
             VisaApplication item = Get(id);
             visaEntity.Remove(item);
-            return await context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         public Task<IQueryable<VisaApplication>> GetAllAsync()
         {
             throw new NotImplementedException();
-        }
-        public async Task<int> UpdateAsync(VisaApplication Item)
-        {
-            SetModifiedSignature(Item);
-            context.Update(Item);
-            return await context.SaveChangesAsync();
         }
     }
 }

@@ -11,27 +11,27 @@ namespace CRM.Domain.Concrete
 {
     public class ActivityRepository: BaseRepository, IActivityRepository
     {
-        private EFDbContext context;
+        private EFDbContext _context;
         private DbSet<Activity> activityEntity;
 
         public ActivityRepository(EFDbContext dbcontext)
         {
-            this.context = dbcontext;
-            activityEntity = context.Set<Activity>();
+            this._context = dbcontext;
+            activityEntity = _context.Set<Activity>();
         }
 
         public int Add(Activity activity)
         {
-            context.Entry(activity).State = EntityState.Added;
+            _context.Entry(activity).State = EntityState.Added;
             SetCreatedSignature(activity);
-            return context.SaveChanges();
+            return _context.SaveChanges();
         }
 
         public int Delete(int id)
         {
             Activity activity = Get(id);
             activityEntity.Remove(activity);
-            return context.SaveChanges();
+            return _context.SaveChanges();
         }
 
         public Activity Get(int id)
@@ -113,33 +113,36 @@ namespace CRM.Domain.Concrete
         public int Update(Activity Item)
         {
             SetModifiedSignature(Item);
-            context.Update(Item);
-            return context.SaveChanges();
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return _context.SaveChanges();
         }
 
+        public async Task<int> UpdateAsync(Activity Item)
+        {
+            SetModifiedSignature(Item);
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return await _context.SaveChangesAsync();
+        }
         public Task<int> AddAsync(Activity activity)
         {
             SetCreatedSignature(activity);
-            context.Entry(activity).State = EntityState.Added;
-            return context.SaveChangesAsync();
+            _context.Entry(activity).State = EntityState.Added;
+            return _context.SaveChangesAsync();
         }
         public Task<int> DeleteAsync(int id)
         {
             Activity activity = Get(id);
             activityEntity.Remove(activity);
-            return context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
         public Task<IQueryable<Activity>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> UpdateAsync(Activity Item)
-        {
-            SetModifiedSignature(Item);
-
-            context.Update(Item);
-            return await context.SaveChangesAsync();
-        }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CRM.WebUI.ViewComponents
 {
+    [ViewComponent(Name = "CodesList")]
     public class CodesListViewComponent : ViewComponent
     {
         public static List<string> funcList= new List<string>();
@@ -48,8 +50,15 @@ namespace CRM.WebUI.ViewComponents
         public IViewComponentResult Invoke(string crmCode, string valueRef, string displayRef, string buttonRef, string onSelectFunc)
         {
             funcList.Add(valueRef);
-            return View(crmCode, new string[] { valueRef+"Select", valueRef, displayRef, buttonRef, onSelectFunc??"" });
+            return View(crmCode, new string[] { valueRef + "Select", valueRef, displayRef, buttonRef, onSelectFunc ?? "" });
         }
+
+        //public async Task<IViewComponentResult> InvokeAsync(string crmCode, string valueRef, string displayRef, string buttonRef, string onSelectFunc)
+        //{
+        //    funcList.Add(valueRef);
+        //    await Task.Delay(0);
+        //    return View(crmCode, new string[] { valueRef + "Select", valueRef, displayRef, buttonRef, onSelectFunc ?? "" });
+        //}
 
     }
 

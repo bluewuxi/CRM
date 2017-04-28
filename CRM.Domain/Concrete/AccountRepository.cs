@@ -9,27 +9,27 @@ namespace CRM.Domain.Concrete
 {
     public class AccountRepository: BaseRepository, IAccountRepository
     {
-        private EFDbContext context;
+        private EFDbContext _context;
         private DbSet<Account> accountEntity;
 
         public AccountRepository (EFDbContext dbcontext)
         {
-            this.context = dbcontext;
-            accountEntity = context.Set<Account>();
+            this._context = dbcontext;
+            accountEntity = _context.Set<Account>();
         }
 
         public int Add(Account account)
         {
             SetCreatedSignature(account);
-            context.Entry(account).State = EntityState.Added;
-            return context.SaveChanges();
+            _context.Entry(account).State = EntityState.Added;
+            return _context.SaveChanges();
         }
 
         public Task<int> AddAsync(Account account)
         {
-            context.Entry(account).State = EntityState.Added;
+            _context.Entry(account).State = EntityState.Added;
             SetCreatedSignature(account);
-            return context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
 
         public IQueryable<Account> GetAll()
@@ -82,28 +82,32 @@ namespace CRM.Domain.Concrete
         {
             Account account = Get(id);
             accountEntity.Remove(account);
-            return context.SaveChanges();
+            return _context.SaveChanges();
         }
 
         public Task<int> DeleteAsync(int id)
         {
             Account account = Get(id);
             accountEntity.Remove(account);
-            return context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
 
-        public int Update(Account account)
+        public int Update(Account Item)
         {
-            SetModifiedSignature(account);
-            context.Update(account);
-            return context.SaveChanges();
+            SetModifiedSignature(Item);
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return _context.SaveChanges();
         }
 
-        public Task<int> UpdateAsync(Account account)
+        public Task<int> UpdateAsync(Account Item)
         {
-            SetModifiedSignature(account);
-            context.Update(account);
-            return context.SaveChangesAsync();
+            SetModifiedSignature(Item);
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return _context.SaveChangesAsync();
         }
     }
 }

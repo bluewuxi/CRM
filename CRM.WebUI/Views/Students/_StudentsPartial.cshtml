@@ -127,11 +127,16 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <input id="agentid" type="hidden" asp-for="AgentID" />
+                            <span asp-validation-for="AgentID" class="text-danger"></span>
                             <label asp-for="AgentID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 form-inline">
-                                <input id="agentid" type="hidden" asp-for="AgentID" />
-                                <input id="agentname" readonly class="form-control" /><button id="btnAgent" type="button" class="btn btn-sm" style="margin-left:5px;">...</button>
-                                <span asp-validation-for="AgentID" class="text-danger"></span>
+                            <div class="col-md-8 ">
+                                <div class="input-group">
+                                    <input id="agentname" class="form-control" asp-for="Agent.Name"  data-val="false"  readonly />
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnAgent" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div><!-- /input-group -->
                             </div>
                         </div>
                         <div class="form-group">
@@ -171,6 +176,7 @@
     </div>
 </form>
 
-<vc:codes-list crm-code="agents" value-ref="agentid" display-ref="agentname" button-ref="btnAgent"  on-select-func="">
-</vc:codes-list>
+@await Component.InvokeAsync("CodesList", new { crmCode = "agents", valueRef = "agentid", displayRef= "agentname",
+    buttonRef="btnAgent", onSelectFunc="" })
+
 

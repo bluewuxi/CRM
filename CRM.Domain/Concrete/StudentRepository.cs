@@ -11,25 +11,25 @@ namespace CRM.Domain.Concrete
 {
     public class StudentRepository: BaseRepository, IStudentRepository
     {
-        private EFDbContext context;
+        private EFDbContext _context;
         private DbSet<Student> StudentEntity;
 
-        public StudentRepository(EFDbContext dbcontext)
+        public StudentRepository(EFDbContext dbcontext) 
         {
-            this.context = dbcontext;
-            StudentEntity = context.Set<Student>();
+            this._context = dbcontext;
+            StudentEntity = _context.Set<Student>();
         }
         public int Add(Student Item)
         {
-            context.Entry(Item).State = EntityState.Added;
             SetCreatedSignature(Item);
-            return context.SaveChanges();
+            _context.Entry(Item).State = EntityState.Added;
+            return _context.SaveChanges();
         }
         public int Delete(int id)
         {
             Student student = Get(id);
             StudentEntity.Remove(student);
-            return context.SaveChanges();
+            return _context.SaveChanges();
         }
         public Student Get(int id)
         {
@@ -88,21 +88,23 @@ namespace CRM.Domain.Concrete
         public int Update(Student Item)
         {
             SetModifiedSignature(Item);
-            context.Update(Item);
-            return context.SaveChanges();
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return _context.SaveChanges();
         }
 
         public Task<int> AddAsync(Student Item)
         {
-            context.Entry(Item).State = EntityState.Added;
             SetCreatedSignature(Item);
-            return context.SaveChangesAsync();
+            _context.Entry(Item).State = EntityState.Added;
+            return _context.SaveChangesAsync();
         }
         public async Task<int> DeleteAsync(int id)
         {
             Student account = Get(id);
             StudentEntity.Remove(account);
-            return await context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         public Task<IQueryable<Student>> GetAllAsync()
         {
@@ -111,8 +113,10 @@ namespace CRM.Domain.Concrete
         public async Task<int> UpdateAsync(Student Item)
         {
             SetModifiedSignature(Item);
-            context.Update(Item);
-            return await context.SaveChangesAsync();
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return await _context.SaveChangesAsync();
         }
     }
 }

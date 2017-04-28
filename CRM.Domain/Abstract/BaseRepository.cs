@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CRM.Domain.Concrete;
+using Microsoft.AspNetCore.Http;
 using System;
 
 namespace CRM.Domain.Abstract
@@ -9,6 +10,10 @@ namespace CRM.Domain.Abstract
 
         public string UserContext { get; set; }
 
+        public BaseRepository()
+        {
+
+        }
         public class DatetimeRange
         {
             public DateTime? dBegin { get; set; }

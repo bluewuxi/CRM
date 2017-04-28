@@ -78,15 +78,29 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <input type="hidden" asp-for="AttendedAccountID" />
+                            <span asp-validation-for="AttendedAccount" class="text-danger"></span>
                             <label asp-for="AttendedAccountID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 form-inline">
-                                <input type="hidden" asp-for="AttendedAccountID" /> <input id="accountname" class="form-control" asp-for="AttendedAccount.Name" readonly />  <button type="button" id="btnAccount" class="btn btn-sm">...</button>
+                            <div class="col-md-8 ">
+                                <div class="input-group">
+                                    <input type="text" id="accountname" class="form-control" asp-for="AttendedAccount.Name" data-val="false" readonly />
+                                   <span class="input-group-btn">
+                                        <button type="button" id="btnAccount" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div><!-- /input-group -->
                             </div>
                         </div>
                         <div class="form-group">
+                            <input type="hidden" asp-for="AttendedCustomerID" />
+                            <span asp-validation-for="AttendedCustomer" class="text-danger"></span>
                             <label asp-for="AttendedCustomerID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 form-inline">
-                                <input type="hidden" asp-for="AttendedCustomerID" /><input id="customername" class="form-control" asp-for="AttendedCustomer.Name" readonly />  <button type="button" id="btnCustomer" class="btn btn-sm">...</button>
+                            <div class="col-md-8 ">
+                                <div class="input-group">
+                                    <input id="customername" class="form-control" asp-for="AttendedCustomer.Name"  data-val="false" readonly />
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnCustomer" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div><!-- /input-group -->
                             </div>
                         </div>
                         <div class="form-group">
@@ -103,9 +117,20 @@
     </div> <!--End of Panel-->
 </form>
 
-<vc:codes-list crm-code="accounts" value-ref="AttendedAccountID" display-ref="accountname" button-ref="btnAccount" on-select-func="">
-</vc:codes-list>
-<vc:codes-list crm-code="customers" value-ref="AttendedCustomerID" display-ref="customername" button-ref="btnCustomer" on-select-func="">
-</vc:codes-list>
+@await Component.InvokeAsync("CodesList", new
+{
+    crmCode = "accounts",
+    valueRef = "AttendedAccountID",
+    displayRef = "accountname",
+    buttonRef = "btnAccount",
+    onSelectFunc = ""
+})
 
-
+@await Component.InvokeAsync("CodesList", new
+{
+    crmCode = "customers",
+    valueRef = "AttendedCustomerID",
+    displayRef = "customername",
+    buttonRef = "btnCustomer",
+    onSelectFunc = ""
+})

@@ -7,7 +7,7 @@ using CRM.Domain.Concrete;
 using CRM.Domain.Entities;
 using CRM.Domain.Abstract;
 
-namespace CRM.WebUI.Data
+namespace CRM.WebUI.Migrations
 {
     [DbContext(typeof(EFDbContext))]
     partial class EFDbContextModelSnapshot : ModelSnapshot

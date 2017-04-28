@@ -10,8 +10,8 @@ using CRM.Domain.Abstract;
 namespace CRM.WebUI.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20170427231137_crm2init")]
-    partial class crm2init
+    [Migration("20170428001616_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
