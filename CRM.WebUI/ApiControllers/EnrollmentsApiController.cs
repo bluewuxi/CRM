@@ -61,7 +61,7 @@ namespace CRM.WebUI.ApiControllers
             IQueryable<Enrollment> records;
 
             BindUserContext(_Repo);
-            records = _Repo.GetAll().Where(a => a.StudentID == id).OrderByDescending(a => a.CreatedTime);
+            records = _Repo.GetAll().Where(a => a.StudentID == id);
             return Json(records);
         }
 

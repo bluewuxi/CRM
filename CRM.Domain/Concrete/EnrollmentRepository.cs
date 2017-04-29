@@ -20,12 +20,6 @@ namespace CRM.Domain.Concrete
             _entity = _context.Set<Enrollment>();
         }
 
-        public int Add(Enrollment enrollment)
-        {
-            _context.Entry(enrollment).State = EntityState.Added;
-            SetCreatedSignature(enrollment);
-            return _context.SaveChanges();
-        }
         public int Delete(int id)
         {
             Enrollment item = Get(id);
@@ -52,7 +46,7 @@ namespace CRM.Domain.Concrete
         }
         public IQueryable<Enrollment> GetAll()
         {
-            return _entity.Include(u => u.Student).Include(a=>a.EnrollmentAgent).Include(i => i.Institute).AsQueryable();
+            return _entity.Include(u => u.Student).Include(a=>a.EnrollmentAgent).Include(i => i.Institute);
         }
         public IQueryable<Enrollment> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
@@ -113,6 +107,7 @@ namespace CRM.Domain.Concrete
         }
         public async Task<int> UpdateAsync(Enrollment Item)
         {
+            await CreateActivity(Item);
             SetModifiedSignature(Item);
             _context.Update(Item);
             _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
@@ -120,8 +115,16 @@ namespace CRM.Domain.Concrete
             return await _context.SaveChangesAsync();
         }
 
+        public int Add(Enrollment enrollment)
+        {
+            _context.Entry(enrollment).State = EntityState.Added;
+            SetCreatedSignature(enrollment);
+            return _context.SaveChanges();
+        }
+
         public async Task<int> AddAsync(Enrollment enrollment)
         {
+            await CreateActivity(enrollment);
             _context.Entry(enrollment).State = EntityState.Added;
             SetCreatedSignature(enrollment);
             return await _context.SaveChangesAsync();
@@ -135,6 +138,39 @@ namespace CRM.Domain.Concrete
         public Task<IQueryable<Enrollment>> GetAllAsync()
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<Activity> CreateActivity(Enrollment Item)
+        {
+            //If it is applied status and SubmittedDate is set or modified, 
+            //a activity is automaticly created with StartTime= SubmittedDate + 7
+
+            if (Item.Status != Enrollment.EnrollmentStatusEnum.Actived) return null;
+
+            if (Item.EnrollmentID != 0) // Check if SubmittedDate is changed when it is not a new application
+            {
+                Enrollment current = await _entity.AsNoTracking()
+                        .SingleOrDefaultAsync(x => x.EnrollmentID == Item.EnrollmentID);
+                if (current.DueDate == Item.DueDate)
+                    return null;
+            }
+
+            Activity a = new Activity()
+            {
+                Status = Activity.ActivityStatusEnum.OpenTask,
+                ActivityType = Activity.ActivityTypeEnum.Other,
+                Subject = "[System] Beware Due Date of Tuition",
+                StartTime = Item.DueDate.AddDays(-30),
+                AttendedAccountID = Item.InstituteID,
+                AttendedCustomerID = Item.StudentID,
+            };
+            SetCreatedSignature(a);
+
+            // Set activity owner as the student owner or if student owner is empty, set the current user.
+            Student s = await _context.Students.Where(x => x.CustomerID == Item.StudentID).AsNoTracking().SingleOrDefaultAsync();
+            a.ActivityOwnerID = (s.CustomerOwnerID == null || s.CustomerOwnerID == "") ? a.ModifiedByID : s.CustomerOwnerID;
+            await _context.Activities.AddAsync(a);
+            return a;
         }
     }
 }

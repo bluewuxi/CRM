@@ -15,7 +15,7 @@
                     <hr style="margin: 10px 10px 10px -10px;">
                     <h5>Institute: <a href="/Accounts/Details/@Model.InstituteID">@Model.Institute.ShortName</a></h5>
                     <hr style="margin: 10px 10px 10px -10px;">
-                    <h5><span>Agent: <a href="/Accounts/Details/@Model.ApplicationAgentID">@Model.ApplicationAgent.ShortName</a></span></h5>
+                    <h5><span>Agent: <a href="/Accounts/Details/@Model.ApplicationAgentID">@Html.DisplayFor(model => model.ApplicationAgent.ShortName)</a></span></h5>
                     <hr style="margin: 10px 10px 10px -10px;">
                 </div>
                 <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
@@ -97,7 +97,7 @@
 @section Scripts {
     <script>
         $("#crm-applications").addClass('active');
-        function deleteVisa() {
+        function deleteApplication() {
             if (confirm("Are you sure to delete the Application?")) {
                 $("#confirmForm").submit();
             }

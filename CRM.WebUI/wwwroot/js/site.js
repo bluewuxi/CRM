@@ -204,7 +204,9 @@ CRM.formatDate =
 CRM.formatDatetime =
     function (value, row, index) {
         if (value !== undefined && value !== null && value !== "")
-            return value.toString().substring(0,19).replace(/T/g, " ");
+        {
+            return value.toString().substring(0, 19).replace(/T/g, " ").replace(/ 00:00:00/g,"");
+        }
         else
             return value;
     };

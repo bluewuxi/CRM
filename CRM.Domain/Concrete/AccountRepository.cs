@@ -25,11 +25,11 @@ namespace CRM.Domain.Concrete
             return _context.SaveChanges();
         }
 
-        public Task<int> AddAsync(Account account)
+        public async Task<int> AddAsync(Account account)
         {
             _context.Entry(account).State = EntityState.Added;
             SetCreatedSignature(account);
-            return _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         public IQueryable<Account> GetAll()
@@ -73,9 +73,9 @@ namespace CRM.Domain.Concrete
             return accountEntity.Include(u => u.AccountOwner).Include(u=>u.ModifiedBy).Include(u=>u.CreatedBy).SingleOrDefault(s => s.AccountID == id);
         }
 
-        public Task<Account> GetAsync(int id)
+        public async Task<Account> GetAsync(int id)
         {
-            return accountEntity.Include(u => u.AccountOwner).Include(u => u.ModifiedBy).Include(u => u.CreatedBy).SingleOrDefaultAsync(s => s.AccountID == id);
+            return await accountEntity.Include(u => u.AccountOwner).Include(u => u.ModifiedBy).Include(u => u.CreatedBy).SingleOrDefaultAsync(s => s.AccountID == id);
         }
 
         public int Delete(int id)
@@ -85,11 +85,11 @@ namespace CRM.Domain.Concrete
             return _context.SaveChanges();
         }
 
-        public Task<int> DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
             Account account = Get(id);
             accountEntity.Remove(account);
-            return _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         public int Update(Account Item)
@@ -101,13 +101,13 @@ namespace CRM.Domain.Concrete
             return _context.SaveChanges();
         }
 
-        public Task<int> UpdateAsync(Account Item)
+        public async Task<int> UpdateAsync(Account Item)
         {
             SetModifiedSignature(Item);
             _context.Update(Item);
             _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
             _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
     }
 }

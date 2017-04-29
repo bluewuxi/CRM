@@ -14,22 +14,22 @@
         <div class="panel-body">
             <div class="form-horizontal" >
                 <div class="form-group" >
-                    <label for="AccountName" class="col-sm-4">Name:</label>
-                    <input id="AccountName" class="col-sm-7 crm-query" placeholder="Name" />
+                    <label for="AccountName" class="col-xs-4">Name:</label>
+                    <input id="AccountName" class="col-xs-7 crm-query" placeholder="Name" />
                 </div>
                 <div class="form-group">
-                    <label for="AccountType" class="col-sm-4" >Type: </label>
+                    <label for="AccountType" class="col-xs-4" >Type: </label>
                     <select class="col-sm-7 crm-query" id="AccountType" value="" asp-items="Html.GetEnumSelectList<Account.AccountTypeEnum>()">
                         <option value="">-- Select a type --</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="AccountOwner" class="col-sm-4">Owner:</label>
-                    <input id="AccountOwner" class="col-sm-7 crm-query" placeholder="User Name" />
+                    <label for="AccountOwner" class="col-xs-4">Owner:</label>
+                    <input id="AccountOwner" class="col-xs-7 crm-query" placeholder="User Name" />
                 </div>
                 <div class="form-group" style="text-align:center;">
-                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info "><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default "><i class="fa fa-fw fa-eraser"></i>Clear</button>
                 </div>
             </div>
        </div>

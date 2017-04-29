@@ -1,7 +1,7 @@
 @model CRM.Domain.Entities.VisaApplication
 
 @{
-    ViewData["Title"] = "Visa Application Details";
+    ViewData["Title"] = "Visa Ap. Details";
 }
 
 @section SideBar {
@@ -14,7 +14,7 @@
                 <div class="col-sm-12" style="margin-left:-10px;">
                     <h5><span>Student: <a href="/Students/Details/@Model.StudentID">@Model.Student.Name</a></span> </h5>
                     <hr style="margin: 10px 10px 10px -10px;">
-                    <h5><span>Institute: <a href="/Accounts/Details/@Model.InstituteID">@Model.Institute.ShortName</a></span></h5>
+                    <h5><span>Institute: <a href="/Accounts/Details/@Model.InstituteID">@Html.DisplayFor(model => model.Institute.ShortName)</a></span></h5>
                     <hr style="margin: 10px 10px 10px -10px;">
                 </div>
                 <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"

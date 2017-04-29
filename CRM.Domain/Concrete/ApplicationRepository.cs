@@ -20,12 +20,6 @@ namespace CRM.Domain.Concrete
             _entity = _context.Set<Application>();
         }
 
-        public int Add(Application application)
-        {
-            _context.Entry(application).State = EntityState.Added;
-            SetCreatedSignature(application);
-            return _context.SaveChanges();
-        }
         public int Delete(int id)
         {
             Application item = Get(id);
@@ -92,6 +86,7 @@ namespace CRM.Domain.Concrete
 
         public int Update(Application Item)
         {
+            //await CreateActivity(Item);
             SetModifiedSignature(Item);
             _context.Update(Item);
             _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
@@ -100,18 +95,28 @@ namespace CRM.Domain.Concrete
         }
         public async Task<int> UpdateAsync(Application Item)
         {
+            await CreateActivity(Item);
             SetModifiedSignature(Item);
-            _context.Update(Item);
+            _context.Entry(Item).State= EntityState.Modified;
             _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
             _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
             return await _context.SaveChangesAsync();
         }
 
-        public Task<int> AddAsync(Application application)
+        public int Add(Application application)
         {
+            //await CreateActivity(application);
             _context.Entry(application).State = EntityState.Added;
             SetCreatedSignature(application);
-            return _context.SaveChangesAsync();
+            return _context.SaveChanges();
+        }
+
+        public async Task<int> AddAsync(Application application)
+        {
+            await CreateActivity(application);
+            SetCreatedSignature(application);
+            _context.Entry(application).State = EntityState.Added;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> DeleteAsync(int id)
@@ -120,9 +125,42 @@ namespace CRM.Domain.Concrete
             _entity.Remove(item);
             return await _context.SaveChangesAsync();
         }
+
         public Task<IQueryable<Application>> GetAllAsync()
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<Activity> CreateActivity(Application application)
+        {
+            if (application.SubmittedDate == null || application.Status != Application.ApplicationStatusEnum.Applied) return null;
+
+            if (application.ApplicationID != 0) // Check if SubmittedDate is changed when it is not a new application
+            {
+                Application current = await _entity.AsNoTracking()
+                        .SingleOrDefaultAsync(x => x.ApplicationID == application.ApplicationID);
+                if (current.SubmittedDate != null && current.SubmittedDate == application.SubmittedDate
+                    && current.Status == Application.ApplicationStatusEnum.Applied)
+                    return null;
+            }
+
+            Activity a = new Activity()
+            {
+                Status = Activity.ActivityStatusEnum.OpenTask,
+                ActivityType = Activity.ActivityTypeEnum.Other,
+                Subject = "[System] Follow Institute Application ",
+                StartTime = application.SubmittedDate.GetValueOrDefault().AddDays(7),
+                AttendedAccountID = application.InstituteID,
+                AttendedCustomerID = application.StudentID,
+            };
+            SetCreatedSignature(a);
+
+            // Set activity owner as the student owner or if student owner is empty, set the current user.
+            Student s = await _context.Students.Where(x => x.CustomerID == application.StudentID).AsNoTracking().SingleOrDefaultAsync();
+            a.ActivityOwnerID = (s.CustomerOwnerID == null || s.CustomerOwnerID == "") ? a.ModifiedByID : s.CustomerOwnerID;
+            _context.Entry(a).State= EntityState.Added;
+            return a;
+
         }
     }
 }

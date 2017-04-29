@@ -21,6 +21,7 @@ namespace CRM.Domain.Entities
 
         [StringLength(50, MinimumLength = 2)]
         [Display(Name = "Short Name")]
+        [Required]
         public string ShortName { get; set; }
 
 

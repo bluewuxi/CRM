@@ -9,16 +9,19 @@ namespace CRM.Domain.Entities
     {
         public enum EnrollmentStatusEnum : int
         {
-            Actived=0, Closed
+            Actived = 0, Closed
         }
 
         public int EnrollmentID { get; set; }
         public Student Student { get; set; }
         [Display(Name = "Student")]
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Student is required")]
         public int StudentID { get; set; }
 
         public Account Institute { get; set; }
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Institue is required")]
         [Display(Name = "Institute")]
         public int InstituteID { get; set; }
 
@@ -27,10 +30,10 @@ namespace CRM.Domain.Entities
         public DateTime? PaymentDate { get; set; }
 
         [Display(Name = "Due Date"), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? DueDate { get; set; }
+        public DateTime DueDate { get; set; }
 
         [Display(Name = "End Date"), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "money")]

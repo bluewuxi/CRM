@@ -27,21 +27,22 @@
             <p style="font-size:18px; margin:0px; padding:0px;">@ViewData["Title"]</p>
         </div>
         <div class="panel-body">
+            <div class="alert alert-warning"><i class="fa fa-info-circle fa-fw"></i>System will create a following task for Active Enrollment with [Start Date] = [Due Date] - 30 Days</div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row crm-style">
                 <div class="col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
                             <input type="hidden" asp-for="StudentID" class="form-control" />
-                            <span asp-validation-for="StudentID" class="text-danger"></span>
                             <label asp-for="StudentID" class="control-label col-md-4"></label>
                             <div class="col-md-8 ">
                                 <div class="input-group">
-                                    <input id="studentname" class="form-control" asp-for="Student.Name" readonly />
+                                    <input  class="form-control" asp-for="Student.Name"  data-val="false" readonly />
                                     <span class="input-group-btn">
                                         <button type="button" id="btnStudent" class="btn btn-default"><i class="fa fa-search fa-fw"></i></button>
                                     </span>
                                 </div><!-- /input-group -->
+                                <span asp-validation-for="StudentID" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -73,16 +74,17 @@
                 <div class="col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <input type="hidden" asp-for="InstituteID" class="form-control" />
-                            <span asp-validation-for="InstituteID" class="text-danger"></span>
+                            <input type="hidden" asp-for="Institute.ShortName"  data-val="false" />
+                            <input type="hidden" asp-for="InstituteID" class="form-control " />
                             <label asp-for="InstituteID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 ">
+                           <div class="col-md-8 ">
                                 <div class="input-group">
-                                    <input id="institutename" class="form-control" asp-for="Institute.Name" readonly />
+                                    <input class="form-control" data-val="false" asp-for="Institute.Name" readonly />
                                     <span class="input-group-btn">
                                         <button type="button" id="btnInstitute" class="btn btn-default"><i class="fa fa-search fa-fw"></i></button>
                                     </span>
                                 </div><!-- /input-group -->
+                                <span asp-validation-for="InstituteID" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -96,16 +98,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <input type="hidden" asp-for="EnrollmentAgent.ShortName"  data-val="false" />
                             <input type="hidden" asp-for="EnrollmentAgentID" class="form-control" />
-                            <span asp-validation-for="EnrollmentAgentID" class="text-danger"></span>
                             <label asp-for="EnrollmentAgentID" class="control-label col-md-4"></label>
                             <div class="col-md-8 ">
                                 <div class="input-group">
-                                    <input id="EnrollmentAgentName" class="form-control" asp-for="EnrollmentAgent.Name" readonly />
+                                    <input class="form-control" data-val="false" asp-for="EnrollmentAgent.Name" readonly />
                                    <span class="input-group-btn">
                                         <button type="button" id="btnAgent" class="btn btn-default"><i class="fa fa-search fa-fw"></i></button>
                                     </span>
                                 </div><!-- /input-group -->
+                                <span asp-validation-for="EnrollmentAgentID" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -126,7 +129,7 @@
 {
     crmCode = "students",
     valueRef = "StudentID",
-    displayRef = "studentname",
+    displayRef = "Student_Name",
     buttonRef = "btnStudent",
     onSelectFunc = ""
 })
@@ -134,7 +137,7 @@
 {
     crmCode = "institutes",
     valueRef = "InstituteID",
-    displayRef = "institutename",
+    displayRef = "Institute_Name",
     buttonRef = "btnInstitute",
     onSelectFunc = ""
 })
@@ -142,7 +145,7 @@
 {
     crmCode = "agents",
     valueRef = "EnrollmentAgentID",
-    displayRef = "EnrollmentAgentName",
+    displayRef = "EnrollmentAgent_Name",
     buttonRef = "btnAgent",
     onSelectFunc = ""
 })

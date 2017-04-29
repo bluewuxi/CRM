@@ -20,12 +20,6 @@ namespace CRM.Domain.Concrete
             visaEntity = _context.Set<VisaApplication>();
         }
 
-        public int Add(VisaApplication visa)
-        {
-            SetCreatedSignature(visa);
-            _context.Entry(visa).State = EntityState.Added;
-            return _context.SaveChanges();
-        }
         public int Delete(int id)
         {
             VisaApplication item = Get(id);
@@ -95,28 +89,39 @@ namespace CRM.Domain.Concrete
         {
             return visaEntity.Include(u => u.Student).Include(i=>i.Institute).AsQueryable();
         }
-        public int Update(VisaApplication Item)
+        public int Update(VisaApplication visa)
         {
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            SetModifiedSignature(visa);
+            _context.Update(visa);
+            _context.Entry(visa).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(visa).Property(x => x.CreatedTime).IsModified = false;
             return _context.SaveChanges();
         }
-        public async Task<int> UpdateAsync(VisaApplication Item)
+        public async Task<int> UpdateAsync(VisaApplication visa)
         {
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            if (visa.Status == VisaApplication.VisaStatusEnum.submitted) await CreateActivityForSubmit(visa);
+            if (visa.Status == VisaApplication.VisaStatusEnum.approved) await CreateActivityForExpired(visa);
+            SetModifiedSignature(visa);
+            _context.Update(visa);
+            _context.Entry(visa).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(visa).Property(x => x.CreatedTime).IsModified = false;
             return await _context.SaveChangesAsync();
         }
 
-        public Task<int> AddAsync(VisaApplication visa)
+        public int Add(VisaApplication visa)
         {
+            SetCreatedSignature(visa);
+            _context.Entry(visa).State = EntityState.Added;
+            return _context.SaveChanges();
+        }
+
+        public async Task<int> AddAsync(VisaApplication visa)
+        {
+            if (visa.Status== VisaApplication.VisaStatusEnum.submitted) await CreateActivityForSubmit(visa);
+            if (visa.Status == VisaApplication.VisaStatusEnum.approved) await CreateActivityForExpired(visa);
             _context.Entry(visa).State = EntityState.Added;
             SetCreatedSignature(visa);
-            return _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         public async Task<int> DeleteAsync(int id)
         {
@@ -127,6 +132,74 @@ namespace CRM.Domain.Concrete
         public Task<IQueryable<VisaApplication>> GetAllAsync()
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<Activity> CreateActivityForSubmit(VisaApplication application)
+        {
+            //If it is applied status and SubmittedDate is set or modified, 
+            //a activity is automaticly created with StartTime= SubmittedDate + 7
+
+            if (application.SubmittedDate == null || application.Status != VisaApplication.VisaStatusEnum.submitted) return null;
+
+            if (application.VisaApplicationID != 0) // Check if SubmittedDate is changed when it is not a new application
+            {
+                VisaApplication current = await visaEntity.AsNoTracking()
+                        .SingleOrDefaultAsync(x => x.VisaApplicationID == application.VisaApplicationID);
+                if (current.SubmittedDate != null && current.SubmittedDate == application.SubmittedDate
+                    && current.Status == VisaApplication.VisaStatusEnum.submitted)
+                    return null;
+            }
+
+            Activity a = new Activity()
+            {
+                Status = Activity.ActivityStatusEnum.OpenTask,
+                ActivityType = Activity.ActivityTypeEnum.Other,
+                Subject = "[System] Follow Visa Application ",
+                StartTime = application.SubmittedDate.GetValueOrDefault().AddDays(14),
+                AttendedAccountID = application.InstituteID,
+                AttendedCustomerID = application.StudentID,
+            };
+            SetCreatedSignature(a);
+
+            // Set activity owner as the student owner or if student owner is empty, set the current user.
+            Student s = await _context.Students.Where(x => x.CustomerID == application.StudentID).AsNoTracking().SingleOrDefaultAsync();
+            a.ActivityOwnerID = (s.CustomerOwnerID == null || s.CustomerOwnerID == "") ? a.ModifiedByID : s.CustomerOwnerID;
+            await _context.Activities.AddAsync(a);
+            return a;
+        }
+
+        private async Task<Activity> CreateActivityForExpired(VisaApplication application)
+        {
+            //If it is applied status and SubmittedDate is set or modified, 
+            //a activity is automaticly created with StartTime= SubmittedDate + 7
+
+            if (application.ExpiredDate == null || application.Status != VisaApplication.VisaStatusEnum.approved) return null;
+
+            if (application.VisaApplicationID != 0) // Check if SubmittedDate is changed when it is not a new application
+            {
+                VisaApplication current = await visaEntity.AsNoTracking()
+                        .SingleOrDefaultAsync(x => x.VisaApplicationID == application.VisaApplicationID);
+                if (current.ExpiredDate != null && current.ExpiredDate == application.ExpiredDate
+                    && current.Status == VisaApplication.VisaStatusEnum.approved)
+                    return null;
+            }
+
+            Activity a = new Activity()
+            {
+                Status = Activity.ActivityStatusEnum.OpenTask,
+                ActivityType = Activity.ActivityTypeEnum.Other,
+                Subject = "[System] Beware Visa Application Expired",
+                StartTime = application.ExpiredDate.GetValueOrDefault().AddDays(-30),
+                AttendedAccountID = application.InstituteID,
+                AttendedCustomerID = application.StudentID,
+            };
+            SetCreatedSignature(a);
+
+            // Set activity owner as the student owner or if student owner is empty, set the current user.
+            Student s = await _context.Students.Where(x => x.CustomerID == application.StudentID).AsNoTracking().SingleOrDefaultAsync();
+            a.ActivityOwnerID = (s.CustomerOwnerID == null || s.CustomerOwnerID == "") ? a.ModifiedByID : s.CustomerOwnerID;
+            await _context.Activities.AddAsync(a);
+            return a;
         }
     }
 }

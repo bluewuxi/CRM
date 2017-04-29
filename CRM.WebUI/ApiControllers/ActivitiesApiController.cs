@@ -31,13 +31,13 @@ namespace CRM.WebUI.ApiControllers
         public IActionResult ListLeadActivities([FromRoute] int id, [FromRoute] string status="")
         {
             IQueryable<Activity> records;
-            records = _Repo.GetAll().Where(u=>u.AttendedCustomer.CustomerID==id).OrderByDescending(s => s.StartTime);
+            records = _Repo.GetAll().Where(u=>u.AttendedCustomer.CustomerID==id).OrderBy(s => s.StartTime);
 
             if (status.Trim().ToLower() == "open")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask || 
                         (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event) );
 
-            if (status.Trim().ToLower() == "close")
+            if (status.Trim().ToLower() == "closed")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
                         (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
 
@@ -48,13 +48,13 @@ namespace CRM.WebUI.ApiControllers
         public IActionResult ListStudentActivities([FromRoute] int id, [FromRoute] string status="")
         {
             IQueryable<Activity> records;
-            records = _Repo.GetAll().Where(u => u.AttendedCustomer.CustomerID == id).OrderByDescending(s=>s.StartTime);
+            records = _Repo.GetAll().Where(u => u.AttendedCustomer.CustomerID == id).OrderBy(s=>s.StartTime);
 
             if (status.Trim().ToLower() == "open")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask ||
                         (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
 
-            if (status.Trim().ToLower() == "close")
+            if (status.Trim().ToLower() == "closed")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
                         (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
             return Json(records);
@@ -64,13 +64,13 @@ namespace CRM.WebUI.ApiControllers
         public IActionResult ListAccountActivities([FromRoute] int id, [FromRoute] string status="")
         {
             IQueryable<Activity> records;
-            records = _Repo.GetAll().Where(u => u.AttendedAccount.AccountID == id).OrderByDescending(s => s.StartTime);
+            records = _Repo.GetAll().Where(u => u.AttendedAccount.AccountID == id).OrderBy(s => s.StartTime);
 
             if (status.Trim().ToLower() == "open")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask ||
                         (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
 
-            if (status.Trim().ToLower() == "close")
+            if (status.Trim().ToLower() == "closed")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
                         (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
 
@@ -85,13 +85,13 @@ namespace CRM.WebUI.ApiControllers
             ApplicationUser user = await GetCurrentUserAsync();
             if (user == null) return NotFound();
 
-            records = _Repo.GetAll().Where(u => u.ActivityOwnerID == user.Id ).OrderByDescending(s => s.StartTime);
+            records = _Repo.GetAll().Where(u => u.ActivityOwnerID == user.Id ).OrderBy(s => s.StartTime);
 
             if (status.Trim().ToLower() == "open")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.OpenTask ||
                         (u.EndTime >= DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
 
-            if (status.Trim().ToLower() == "close")
+            if (status.Trim().ToLower() == "closed")
                 records = records.Where(u => u.Status == Activity.ActivityStatusEnum.ClosedTask ||
                         (u.EndTime < DateTime.Now && u.Status == Activity.ActivityStatusEnum.Event));
 

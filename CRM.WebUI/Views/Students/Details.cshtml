@@ -200,8 +200,8 @@
     @section Scripts {
         <script>
             $("#crm-students").addClass('active');
-            function deleteLead() {
-                if (confirm("Are you sure to delete the Lead? All activites will be deleted as well.")) {
+            function deleteStudent() {
+                if (confirm("Are you sure to delete the Student? All activites will be deleted as well.")) {
                     $("#confirmForm").submit();
                 }
             };
@@ -255,7 +255,7 @@
 
             $table = $("#closedActivitiesTable");
             $table.bootstrapTable({
-                url: "/api/activities/student/@Model.CustomerID/closed ",
+                url: "/api/activities/student/@Model.CustomerID/closed",
                     height: 300,
                     clickToSelect: true,
                     sidePagination: 'client',

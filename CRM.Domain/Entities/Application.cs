@@ -16,11 +16,13 @@ namespace CRM.Domain.Entities
         public Student Student { get; set; }
         [Required]
         [Display(Name = "Student")]
+        [Range(1, int.MaxValue, ErrorMessage = "Student is required")]
         public int StudentID { get; set; }
 
         public Account Institute { get; set; }
         [Required]
         [Display(Name = "Institute")]
+        [Range(1, int.MaxValue, ErrorMessage = "Institue is required")]
         public int InstituteID { get; set; }
 
         [DataType(DataType.Currency)]

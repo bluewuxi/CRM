@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,7 +52,8 @@ namespace CRM.WebUI.Controllers
         // GET: Enrollments/Create
         public IActionResult Create()
         {
-            Enrollment newRecord = new Enrollment() {  Status = Enrollment.EnrollmentStatusEnum.Actived };
+            Enrollment newRecord = new Enrollment() {  Status = Enrollment.EnrollmentStatusEnum.Actived,
+                DueDate =DateTime.Today.AddYears(1), EndDate= DateTime.Today.AddYears(1), PaymentDate=DateTime.Today };
             return View(newRecord);
         }
 
@@ -93,7 +95,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentID,StudentID,InstituteID,PaymentDate,DueDate,EndDate,Tuition,EnrollmentAgentID,Status,Note")] Enrollment enrollment)
+        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentID,StudentID,Student, Institute, EnrollmentAgent, InstituteID,PaymentDate,DueDate,EndDate,Tuition,EnrollmentAgentID,Status,Note")] Enrollment enrollment)
         {
             if (id != enrollment.EnrollmentID)
             {

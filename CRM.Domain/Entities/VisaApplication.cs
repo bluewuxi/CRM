@@ -21,6 +21,7 @@ namespace CRM.Domain.Entities
         public Student Student { get; set; }
         [Required]
         [Display(Name = "Student")]
+        [Range(1, int.MaxValue, ErrorMessage = "Student is required")]
         public int StudentID { get; set; }
 
         public VisaStatusEnum Status { get; set; }
@@ -50,6 +51,7 @@ namespace CRM.Domain.Entities
 
         public Account Institute { get; set; }
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Institue is required")]
         [Display(Name = "Institute")]
         public int InstituteID { get; set; }
 

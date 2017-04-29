@@ -16,7 +16,7 @@
                     <hr style="margin: 10px 10px 10px -10px;">
                     <h5><span>Institute: <a href="/Accounts/Details/@Model.InstituteID">@Model.Institute.ShortName</a> </span></h5>
                     <hr style="margin: 10px 10px 10px -10px;">
-                    <h5><span>Agent: <a href="/Accounts/Details/@Model.EnrollmentAgentID">@Model.EnrollmentAgent.ShortName</a> </span></h5>
+                    <h5><span>Agent: <a href="/Accounts/Details/@Model.EnrollmentAgentID">@Html.DisplayFor(model => model.EnrollmentAgent.ShortName)</a> </span></h5>
                     <hr style="margin: 10px 10px 10px -10px;">
                 </div>
                 <vc:record-info created-by="@Model.CreatedBy" modified-by="@Model.ModifiedBy"
