@@ -15,7 +15,7 @@ using CRM.Domain.Entities;
 namespace CRM.WebUI.Controllers
 {
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admins")]
     public class RolesAdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

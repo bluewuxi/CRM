@@ -68,7 +68,7 @@ namespace CRM.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountID,Name,PreferName,ContactGender,ContactName,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note,AccountType,AccountOwner")] Account account)
+        public async Task<IActionResult> Create([Bind("AccountID,Name,ContactGender,ContactName,ShortName,Birthdate,Nationality,PassportNumber,EMail,Mobile,RegisterDate,Address,Note,AccountType,AccountOwner")] Account account)
         {
             if (ModelState.IsValid)
             {
@@ -140,7 +140,13 @@ namespace CRM.WebUI.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             BindUserContext(_repo);
-            await _repo.DeleteAsync(id);
+            Account a = await _repo.GetAsync(id);
+            int iResult =await _repo.DeleteAsync(id);
+            if (iResult<0)
+            {
+                ModelState.AddModelError("", "Make sure there are no any applications, visa applications, and enrollments related with this account.");
+                return View("Details", a);
+            }
             return RedirectToAction("Index");
         }
 

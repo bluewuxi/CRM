@@ -36,6 +36,12 @@ namespace CRM.WebUI.ApiControllers
             List<QuerySetting> aSort = null;
 
             BindUserContext(_Repo);
+            string userLimitation = await GetUserLimitation();
+            if (userLimitation != "")
+            {
+                if (aSearch == null) aSearch = new List<QuerySetting>();
+                aSearch.Add(new QuerySetting("Owner", userLimitation));
+            }
 
             if (!(search == null || search == ""))
             {

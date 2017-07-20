@@ -133,6 +133,8 @@ namespace CRM.WebUI.Migrations
 
                     b.Property<DateTime>("CreatedTime");
 
+                    b.Property<DateTime?>("EnrollDate");
+
                     b.Property<int>("InstituteID");
 
                     b.Property<string>("ModifiedByID");
@@ -140,6 +142,8 @@ namespace CRM.WebUI.Migrations
                     b.Property<DateTime>("ModifiedTime");
 
                     b.Property<string>("Note");
+
+                    b.Property<DateTime?>("OfferDate");
 
                     b.Property<int>("Status");
 

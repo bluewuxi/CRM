@@ -1,4 +1,5 @@
 SET ASPNETCORE_URLS=https://*:80 && dotnet CRM.WebUI.dll
+export ASPNETCORE_URLS=http://*:80
 
 dotnet ef migrations add correctVisaType
 
@@ -8,6 +9,10 @@ dotnet restore
 
 dotnet publish -c release -r Win10-x64
 
-
+dotnet run --urls "http://*:80"
 
      <RuntimeIdentifiers>win10-x64;osx.10.11-x64</RuntimeIdentifiers>
+sudo apt-get install dotnet-dev-1.0.1
+
+
+npm update -D && npm update -S //update all

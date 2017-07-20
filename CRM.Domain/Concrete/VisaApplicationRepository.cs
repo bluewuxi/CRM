@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CRM.Domain.Concrete
@@ -20,12 +19,6 @@ namespace CRM.Domain.Concrete
             visaEntity = _context.Set<VisaApplication>();
         }
 
-        public int Delete(int id)
-        {
-            VisaApplication item = Get(id);
-            visaEntity.Remove(item);
-            return _context.SaveChanges();
-        }
         public VisaApplication Get(int id)
         {
             return visaEntity.Include(u => u.Student)
@@ -34,6 +27,7 @@ namespace CRM.Domain.Concrete
                 .Include(a => a.CreatedBy)
                 .SingleOrDefault(s => s.VisaApplicationID == id);
         }
+
         public async Task<VisaApplication> GetAsync(int id)
         {
             return await visaEntity.Include(u => u.Student)
@@ -44,16 +38,19 @@ namespace CRM.Domain.Concrete
         }
         public IQueryable<VisaApplication> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            string sStudentName, sInstituteName, sStatus, sVisaAppliedType, sVisaType, sSubmittedDate, sExpiredDate;
+            string sStudentName, sInstituteName, sStatus, sVisaAppliedType, sVisaType, sSubmittedDate, sExpiredDate, sOwner;
             IQueryable<VisaApplication> records = visaEntity.Include(u => u.Student).Include(i => i.Institute).AsQueryable();
 
             if (search != null && search.Count() > 0)
             {
-                sStudentName = search.Where<QuerySetting>(u => u.Field == "StudentName").Select(p => p.Value).SingleOrDefault().Trim();
+                sOwner = search.Where(u => u.Field == "Owner").Select(p => p.Value).SingleOrDefault();
+                if (sOwner != null && sOwner != "") records = records.Where(u => u.Student.CustomerOwnerID == sOwner || u.Student.ModifiedByID == sOwner || u.Student.CustomerOwnerID == null);
+
+                sStudentName = search.Where<QuerySetting>(u => u.Field == "StudentName").Select(p => p.Value).SingleOrDefault();
                 if (sStudentName != null && sStudentName != "") records = records.Where(u => u.Student.Name.ToLower().Contains(sStudentName.ToLower())
                     || u.Student.PreferName.ToLower().Contains(sStudentName.ToLower()));
 
-                sInstituteName = search.Where<QuerySetting>(u => u.Field == "InstituteName").Select(p => p.Value).SingleOrDefault().Trim();
+                sInstituteName = search.Where<QuerySetting>(u => u.Field == "InstituteName").Select(p => p.Value).SingleOrDefault();
                 if (sInstituteName != null && sInstituteName != "") records = records.Where(u => u.Institute.Name.ToLower().Contains(sInstituteName.ToLower())
                     || u.Institute.ShortName.ToLower().Contains(sInstituteName.ToLower()));
 
@@ -63,7 +60,7 @@ namespace CRM.Domain.Concrete
                 sStatus = search.Where<QuerySetting>(u => u.Field == "Status").Select(p => p.Value).SingleOrDefault();
                 if (sStatus != null && sStatus != "") records = records.Where(u => (int)u.Status == int.Parse(sStatus));
 
-                sVisaType = search.Where<QuerySetting>(u => u.Field == "VisaType").Select(p => p.Value).SingleOrDefault().Trim();
+                sVisaType = search.Where<QuerySetting>(u => u.Field == "VisaType").Select(p => p.Value).SingleOrDefault();
                 if (sVisaType != null && sVisaType != "") records = records.Where(u => u.VisaType.ToLower().Contains(sVisaType.ToLower()));
 
                 sSubmittedDate = search.Where<QuerySetting>(u => u.Field == "SubmittedDate").Select(p => p.Value).SingleOrDefault();
@@ -108,13 +105,6 @@ namespace CRM.Domain.Concrete
             return await _context.SaveChangesAsync();
         }
 
-        public int Add(VisaApplication visa)
-        {
-            SetCreatedSignature(visa);
-            _context.Entry(visa).State = EntityState.Added;
-            return _context.SaveChanges();
-        }
-
         public async Task<int> AddAsync(VisaApplication visa)
         {
             if (visa.Status== VisaApplication.VisaStatusEnum.submitted) await CreateActivityForSubmit(visa);
@@ -154,7 +144,7 @@ namespace CRM.Domain.Concrete
             {
                 Status = Activity.ActivityStatusEnum.OpenTask,
                 ActivityType = Activity.ActivityTypeEnum.Other,
-                Subject = "[System] Follow Visa Application ",
+                Subject = "[System] Follow Visa Application",
                 StartTime = application.SubmittedDate.GetValueOrDefault().AddDays(14),
                 AttendedAccountID = application.InstituteID,
                 AttendedCustomerID = application.StudentID,
@@ -188,8 +178,9 @@ namespace CRM.Domain.Concrete
             {
                 Status = Activity.ActivityStatusEnum.OpenTask,
                 ActivityType = Activity.ActivityTypeEnum.Other,
-                Subject = "[System] Beware Visa Application Expired",
+                Subject = "[System] Beware of Visa Expired",
                 StartTime = application.ExpiredDate.GetValueOrDefault().AddDays(-30),
+                EndTime= application.ExpiredDate.GetValueOrDefault(),
                 AttendedAccountID = application.InstituteID,
                 AttendedCustomerID = application.StudentID,
             };

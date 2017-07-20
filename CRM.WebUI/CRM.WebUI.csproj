@@ -4,13 +4,19 @@
     <OutputType>exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <UserSecretsId>aspnet-CRM.WebUI-2a410cee-01d9-4610-8605-182dbe97ed4e</UserSecretsId>
+    <RuntimeIdentifiers>ubuntu.16.04-x64;win10-x64</RuntimeIdentifiers>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
     <ApplicationIcon />
     <OutputTypeEx>exe</OutputTypeEx>
+    <OutputType>exe</OutputType>
     <StartupObject />
     <AssemblyName>CRM.WebUI</AssemblyName>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  
 
   <ItemGroup>
     <Compile Remove="wwwroot\lib\knockout\**" />

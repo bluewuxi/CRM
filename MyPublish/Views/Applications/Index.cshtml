@@ -14,32 +14,32 @@
         <div class="panel-body">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label for="StudentName" class="col-sm-4">Student:</label>
-                    <input id="StudentName" class="col-sm-7 crm-query" placeholder="Student Name" />
+                    <label for="StudentName" class="col-xs-4">Student:</label>
+                    <input id="StudentName" class="col-xs-7 crm-query" placeholder="Student Name" />
                 </div>
                 <div class="form-group">
-                    <label for="InstituteName" class="col-sm-4">Institute:</label>
-                    <input id="InstituteName" class="col-sm-7 crm-query" placeholder="Institute Name" />
+                    <label for="InstituteName" class="col-xs-4">Institute:</label>
+                    <input id="InstituteName" class="col-xs-7 crm-query" placeholder="Institute Name" />
                 </div>
                 <div class="form-group">
-                    <label for="AgentName" class="col-sm-4">Institute:</label>
-                    <input id="AgentName" class="col-sm-7 crm-query" placeholder="Agent Name" />
+                    <label for="AgentName" class="col-xs-4">Institute:</label>
+                    <input id="AgentName" class="col-xs-7 crm-query" placeholder="Agent Name" />
                 </div>
                 <div class="form-group">
-                    <label for="Status" class="col-sm-4">Status: </label>
+                    <label for="Status" class="col-xs-4">Status: </label>
                     <select class="col-sm-7 crm-query" id="Status" value="" asp-items="Html.GetEnumSelectList<Application.ApplicationStatusEnum>()">
                         <option value="">-- Select a Status --</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="SubmittedDate" class="col-sm-3">Submit:</label>
-                    <input id="SubmittedDate" class="col-sm-8 crm-query datepicker-here" placeholder="date range"
+                    <label for="SubmittedDate" class="col-xs-3">Submit:</label>
+                    <input id="SubmittedDate" class="col-xs-8 crm-query datepicker-here" placeholder="date range"
                            data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
                            data-range="true" />
                 </div>
                 <div class="form-group" style="text-align:center;">
-                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info "><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default "><i class="fa fa-fw fa-eraser"></i>Clear</button>
                 </div>
             </div>
         </div>
@@ -52,7 +52,12 @@
         <i class="glyphicon glyphicon-plus"></i> Create
     </button>
 </form>
-<table id="applicationsTable"></table>
+<table id="applicationsTable"
+    data-show-refresh="true"
+    data-page-list="[12, 15, 25, 50]"
+    data-show-toggle="true"
+    data-show-columns="true">
+</table>
 
 @section Scripts
 {

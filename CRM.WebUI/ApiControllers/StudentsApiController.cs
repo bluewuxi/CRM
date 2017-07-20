@@ -45,6 +45,13 @@ namespace CRM.WebUI.ApiControllers
                 aSort = JsonConvert.DeserializeObject<List<QuerySetting>>(sort);
             }
 
+            string userLimitation = await GetUserLimitation();
+            if (userLimitation != "")
+            {
+                if (aSearch == null) aSearch = new List<QuerySetting>();
+                aSearch.Add(new QuerySetting("Owner", userLimitation));
+            }
+
             records = _Repo.GetAll(aSearch, aSort);
             var count = await records.CountAsync();
 

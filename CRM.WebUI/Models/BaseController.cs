@@ -39,6 +39,14 @@ namespace CRM.WebUI.Models
             return 0;
         }
 
+        public async Task<string> GetUserLimitation()
+        {
+            ApplicationUser aUser = await _userMnger.GetUserAsync(User);
+            if ( await _userMnger.IsInRoleAsync(aUser, "Admins"))
+                return "";
+            return aUser.Id;
+        }
+
         public Task<ApplicationUser> GetCurrentUserAsync()
         {
             return _userMnger.GetUserAsync(HttpContext.User);

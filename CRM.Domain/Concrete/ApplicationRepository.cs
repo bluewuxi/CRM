@@ -20,12 +20,6 @@ namespace CRM.Domain.Concrete
             _entity = _context.Set<Application>();
         }
 
-        public int Delete(int id)
-        {
-            Application item = Get(id);
-            _entity.Remove(item);
-            return _context.SaveChanges();
-        }
         public Application Get(int id)
         {
             return _entity.Include(u => u.Institute).Include(s=>s.Student)
@@ -51,21 +45,24 @@ namespace CRM.Domain.Concrete
 
         public IQueryable<Application> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            string sStudentName, sInstituteName, sAgentName, sStatus, sSubmittedDate;
+            string sStudentName, sInstituteName, sAgentName, sStatus, sSubmittedDate, sOwner;
 
             IQueryable<Application> records = _entity.Include(u => u.Institute).Include(s => s.Student).Include(a => a.ApplicationAgent);
 
             if (search != null && search.Count() > 0)
             {
-                sStudentName = search.Where<QuerySetting>(u => u.Field == "StudentName").Select(p => p.Value).SingleOrDefault().Trim();
+                sOwner = search.Where(u => u.Field == "Owner").Select(p => p.Value).SingleOrDefault();
+                if (sOwner != null && sOwner != "") records = records.Where(u => u.Student.CustomerOwnerID == sOwner || u.Student.ModifiedByID == sOwner || u.Student.CustomerOwnerID == null);
+
+                sStudentName = search.Where<QuerySetting>(u => u.Field == "StudentName").Select(p => p.Value).SingleOrDefault();
                 if (sStudentName != null && sStudentName != "") records = records.Where(u => u.Student.Name.ToLower().Contains(sStudentName.ToLower())
                     || u.Student.PreferName.ToLower().Contains(sStudentName.ToLower()));
 
-                sInstituteName = search.Where<QuerySetting>(u => u.Field == "InstituteName").Select(p => p.Value).SingleOrDefault().Trim();
+                sInstituteName = search.Where<QuerySetting>(u => u.Field == "InstituteName").Select(p => p.Value).SingleOrDefault();
                 if (sInstituteName != null && sInstituteName != "") records = records.Where(u => u.Institute.Name.ToLower().Contains(sInstituteName.ToLower())
                     || u.Institute.ShortName.ToLower().Contains(sInstituteName.ToLower()));
 
-                sAgentName = search.Where<QuerySetting>(u => u.Field == "AgentName").Select(p => p.Value).SingleOrDefault().Trim();
+                sAgentName = search.Where<QuerySetting>(u => u.Field == "AgentName").Select(p => p.Value).SingleOrDefault();
                 if (sAgentName != null && sAgentName != "") records = records.Where(u => u.ApplicationAgent.Name.ToLower().Contains(sAgentName.ToLower())
                     || u.ApplicationAgent.ShortName.ToLower().Contains(sAgentName.ToLower()));
 
@@ -84,15 +81,6 @@ namespace CRM.Domain.Concrete
             return records;
         }
 
-        public int Update(Application Item)
-        {
-            //await CreateActivity(Item);
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return _context.SaveChanges();
-        }
         public async Task<int> UpdateAsync(Application Item)
         {
             await CreateActivity(Item);
@@ -101,14 +89,6 @@ namespace CRM.Domain.Concrete
             _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
             _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
             return await _context.SaveChangesAsync();
-        }
-
-        public int Add(Application application)
-        {
-            //await CreateActivity(application);
-            _context.Entry(application).State = EntityState.Added;
-            SetCreatedSignature(application);
-            return _context.SaveChanges();
         }
 
         public async Task<int> AddAsync(Application application)

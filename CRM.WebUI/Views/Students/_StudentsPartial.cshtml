@@ -12,7 +12,7 @@
     <div class="panel panel-info" style="margin-top:5px;">
         <div class="panel-heading">
             <div class="btn-group pull-right form-inline">
-                <a type="button" class="btn btn-sm btn-info" href='/Students' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a type="button" class="btn btn-sm btn-info" href='/Students' style="float: right;"><i class="fa fa-fw fa-reply"></i>List</a>
                 <button type="submit" value="Save" class="btn btn-sm btn-success" stype="margin-left: 15px"><i class="fa fa-fw fa-save"></i>Save</button>
 @{if (ViewData["Action"].ToString() == "Edit")
     {
@@ -29,40 +29,40 @@
         <div class="panel-body">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row crm-style">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label asp-for="Name" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Name" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="Name" class="form-control" />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="PreferName" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="PreferName" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="PreferName" class="form-control" />
                                 <span asp-validation-for="PreferName" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Gender" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Gender" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<GenderEnum>()"></select>
                                 <span asp-validation-for="Gender" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Birthdate" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Birthdate" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="Birthdate" class="form-control datepicker-here" placeholder="Date of Birth"
                                        data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="Birthdate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Nationality" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Nationality" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="Nationality" class="form-control" >
                                     <option value="">- select Nationality -</option>
                                     <option value="CN">China (Mainland)</option>
@@ -75,26 +75,26 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="AcademicBackground" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="AcademicBackground" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <textarea rows="2" asp-for="AcademicBackground" class="form-control"></textarea>
                                 <span asp-validation-for="AcademicBackground" class="text-danger"></span>
                             </div>
                         </div>
                        <div class="form-group">
-                            <label asp-for="Note" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Note" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <textarea rows="5" asp-for="Note" class="form-control" ></textarea>
                                 <span asp-validation-for="Note" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label asp-for="Rating" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Rating" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="Rating" class="form-control">
                                     <option value="0">0-Default</option>
                                     <option value="1">1-Acquired</option>
@@ -106,22 +106,22 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="PassportNumber" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="PassportNumber" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="PassportNumber" class="form-control" />
                                 <span asp-validation-for="PassportNumber" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ClientNumber" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="ClientNumber" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="ClientNumber" class="form-control" />
                                 <span asp-validation-for="ClientNumber" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ContactName" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="ContactName" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="ContactName" class="form-control" />
                                 <span asp-validation-for="ContactName" class="text-danger"></span>
                             </div>
@@ -129,8 +129,8 @@
                         <div class="form-group">
                             <input id="agentid" type="hidden" asp-for="AgentID" />
                             <span asp-validation-for="AgentID" class="text-danger"></span>
-                            <label asp-for="AgentID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 ">
+                            <label asp-for="AgentID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8 ">
                                 <div class="input-group">
                                     <input id="agentname" class="form-control" asp-for="Agent.Name"  data-val="false"  readonly />
                                     <span class="input-group-btn">
@@ -140,29 +140,29 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="EMail" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="EMail" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="EMail" class="form-control" />
                                 <span asp-validation-for="EMail" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Mobile" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Mobile" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="Mobile" class="form-control" />
                                 <span asp-validation-for="Mobile" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Address" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Address" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="Address" class="form-control" />
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="CustomerOwnerID" class="control-label col-md-4"></label>
-                            <div class="col-md-8">
+                            <label asp-for="CustomerOwnerID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="CustomerOwnerID" class="form-control" asp-items="ViewBag.CustomerOwnerID">
                                     <option value="">-None-</option>
                                 </select>

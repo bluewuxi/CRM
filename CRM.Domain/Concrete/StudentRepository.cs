@@ -19,18 +19,6 @@ namespace CRM.Domain.Concrete
             this._context = dbcontext;
             StudentEntity = _context.Set<Student>();
         }
-        public int Add(Student Item)
-        {
-            SetCreatedSignature(Item);
-            _context.Entry(Item).State = EntityState.Added;
-            return _context.SaveChanges();
-        }
-        public int Delete(int id)
-        {
-            Student student = Get(id);
-            StudentEntity.Remove(student);
-            return _context.SaveChanges();
-        }
         public Student Get(int id)
         {
             return StudentEntity.Include(u => u.CustomerOwner)
@@ -49,11 +37,14 @@ namespace CRM.Domain.Concrete
         }
         public IQueryable<Student> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            string sStudentName, sPassportNumber, sContactName, sRating, sBirthdate, sMobile;
+            string sOwner, sStudentName, sPassportNumber, sContactName, sRating, sBirthdate, sMobile;
             IQueryable<Student> records = StudentEntity.Include(u => u.CustomerOwner).Include(a=>a.Agent).AsQueryable();
 
             if (search != null && search.Count() > 0)
             {
+                sOwner = search.Where(u => u.Field == "Owner").Select(p => p.Value).SingleOrDefault();
+                if (sOwner != null && sOwner != "") records = records.Where(u => u.CustomerOwnerID==sOwner || u.CustomerOwnerID == null || u.ModifiedByID == sOwner);
+
                 sStudentName = search.Where(u => u.Field == "StudentName").Select(p => p.Value).SingleOrDefault();
                 if (sStudentName != null && sStudentName != "") records = records.Where(u => u.Name.ToLower().Contains(sStudentName.ToLower().Trim())
                     || u.PreferName.ToLower().Contains(sStudentName.ToLower().Trim()));
@@ -61,7 +52,7 @@ namespace CRM.Domain.Concrete
                 sMobile = search.Where(u => u.Field == "Mobile").Select(p => p.Value).SingleOrDefault();
                 if (sMobile != null && sMobile != "") records = records.Where(u => u.Mobile.Contains(sMobile.Trim()));
 
-                sContactName = search.Where(u => u.Field == "ContactName").Select(p => p.Value).SingleOrDefault().Trim();
+                sContactName = search.Where(u => u.Field == "ContactName").Select(p => p.Value).SingleOrDefault();
                 if (sContactName != null && sContactName != "") records = records.Where(u => u.ContactName.ToLower().Contains(sContactName.ToLower()));
 
                 sPassportNumber = search.Where(u => u.Field == "PassportNumber").Select(p => p.Value).SingleOrDefault();
@@ -85,14 +76,6 @@ namespace CRM.Domain.Concrete
         {
             throw new NotImplementedException();
         }
-        public int Update(Student Item)
-        {
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return _context.SaveChanges();
-        }
 
         public Task<int> AddAsync(Student Item)
         {
@@ -104,11 +87,12 @@ namespace CRM.Domain.Concrete
         {
             Student account = Get(id);
             StudentEntity.Remove(account);
+            IQueryable<Activity> activities = _context.Activities.Where(a => a.AttendedCustomerID == id);
+            foreach (Activity anActivity in activities)
+            {
+                _context.Remove(anActivity);
+            }
             return await _context.SaveChangesAsync();
-        }
-        public Task<IQueryable<Student>> GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
         public async Task<int> UpdateAsync(Student Item)
         {

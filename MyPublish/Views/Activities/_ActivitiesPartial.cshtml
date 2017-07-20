@@ -10,7 +10,7 @@
     <div class="panel panel-info" style="margin-top:5px;">
         <div class="panel-heading">
             <div class="btn-group pull-right form-inline">
-                <a type="button" class="btn btn-sm btn-info" href='/Activities' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a type="button" class="btn btn-sm btn-info" href='/Activities' style="float: right;"><i class="fa fa-fw fa-reply"></i>List</a>
                 <button type="submit" value="Save" class="btn btn-sm btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save"></i>Save</button>
                 @{if (ViewData["Action"].ToString() == "Edit")
                     {
@@ -25,73 +25,89 @@
             <p style="font-size:18px; margin:0px; padding:0px;">@ViewData["Title"]</p>
         </div>
         <div class="panel-body">
+            <div class="alert alert-warning"><i class="fa fa-info-circle fa-fw"></i>There are two kinds of Activity: <b>Event</b> and <b>Task</b>. &nbsp;
+            An <b>Event</b> will be classified as a <i>Closed Activity</i> automatically when [<i>End Time</i>] reaches, while a <b>Task</b> will remain in <i>Open Activity</i> catalogue until changing its [<i>Status</i>] to <i>Closed Task</i> manually.</div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
-                            <label asp-for="ActivityType" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="ActivityType" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="ActivityType" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityTypeEnum>()"></select>
                                 <span asp-validation-for="ActivityType" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Subject" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Subject" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="Subject" class="form-control" />
                                 <span asp-validation-for="Subject" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Content" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Content" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <textarea rows="8" asp-for="Content" class="form-control"></textarea>
                                 <span asp-validation-for="Content" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label asp-for="Status" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Status" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Activity.ActivityStatusEnum>()"></select>
                                 <span asp-validation-for="Status" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="StartTime" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="StartTime" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="StartTime" class="form-control datepicker-here" data-date-format="yyyy-mm-dd" data-clear-button="true"
                                        data-timepicker="true" data-auto-close="true" data-time-format='hh:ii' data-language="en" />
                                 <span asp-validation-for="StartTime" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="EndTime" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="EndTime" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="EndTime" class="form-control datepicker-here" data-date-format="yyyy-mm-dd" data-clear-button="true"
                                        data-timepicker="true" data-auto-close="true" data-time-format='hh:ii' data-language="en" />
                                 <span asp-validation-for="EndTime" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="AttendedAccountID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 form-inline">
-                                <input type="hidden" asp-for="AttendedAccountID" /> <input id="accountname" class="form-control" asp-for="AttendedAccount.Name" readonly />  <button type="button" id="btnAccount" class="btn btn-sm">...</button>
+                            <input type="hidden" asp-for="AttendedAccountID" />
+                            <span asp-validation-for="AttendedAccount" class="text-danger"></span>
+                            <label asp-for="AttendedAccountID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8 ">
+                                <div class="input-group">
+                                    <input type="text" id="accountname" class="form-control" asp-for="AttendedAccount.Name" data-val="false" readonly />
+                                   <span class="input-group-btn">
+                                        <button type="button" id="btnAccount" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div><!-- /input-group -->
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="AttendedCustomerID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 form-inline">
-                                <input type="hidden" asp-for="AttendedCustomerID" /><input id="customername" class="form-control" asp-for="AttendedCustomer.Name" readonly />  <button type="button" id="btnCustomer" class="btn btn-sm">...</button>
+                            <input type="hidden" asp-for="AttendedCustomerID" />
+                            <span asp-validation-for="AttendedCustomer" class="text-danger"></span>
+                            <label asp-for="AttendedCustomerID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8 ">
+                                <div class="input-group">
+                                    <input id="customername" class="form-control" asp-for="AttendedCustomer.Name"  data-val="false" readonly />
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnCustomer" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div><!-- /input-group -->
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ActivityOwnerID" class="control-label col-md-4"></label>
-                            <div class="col-md-8">
+                            <label asp-for="ActivityOwnerID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="ActivityOwnerID" class="form-control" asp-items="ViewBag.ActivityOwnerID"></select>
                                 <span asp-validation-for="ActivityOwnerID" class="text-danger"></span>
                             </div>
@@ -103,9 +119,20 @@
     </div> <!--End of Panel-->
 </form>
 
-<vc:codes-list crm-code="accounts" value-ref="AttendedAccountID" display-ref="accountname" button-ref="btnAccount" on-select-func="">
-</vc:codes-list>
-<vc:codes-list crm-code="customers" value-ref="AttendedCustomerID" display-ref="customername" button-ref="btnCustomer" on-select-func="">
-</vc:codes-list>
+@await Component.InvokeAsync("CodesList", new
+{
+    crmCode = "accounts",
+    valueRef = "AttendedAccountID",
+    displayRef = "accountname",
+    buttonRef = "btnAccount",
+    onSelectFunc = ""
+})
 
-
+@await Component.InvokeAsync("CodesList", new
+{
+    crmCode = "customers",
+    valueRef = "AttendedCustomerID",
+    displayRef = "customername",
+    buttonRef = "btnCustomer",
+    onSelectFunc = ""
+})

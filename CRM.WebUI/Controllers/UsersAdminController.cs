@@ -12,7 +12,7 @@ using CRM.WebUI.Models.AccountViewModels;
 
 namespace CRM.WebUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admins")]
     public class UsersAdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

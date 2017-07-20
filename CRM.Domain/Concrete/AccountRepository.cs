@@ -18,13 +18,6 @@ namespace CRM.Domain.Concrete
             accountEntity = _context.Set<Account>();
         }
 
-        public int Add(Account account)
-        {
-            SetCreatedSignature(account);
-            _context.Entry(account).State = EntityState.Added;
-            return _context.SaveChanges();
-        }
-
         public async Task<int> AddAsync(Account account)
         {
             _context.Entry(account).State = EntityState.Added;
@@ -78,27 +71,31 @@ namespace CRM.Domain.Concrete
             return await accountEntity.Include(u => u.AccountOwner).Include(u => u.ModifiedBy).Include(u => u.CreatedBy).SingleOrDefaultAsync(s => s.AccountID == id);
         }
 
-        public int Delete(int id)
-        {
-            Account account = Get(id);
-            accountEntity.Remove(account);
-            return _context.SaveChanges();
-        }
-
         public async Task<int> DeleteAsync(int id)
         {
+            //Make sure there are no any applications, visa applications, and enrollments related with this account
+            if (_context.Applications.Any(a => a.InstituteID == id || a.ApplicationAgentID == id || a.ApplicationAgentID == id) ||
+                _context.Enrollments.Any(e => e.InstituteID == id || e.EnrollmentAgentID == id) ||
+                _context.VisaApplications.Any(v => v.InstituteID == id))
+                return -1;
+
             Account account = Get(id);
+            IQueryable<Activity> activities = _context.Activities.Where(a => a.AttendedAccountID == id);
+            foreach (Activity anActivity in activities)
+            {
+                if (anActivity.AttendedCustomerID==null || anActivity.AttendedCustomerID ==0)
+                {
+                    _context.Remove(anActivity);
+                }
+                else
+                {
+                    anActivity.AttendedAccountID = null;
+                    _context.Update(anActivity);
+
+                }
+            }
             accountEntity.Remove(account);
             return await _context.SaveChangesAsync();
-        }
-
-        public int Update(Account Item)
-        {
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return _context.SaveChanges();
         }
 
         public async Task<int> UpdateAsync(Account Item)

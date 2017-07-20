@@ -1,6 +1,7 @@
 ﻿using CRM.Domain.Abstract;
 using CRM.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -9,13 +10,25 @@ namespace CRM.Domain.Concrete
     public class DbInitializer
     {
 
-        public static async void InitializeAsync(EFDbContext context, UserManager<ApplicationUser> userManager)
+        public static async void InitializeAsync(EFDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
 
             AccountRepository accountRep = new AccountRepository(context);
             if (accountRep.GetAll().Any())
             {
                 return;   // DB has been seeded
+            }
+
+            //Seed roles
+            IdentityRole[] roles = new IdentityRole[] {
+                new IdentityRole {Name = "Admins"},
+                new IdentityRole {Name = "Users"},
+                new IdentityRole {Name = "Powerusers"}
+            };
+
+            foreach (IdentityRole role in roles)
+            {
+                await roleManager.CreateAsync(role);
             }
 
             //Seed users
@@ -32,6 +45,9 @@ namespace CRM.Domain.Concrete
             foreach (ApplicationUser user in users)
             {
                 await userManager.CreateAsync(user, "123456");
+                await userManager.AddToRoleAsync(user, "Users");
+                if (user.UserName=="admin")
+                    await userManager.AddToRoleAsync(user, "Admins");
             }
 
             ApplicationUser master = await userManager.FindByNameAsync("master");
@@ -66,7 +82,7 @@ namespace CRM.Domain.Concrete
             };
             foreach (Account s in accounts)
             {
-                accountRep.Add(s);
+                await accountRep.AddAsync(s);
             }
             await context.SaveChangesAsync();
 

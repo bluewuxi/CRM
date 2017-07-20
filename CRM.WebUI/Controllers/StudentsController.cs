@@ -45,6 +45,7 @@ namespace CRM.WebUI.Controllers
             }
 
             BindUserContext(_repo);
+
             var student = await _repo.GetAsync(id.GetValueOrDefault());
             if (student == null)
             {

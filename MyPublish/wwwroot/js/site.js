@@ -56,6 +56,18 @@ CRM.convertAccountType =
         }
     };
 
+CRM.convertGender =
+    function (value, row, index) {
+        switch (value) {
+            case 1:
+                return "Male";
+            case 2:
+                return "Female";
+            default:
+                return "Unknown";
+        }
+    };
+
 CRM.convertActivityType =
     function (value, row, index) {
         switch (value) {
@@ -192,7 +204,9 @@ CRM.formatDate =
 CRM.formatDatetime =
     function (value, row, index) {
         if (value !== undefined && value !== null && value !== "")
-            return value.toString().substring(0,19).replace(/T/g, " ");
+        {
+            return value.toString().substring(0, 19).replace(/T/g, " ").replace(/ 00:00:00/g,"");
+        }
         else
             return value;
     };

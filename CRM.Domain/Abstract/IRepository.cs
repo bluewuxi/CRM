@@ -21,21 +21,14 @@ namespace CRM.Domain.Abstract
 
     public interface IRepository<T> : IBaseRepository where T: IEntity, new()
     {
-        int Add(T Item);
-        int Delete(int id);
         T Get(int id);
         IQueryable<T> GetAll();
         IQueryable<T> GetAll(List<QuerySetting> search, List<QuerySetting> sort);
 
-        int Update(T Item);
-
         Task<int> AddAsync(T Item);
         Task<int> DeleteAsync(int id);
         Task<T> GetAsync(int id);
-        //Task<IQueryable<T>> GetAllAsync();
         Task<int> UpdateAsync(T Item);
-
-        //string UserContext { get; set; }
 
     }
 

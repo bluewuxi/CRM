@@ -6,12 +6,12 @@
     padding-right: 15px;
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
+/* Set widths on the form inputs since otherwise they're 100% wide 
 input,
 select,
 textarea {
 }
-
+*/
 input[readonly] {
     background-color: RGB(252,252,252) !important;
 }
@@ -44,7 +44,7 @@ input[readonly] {
     }
 }
 
-.crm-style2 input {
+input.crm  {
     border-style: solid;
     outline: 0;
     border-bottom: 1px solid #393636;
@@ -52,7 +52,7 @@ input[readonly] {
     border-width: 1px;
     border: 0;
 }
-.crm-style2 input:hover {
+input.crm :hover {
     border-style: solid;
     outline: 0;
     border-width: 1px;
@@ -83,12 +83,12 @@ input[readonly] {
 
 .crm-style h4 {
     margin: 2px;
-    padding: 0px;
+    padding: 0;
 }
 
 .sidebar .panel-heading i {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 .sidebar .panel-heading{
     padding: 2px;
@@ -108,7 +108,7 @@ input[readonly] {
 
 #page-wrapper .panel {
     margin-right: 5px;
-    padding-right:0px;
+    padding-right:0;
 }
 
 #page-wrapper .panel-heading {
@@ -116,9 +116,9 @@ input[readonly] {
     padding-bottom: 6px;
 }
 #page-wrapper .well {
-    padding-top: 0px;
+    padding-top: 0;
     padding-bottom: 12px;
-    margin-bottom:0px;
+    margin-bottom:0;
 }
     #page-wrapper  .btn {
         margin-top: 1px;

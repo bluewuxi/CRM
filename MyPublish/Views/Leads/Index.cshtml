@@ -13,27 +13,27 @@
             <div class="panel-body">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <label for="LeadName" class="col-sm-4">Name:</label>
-                        <input id="LeadName" class="col-sm-7 crm-query" placeholder="Name" />
+                        <label for="LeadName" class="col-xs-4">Name:</label>
+                        <input id="LeadName" class="col-xs-7 crm-query" placeholder="Name" />
                     </div>
                     <div class="form-group">
-                        <label for="Mobile" class="col-sm-4">Mobile:</label>
-                        <input id="Mobile" class="col-sm-7 crm-query" placeholder="Mobile" />
+                        <label for="Mobile" class="col-xs-4">Mobile:</label>
+                        <input id="Mobile" class="col-xs-7 crm-query" placeholder="Mobile" />
                     </div>
                     <div class="form-group">
-                        <label for="Source" class="col-sm-4">Source:</label>
-                        <input id="Source" class="col-sm-7 crm-query" placeholder="Source" />
+                        <label for="Source" class="col-xs-4">Source:</label>
+                        <input id="Source" class="col-xs-7 crm-query" placeholder="Source" />
                     </div>
                     <div class="form-group">
-                        <label for="Birthdate" class="col-sm-3">DOB:</label>
-                        <input id="Birthdate" class="col-sm-8 crm-query datepicker-here" placeholder="date range" 
+                        <label for="Birthdate" class="col-xs-3">DOB:</label>
+                        <input id="Birthdate" class="col-xs-8 crm-query datepicker-here" placeholder="date range" 
                                data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en"
                                data-range="true"  />
                     </div>
                 </div>
                 <div class="form-group"  style="text-align:center;">
-                    <button type="button" onclick="applyFilter(true)" class="btn btn-info btn-sm"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
-                    <button type="button" onclick="applyFilter(false)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-eraser"></i>Clear</button>
+                    <button type="button" onclick="applyFilter(true)" class="btn btn-info"><i class="fa fa-fw fa-check"></i>Apply</button>&nbsp;&nbsp;
+                    <button type="button" onclick="applyFilter(false)" class="btn btn-default"><i class="fa fa-fw fa-eraser"></i>Clear</button>
                 </div>
             </div>
         </div>
@@ -45,7 +45,13 @@
         <i class="glyphicon glyphicon-plus"></i> Create
     </button>
 </form>
-<table id="leadsTable"></table>
+<table id="leadsTable"
+    data-show-refresh="true"
+    data-page-list="[12, 15, 25, 50]"
+    data-show-toggle="true"
+    data-show-columns="true">
+</table>
+
 
 @section Scripts
 {
@@ -101,9 +107,9 @@
                     field: 'shortName',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.PreferName)',
                 }, {
-                    field: 'Gender',
+                    field: 'gender',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.Gender)',
-                    formatter: CRM.convertAccountType,
+                    formatter: CRM.convertGender,
                 }, {
                     field: 'source',
                     title: '@Html.DisplayNameFor(model => fieldDisplay.Source)',

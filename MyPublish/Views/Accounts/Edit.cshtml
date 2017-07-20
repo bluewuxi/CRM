@@ -3,7 +3,7 @@
 @model CRM.Domain.Entities.Account
 
 @{
-    ViewData["Title"] = " Edit Account";
+    ViewData["Title"] = " Edit Act.";
     ViewData["Action"] = "Edit";
 }
 
@@ -29,7 +29,7 @@
     <div class="panel panel-info">
         <div class="panel-heading">
             <div class="btn-group pull-right form-inline">
-                <a type="button" class="btn btn-info" href='/Accounts' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a type="button" class="btn btn-info" href='/Accounts' style="float: right;"><i class="fa fa-fw fa-reply"></i>List</a>
                 <button type="submit" value="Save" class="btn btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save" ></i>Save</button>
                 <a asp-action="Details" class="btn btn-warning " asp-route-id="@Model.AccountID" style="margin-right: 15px; margin-left: 15px;"><i class="fa fa-fw fa-trash-o"></i>Cancel</a>
             </div>

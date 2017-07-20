@@ -142,7 +142,8 @@ namespace CRM.WebUI
                 );
             });
 
-            DbInitializer.InitializeAsync(context,app.ApplicationServices.GetService<UserManager<ApplicationUser>>());
+            DbInitializer.InitializeAsync(context,app.ApplicationServices.GetService<UserManager<ApplicationUser>>(),
+                app.ApplicationServices.GetService<RoleManager<IdentityRole>>());
         }
     }
 }

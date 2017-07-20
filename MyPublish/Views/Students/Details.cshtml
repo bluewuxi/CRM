@@ -30,7 +30,7 @@
         <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.CustomerID">
             <div class="btn-group pull-right">
                 <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.CustomerID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
-                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>List</a>
                 <a id="deleteButton" href="#" onclick="deleteStudent()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
             </div>
             <p style="font-size:18px; margin-top:0px; margin-bottom:0px;">@ViewData["Title"] </p>
@@ -200,8 +200,8 @@
     @section Scripts {
         <script>
             $("#crm-students").addClass('active');
-            function deleteLead() {
-                if (confirm("Are you sure to delete the Lead? All activites will be deleted as well.")) {
+            function deleteStudent() {
+                if (confirm("Are you sure to delete the Student? All activites will be deleted as well.")) {
                     $("#confirmForm").submit();
                 }
             };
@@ -255,7 +255,7 @@
 
             $table = $("#closedActivitiesTable");
             $table.bootstrapTable({
-                url: "/api/activities/student/@Model.CustomerID/closed ",
+                url: "/api/activities/student/@Model.CustomerID/closed",
                     height: 300,
                     clickToSelect: true,
                     sidePagination: 'client',

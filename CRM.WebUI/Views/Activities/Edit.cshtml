@@ -20,9 +20,7 @@
         </div>
     </li>
 }
-<div class="container-fluid">
     @{await Html.RenderPartialAsync("_ActivitiesPartial", Model, ViewData);}
-</div>
 
 @section Scripts{
     <script>$("#crm-activities").addClass('active');</script>

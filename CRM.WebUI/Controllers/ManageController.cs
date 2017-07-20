@@ -150,6 +150,14 @@ namespace CRM.WebUI.Controllers
         }
 
         //
+        // GET: /Manage/Data
+        [HttpGet]
+        public IActionResult Data()
+        {
+            return View();
+        }
+
+        //
         // GET: /Manage/VerifyPhoneNumber
         [HttpGet]
         public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)

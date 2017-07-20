@@ -12,6 +12,7 @@ namespace CRM.Domain.Entities
         public int CustomerID { get; set; }
 
         [Required, StringLength(50, MinimumLength = 2)]
+        [Display(Name = "Customer Name")]
         public string Name { get; set; }
 
         [StringLength(50, MinimumLength = 2)]

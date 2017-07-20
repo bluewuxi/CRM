@@ -12,7 +12,7 @@
     <div class="panel panel-info" style="margin-top:5px;">
         <div class="panel-heading">
             <div class="btn-group pull-right form-inline">
-                <a type="button" class="btn btn-sm btn-info" href='/Enrollments' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a type="button" class="btn btn-sm btn-info" href='/Enrollments' style="float: right;"><i class="fa fa-fw fa-reply"></i>List</a>
                 <button type="submit" value="Save" class="btn btn-sm btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save"></i>Save</button>
 @{if (ViewData["Action"].ToString() == "Edit")
     {
@@ -30,12 +30,12 @@
             <div class="alert alert-warning"><i class="fa fa-info-circle fa-fw"></i>System will create a following task for Active Enrollment with [Start Date] = [Due Date] - 30 Days</div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row crm-style">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
                             <input type="hidden" asp-for="StudentID" class="form-control" />
-                            <label asp-for="StudentID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 ">
+                            <label asp-for="StudentID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8 ">
                                 <div class="input-group">
                                     <input  class="form-control" asp-for="Student.Name"  data-val="false" readonly />
                                     <span class="input-group-btn">
@@ -46,24 +46,24 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="PaymentDate" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="PaymentDate" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="PaymentDate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
                                        data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="PaymentDate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="DueDate" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="DueDate" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="DueDate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
                                        data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="DueDate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="EndDate" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="EndDate" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="EndDate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
                                        data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="EndDate" class="text-danger"></span>
@@ -71,13 +71,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
                             <input type="hidden" asp-for="Institute.ShortName"  data-val="false" />
                             <input type="hidden" asp-for="InstituteID" class="form-control " />
-                            <label asp-for="InstituteID" class="control-label col-md-4"></label>
-                           <div class="col-md-8 ">
+                            <label asp-for="InstituteID" class="control-label col-xs-4"></label>
+                           <div class="col-xs-8 ">
                                 <div class="input-group">
                                     <input class="form-control" data-val="false" asp-for="Institute.Name" readonly />
                                     <span class="input-group-btn">
@@ -88,8 +88,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Tuition" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Tuition" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-dollar fa-fw"></i></span>
                                     <input asp-for="Tuition" class="form-control" />
@@ -100,8 +100,8 @@
                         <div class="form-group">
                             <input type="hidden" asp-for="EnrollmentAgent.ShortName"  data-val="false" />
                             <input type="hidden" asp-for="EnrollmentAgentID" class="form-control" />
-                            <label asp-for="EnrollmentAgentID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 ">
+                            <label asp-for="EnrollmentAgentID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8 ">
                                 <div class="input-group">
                                     <input class="form-control" data-val="false" asp-for="EnrollmentAgent.Name" readonly />
                                    <span class="input-group-btn">
@@ -112,8 +112,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Note" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Note" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <textarea rows="3" asp-for="Note" class="form-control"></textarea>
                                 <span asp-validation-for="Note" class="text-danger"></span>
                             </div>

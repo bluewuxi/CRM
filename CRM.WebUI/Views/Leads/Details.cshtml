@@ -28,7 +28,7 @@
         <form id="confirmForm" asp-action="Delete" asp-route-id="@Model.CustomerID">
             <div class="btn-group pull-right">
                 <a style="margin-left:10px;margin-right:10px;" class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@Model.CustomerID"><i class="fa fa-fw fa-pencil"></i>Edit</a>
-                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a asp-action="Index" class="btn btn-sm btn-info"><i class="fa fa-fw fa-reply"></i>List</a>
                 <a id="convertButton" href="#" onclick="convertLead()" class="btn btn-sm btn-warning" style="margin-left:10px;"><i class="fa fa-fw fa-thumbs-o-up"></i>Convert</a>
                 <a id="deleteButton" href="#" onclick="deleteLead()" class="btn btn-sm btn-danger" style="margin-left:10px;"><i class="fa fa-fw fa-remove"></i>Delete</a>
             </div>

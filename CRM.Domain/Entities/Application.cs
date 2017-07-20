@@ -40,6 +40,14 @@ namespace CRM.Domain.Entities
         [Display(Name = "Submitted Date")]
         public DateTime? SubmittedDate { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Enroll Date")]
+        public DateTime? EnrollDate { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Offer Date")]
+        public DateTime? OfferDate { get; set; }
+
         public DateTime ModifiedTime { get; set; }
         [Display(Name = "Modified By")]
         public ApplicationUser ModifiedBy { get; set; }

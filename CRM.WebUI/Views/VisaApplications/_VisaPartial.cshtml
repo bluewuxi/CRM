@@ -12,7 +12,7 @@
     <div class="panel panel-info" style="margin-top:5px;">
         <div class="panel-heading">
             <div class="btn-group pull-right form-inline">
-                <a type="button" class="btn btn-sm btn-info" href='/VisaApplications' style="float: right;"><i class="fa fa-fw fa-reply"></i>Back to List</a>
+                <a type="button" class="btn btn-sm btn-info" href='/VisaApplications' style="float: right;"><i class="fa fa-fw fa-reply"></i>List</a>
                 <button type="submit" value="Save" class="btn btn-sm btn-success " stype="margin-left: 15px"><i class="fa fa-fw fa-save"></i>Save</button>
 @{if (ViewData["Action"].ToString() == "Edit")
     {
@@ -31,12 +31,12 @@
             and create a following task for Approved Status Visa application with [Start Date]=[Expired Date] - 30 Days.</div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row crm-style">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
                             <input type="hidden" asp-for="StudentID" class="form-control" />
-                            <label asp-for="StudentID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 ">
+                            <label asp-for="StudentID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8 ">
                                 <div class="input-group">
                                     <input id="studentname" class="form-control" asp-for="Student.Name"  data-val="false" readonly />
                                     <span class="input-group-btn">
@@ -48,8 +48,8 @@
                         </div>
                         <div class="form-group">
                             <input type="hidden" asp-for="InstituteID" class="form-control" />
-                            <label asp-for="InstituteID" class="control-label col-md-4"></label>
-                            <div class="col-md-8 ">
+                            <label asp-for="InstituteID" class="control-label col-xs-4"></label>
+                            <div class="col-xs-8 ">
                                 <div class="input-group">
                                     <input id="institutename" class="form-control" asp-for="Institute.Name"  data-val="false" readonly />
                                     <span class="input-group-btn">
@@ -60,22 +60,22 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="PassportNumber" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="PassportNumber" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="PassportNumber" class="form-control" />
                                 <span asp-validation-for="PassportNumber" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="EamilInForm" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="EamilInForm" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="EamilInForm" class="form-control" />
                                 <span asp-validation-for="EamilInForm" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="VisaType" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="VisaType" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="VisaType" class="form-control" >
                                     <option value="">-none-</option>
                                     <option value="student">student</option>
@@ -91,8 +91,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="VisaAppliedType" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="VisaAppliedType" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="VisaAppliedType"  class="form-control" asp-items="Html.GetEnumSelectList<VisaApplication.AppliedVisaTypeEnum>()">
                                     <option value="">-none-</option>
                                 </select>
@@ -100,8 +100,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Status" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Status" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<VisaApplication.VisaStatusEnum>()">
                                     <option value="">-none-</option>
                                 </select>
@@ -109,57 +109,57 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Documents" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Documents" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <textarea rows="2" asp-for="Documents" class="form-control"></textarea>
                                 <span asp-validation-for="Documents" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label asp-for="SubmittedDate" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="SubmittedDate" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="SubmittedDate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
                                        data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="SubmittedDate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ReceivedDate" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="ReceivedDate" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="ReceivedDate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
                                        data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="ReceivedDate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ExpiredDate" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="ExpiredDate" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="ExpiredDate" class="form-control datepicker-here" placeholder="yyyy-mm-dd"
                                        data-date-format="yyyy-mm-dd" data-clear-button="true" data-auto-close="true" data-language="en" />
                                 <span asp-validation-for="ExpiredDate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="PhysicalAddress" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="PhysicalAddress" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="PhysicalAddress" class="form-control" />
                                 <span asp-validation-for="PhysicalAddress" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="PostalAddress" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="PostalAddress" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <input asp-for="PostalAddress" class="form-control" />
                                 <span asp-validation-for="PostalAddress" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Note" class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <label asp-for="Note" class="col-xs-4 control-label"></label>
+                            <div class="col-xs-8">
                                 <textarea rows="4" asp-for="Note" class="form-control"></textarea>
                                 <span asp-validation-for="Note" class="text-danger"></span>
                             </div>

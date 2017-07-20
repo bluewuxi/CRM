@@ -5,7 +5,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@if (SignInManager.IsSignedIn(User) /*&& await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin")*/)
+@if (SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admins"))
 {
     <li class="dropdown ">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -14,6 +14,9 @@
             <ul class="dropdown-menu dropdown-user">
                 <li>
                     <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage"><i class="fa fa-gear fa-fw"></i> User Profile</a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Manage" asp-action="Data" title="ManageData"><i class="fa fa-gear fa-fw"></i>Manage Data</a>
                 </li>
                 <li>
                     <a asp-area="" asp-controller="UsersAdmin" asp-action="Index" title="UserAdmin"><i class="fa fa-users fa-fw"></i> Manage Users</a>
@@ -33,7 +36,6 @@
 else if (SignInManager.IsSignedIn(User))
 {
     <li class="dropdown">
-        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" >
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-user fa-fw"></i>@UserManager.GetUserName(User)<i class="fa fa-caret-down"></i>
             </a>
@@ -43,10 +45,11 @@ else if (SignInManager.IsSignedIn(User))
                 </li>
                 <li class="divider"></li>
                 <li>
-                    <button type="submit" class="btn btn-link navbar-btn navbar-link"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                        <button type="submit" class="btn btn-link navbar-btn navbar-link"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
+                    </form>
                 </li>
             </ul>
-        </form>
     </li>
 }
 else

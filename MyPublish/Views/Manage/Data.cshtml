@@ -1,0 +1,163 @@
+<h2>Data</h2>
+
+<textarea id="txtImport" rows="5" placeholder="Paste CSV format text here" class="form-control"></textarea>
+<button type="button" onclick="loaddata()">Load</button>
+
+<Table id="importTable">
+</Table>
+
+@section Scripts{
+<script>
+    var $table = $('#importTable');
+
+    function initTable() {
+        $table.bootstrapTable({
+            height: 400,
+                columns: [{
+                    field: 'state',
+                    title: '',
+                    radio: true,
+                }, {
+                    field: 'no',
+                    title: 'no',
+                }, {
+                    field: 'student',
+                    title: 'student',
+                }, {
+                    field: 'gender',
+                    title: 'gender',
+                }, {
+                    field: 'dob',
+                    title: 'dob',
+                }, {
+                    field: 'contact',
+                    title: 'contact',
+                }, {
+                    field: 'email',
+                    title: 'email',
+                }, {
+                    field: 'application',
+                    title: 'application',
+                }, {
+                    field: 'enrolldate',
+                    title: 'enrolldate',
+                }, {
+                    field: 'applicationdate',
+                    title: 'applicationdate',
+                }, {
+                    field: 'offerdate',
+                    title: 'offerdate',
+                }, {
+                    field: 'academicbackground',
+                    title: 'academicbackground',
+                }, {
+                    field: 'operater',
+                    title: 'operater',
+                }, {
+                    field: 'agent',
+                    title: 'agent',
+                },]
+        });
+    }
+    initTable();
+
+    function formatDateString(r)
+    {
+        if (!r || r.length < 7 || r.trim() == "") return null;
+        var year, month, day;
+        r = r.trim();
+        r = r.toLowerCase();
+        r=r.replace(/\//g, "-");
+        if (!isNaN(r.substring(0, 4)))
+        {
+            year = r.substring(0, 4);
+            r = r.substring(5);
+        }
+        else
+        {
+            year = r.substring(r.length - 4);
+            r = r.substring(0, r.length - 5);
+        }
+
+        if (r.length <= 2) {
+            day = "01";
+            month = r.substring(r.indexOf("-")-1).trim();
+        }
+        else
+        {
+            if (isNaN(r.substring(0, r.indexOf("-")).trim()))
+            {
+                month = r.substring(0, r.indexOf("-"));
+                day = r.substring(r.indexOf("-") + 1).trim();
+            } else
+            {
+                month = r.substring(0, r.indexOf("-")).trim();
+                day = r.substring(r.indexOf("-")+1);
+            }
+
+        }
+        switch (month)
+        {
+            case "jan": month = "01"; break;
+            case "feb": month = "02"; break;
+            case "mar": month = "03"; break;
+            case "apr": month = "04"; break;
+            case "may": month = "05"; break;
+            case "jun": month = "06"; break;
+            case "jul": month = "07"; break;
+            case "aug": month = "08"; break;
+            case "sep": month = "09"; break;
+            case "oct": month = "10"; break;
+            case "nov": month = "11"; break;
+            case "dev": month = "12"; break;
+
+        }
+        return year + "-" + month + "-" + day;
+    }
+
+    function loaddata() {
+        var lines = $("#txtImport").val().split("\n");
+        if (lines && lines.length>=1) lines.splice(0, 1);
+        var fields;
+        var items = new Array();
+        lines.forEach(function (line) {
+            if (line.trim()!=="") {
+                fields = line.split(",");
+                var item = {};
+                fields.forEach(function (f, i) {
+                    iEmpty = 0;
+                    if (!f) {
+                        iEmpty++;
+                        fields[i] = " ";
+                    }
+                });
+                if (iEmpty < 13)
+                {
+                item.no = fields[0].trim();
+                item.student = fields[1].trim();
+                item.gender = fields[2].trim();
+                item.dob = formatDateString(fields[3].trim());
+                item.contact = fields[4].trim();
+                item.email = fields[5].trim();
+                item.application = fields[6].trim();
+                item.enrolldate = formatDateString(fields[7].trim());
+                item.applicationdate = formatDateString(fields[8].trim());
+                item.offerdate = formatDateString(fields[9].trim());
+                item.academicbackground = fields[10].trim();
+                item.operater = fields[11].trim();
+                item.agent = fields[12].trim();
+                items.push(item);
+                }
+            }
+        });
+        var jsondata = JSON.stringify(items);
+        $table.bootstrapTable('load', items);
+    };
+
+</script>
+
+<script>
+
+
+</script>
+}

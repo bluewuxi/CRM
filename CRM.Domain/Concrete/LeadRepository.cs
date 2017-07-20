@@ -11,27 +11,15 @@ namespace CRM.Domain.Concrete
 {
     public class LeadRepository: BaseRepository, ILeadRepository
     {
-        private EFDbContext context;
+        private EFDbContext _context;
         private DbSet<Lead> leadEntity;
 
         public LeadRepository(EFDbContext dbcontext)
         {
-            this.context = dbcontext;
-            leadEntity = context.Set<Lead>();
+            this._context = dbcontext;
+            leadEntity = _context.Set<Lead>();
         }
 
-        public int Add(Lead lead)
-        {
-            context.Entry(lead).State = EntityState.Added;
-            SetCreatedSignature(lead);
-            return context.SaveChanges();
-        }
-        public int Delete(int id)
-        {
-            Lead lead = Get(id);
-            leadEntity.Remove(lead);
-            return context.SaveChanges();
-        }
         public Lead Get(int id)
         {
             return leadEntity.Include(u => u.CustomerOwner)
@@ -48,18 +36,21 @@ namespace CRM.Domain.Concrete
         }
         public IQueryable<Lead> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            string sLeadName, sMobile, sSource, sBirthdate;
+            string sOwner, sLeadName, sMobile, sSource, sBirthdate;
             IQueryable<Lead> records= leadEntity.Include(u => u.CustomerOwner).AsQueryable();
             if (search != null && search.Count() > 0)
             {
-                sLeadName = search.Where<QuerySetting>(u => u.Field == "LeadName").Select(p => p.Value).SingleOrDefault().Trim();
+                sOwner = search.Where(u => u.Field == "Owner").Select(p => p.Value).SingleOrDefault();
+                if (sOwner != null && sOwner != "") records = records.Where(u => u.CustomerOwnerID == sOwner || u.ModifiedByID == sOwner || u.CustomerOwnerID == null);
+
+                sLeadName = search.Where<QuerySetting>(u => u.Field == "LeadName").Select(p => p.Value).SingleOrDefault();
                 if (sLeadName != null && sLeadName != "") records = records.Where(u => u.Name.ToLower().Contains(sLeadName.ToLower())
                     || u.PreferName.ToLower().Contains(sLeadName.ToLower()));
 
-                sMobile = search.Where<QuerySetting>(u => u.Field == "Mobile").Select(p => p.Value).SingleOrDefault().Trim();
+                sMobile = search.Where<QuerySetting>(u => u.Field == "Mobile").Select(p => p.Value).SingleOrDefault();
                 if (sMobile != null && sMobile != "") records = records.Where(u => u.Mobile.Contains(sMobile));
 
-                sSource = search.Where<QuerySetting>(u => u.Field == "Source").Select(p => p.Value).SingleOrDefault().Trim();
+                sSource = search.Where<QuerySetting>(u => u.Field == "Source").Select(p => p.Value).SingleOrDefault();
                 if (sSource != null && sSource != "") records = records.Where(u => u.Source.ToLower().Contains(sSource.ToLower()));
 
                 sBirthdate = search.Where<QuerySetting>(u => u.Field == "Birthdate").Select(p => p.Value).SingleOrDefault();
@@ -76,38 +67,31 @@ namespace CRM.Domain.Concrete
         {
             return leadEntity.Include(u => u.CustomerOwner).AsQueryable();
         }
-        public int Update(Lead Item)
-        {
-            SetModifiedSignature(Item);
-            context.Update(Item);
-            context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return context.SaveChanges();
-        }
 
         public async Task<int> UpdateAsync(Lead Item)
         {
             SetModifiedSignature(Item);
-            context.Update(Item);
-            context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return await context.SaveChangesAsync();
+            _context.Update(Item);
+            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
+            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
+            return await _context.SaveChangesAsync();
         }
         public Task<int> AddAsync(Lead lead)
         {
-            context.Entry(lead).State = EntityState.Added;
+            _context.Entry(lead).State = EntityState.Added;
             SetCreatedSignature(lead);
-            return context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
         public async Task<int> DeleteAsync(int id)
         {
             Lead lead = Get(id);
             leadEntity.Remove(lead);
-            return await context.SaveChangesAsync();
-        }
-        public Task<IQueryable<Lead>> GetAllAsync()
-        {
-            throw new NotImplementedException();
+            IQueryable<Activity> activities = _context.Activities.Where(a => a.AttendedCustomerID == id);
+            foreach (Activity anActivity in activities)
+            {
+                _context.Remove(anActivity);
+            }
+            return await _context.SaveChangesAsync();
         }
     }
 }

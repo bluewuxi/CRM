@@ -20,23 +20,8 @@ namespace CRM.Domain.Concrete
             activityEntity = _context.Set<Activity>();
         }
 
-        public int Add(Activity activity)
-        {
-            _context.Entry(activity).State = EntityState.Added;
-            SetCreatedSignature(activity);
-            return _context.SaveChanges();
-        }
-
-        public int Delete(int id)
-        {
-            Activity activity = Get(id);
-            activityEntity.Remove(activity);
-            return _context.SaveChanges();
-        }
-
         public Activity Get(int id)
         {
-            //return activityEntity.Include(u => u.AttendedCustomer).Include(u=>u.AttendedAccount).SingleOrDefault(s => s.ActivityID == id);
             return activityEntity
                 .Include(a => a.ActivityOwner)
                 .Include(a => a.AttendedAccount)
@@ -70,7 +55,10 @@ namespace CRM.Domain.Concrete
 
             if (search != null && search.Count() > 0)
             {
-                string sActivityType, sSubject, sStatus, sActivityOwner, sAttendedAccount, sAttendedCustomer, sStartTime, sEndTime;
+                string sActivityType, sSubject, sStatus, sActivityOwner, sAttendedAccount, sAttendedCustomer, sStartTime, sEndTime, sOwner;
+
+                sOwner = search.Where(u => u.Field == "Owner").Select(p => p.Value).SingleOrDefault();
+                if (sOwner != null && sOwner != "") records = records.Where(u => u.ActivityOwnerID == sOwner || u.ModifiedByID == sOwner || u.ActivityOwnerID == null);
 
                 sActivityType = search.Where<QuerySetting>(u => u.Field == "ActivityType").Select(p => p.Value).SingleOrDefault();
                 if (sActivityType != null && sActivityType != "") records = records.Where(u => (int)u.ActivityType== int.Parse(sActivityType));
@@ -110,15 +98,6 @@ namespace CRM.Domain.Concrete
             return records;
         }
 
-        public int Update(Activity Item)
-        {
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return _context.SaveChanges();
-        }
-
         public async Task<int> UpdateAsync(Activity Item)
         {
             SetModifiedSignature(Item);
@@ -138,10 +117,6 @@ namespace CRM.Domain.Concrete
             Activity activity = Get(id);
             activityEntity.Remove(activity);
             return _context.SaveChangesAsync();
-        }
-        public Task<IQueryable<Activity>> GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
 
     }

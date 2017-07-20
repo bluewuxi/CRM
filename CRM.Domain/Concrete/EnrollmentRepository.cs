@@ -20,12 +20,6 @@ namespace CRM.Domain.Concrete
             _entity = _context.Set<Enrollment>();
         }
 
-        public int Delete(int id)
-        {
-            Enrollment item = Get(id);
-            _entity.Remove(item);
-            return _context.SaveChanges();
-        }
         public Enrollment Get(int id)
         {
             return _entity.Include(u => u.Student)
@@ -50,12 +44,15 @@ namespace CRM.Domain.Concrete
         }
         public IQueryable<Enrollment> GetAll(List<QuerySetting> search, List<QuerySetting> sort)
         {
-            string sStudentName, sInstituteName, sAgentName, sStatus, sPaymentDate, sDueDate, sEndDate;
+            string sStudentName, sInstituteName, sAgentName, sStatus, sPaymentDate, sDueDate, sEndDate, sOwner;
 
             IQueryable<Enrollment> records= _entity.Include(u => u.Student).Include(a => a.EnrollmentAgent).Include(i => i.Institute).AsQueryable();
 
             if (search != null && search.Count() > 0)
             {
+                sOwner = search.Where(u => u.Field == "Owner").Select(p => p.Value).SingleOrDefault();
+                if (sOwner != null && sOwner != "") records = records.Where(u => u.Student.CustomerOwnerID == sOwner || u.Student.ModifiedByID == sOwner || u.Student.CustomerOwnerID == null);
+
                 sStudentName = search.Where<QuerySetting>(u => u.Field == "StudentName").Select(p => p.Value).SingleOrDefault().Trim();
                 if (sStudentName != null && sStudentName != "") records = records.Where(u => u.Student.Name.ToLower().Contains(sStudentName.ToLower())
                     || u.Student.PreferName.ToLower().Contains(sStudentName.ToLower()));
@@ -97,14 +94,6 @@ namespace CRM.Domain.Concrete
             }
             return records;
         }
-        public int Update(Enrollment Item)
-        {
-            SetModifiedSignature(Item);
-            _context.Update(Item);
-            _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
-            _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
-            return _context.SaveChanges();
-        }
         public async Task<int> UpdateAsync(Enrollment Item)
         {
             await CreateActivity(Item);
@@ -113,13 +102,6 @@ namespace CRM.Domain.Concrete
             _context.Entry(Item).Property(x => x.CreatedByID).IsModified = false;
             _context.Entry(Item).Property(x => x.CreatedTime).IsModified = false;
             return await _context.SaveChangesAsync();
-        }
-
-        public int Add(Enrollment enrollment)
-        {
-            _context.Entry(enrollment).State = EntityState.Added;
-            SetCreatedSignature(enrollment);
-            return _context.SaveChanges();
         }
 
         public async Task<int> AddAsync(Enrollment enrollment)
@@ -161,6 +143,7 @@ namespace CRM.Domain.Concrete
                 ActivityType = Activity.ActivityTypeEnum.Other,
                 Subject = "[System] Beware Due Date of Tuition",
                 StartTime = Item.DueDate.AddDays(-30),
+                EndTime = Item.DueDate,
                 AttendedAccountID = Item.InstituteID,
                 AttendedCustomerID = Item.StudentID,
             };
