@@ -44,6 +44,13 @@ namespace CRM.WebUI.ApiControllers
                 aSort = JsonConvert.DeserializeObject<List<QuerySetting>>(sort);
             }
 
+            string userLimitation = await GetUserLimitation();
+            if (userLimitation != "")
+            {
+                if (aSearch == null) aSearch = new List<QuerySetting>();
+                aSearch.Add(new QuerySetting("Owner", userLimitation));
+            }
+
             records = _Repo.GetAll(aSearch, aSort);
             var count = await records.CountAsync();
 
@@ -55,10 +62,19 @@ namespace CRM.WebUI.ApiControllers
 
         //For searching and filling agent code, used by agent list modal
         [HttpGet("api/agents")]
-        public IActionResult ListAgents()
+        public async Task<IActionResult> ListAgents()
         {
             IQueryable<Account> records;
-            records = _Repo.GetAll().Where(a=>a.AccountType==Account.AccountTypeEnum.Agent);
+            List<QuerySetting> aSearch;
+            string userLimitation = await GetUserLimitation();
+            if (userLimitation != "")
+            {
+                aSearch = new List<QuerySetting>();
+                aSearch.Add(new QuerySetting("Owner", userLimitation));
+                records = _Repo.GetAll(aSearch, null).Where(a => a.AccountType == Account.AccountTypeEnum.Agent);
+            }
+            else
+                records = _Repo.GetAll().Where(a=>a.AccountType==Account.AccountTypeEnum.Agent);
             return Json(records);
         }
 

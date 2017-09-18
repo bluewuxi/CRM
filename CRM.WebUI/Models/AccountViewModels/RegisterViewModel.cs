@@ -14,8 +14,8 @@ namespace CRM.WebUI.Models.AccountViewModels
 
         [Required]
         [EmailAddress]
-        [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-        [Display(Name = "User Name")]
+        [StringLength(40, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+        [Display(Name = "User Email")]
         public string Email { get; set; }
 
         [Required]

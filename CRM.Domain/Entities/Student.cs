@@ -12,7 +12,7 @@ namespace CRM.Domain.Entities
         [StringLength(20)]
         public string Rating { get; set; }
 
-        [StringLength(20, MinimumLength = 2)]
+        [StringLength(20)]
         public string Nationality { get; set; }
 
         [StringLength(20, MinimumLength = 5)]

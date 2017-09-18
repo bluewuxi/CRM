@@ -31,10 +31,7 @@
     <Compile Remove="Models\CommonPagingTagHelpers.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="wwwroot\blank.html" />
-    <Content Include="wwwroot\css\admin_theme.css" />
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="BundlerMinifier.Core" Version="2.4.337" />
     <PackageReference Include="jQuery.UI.Widgets.Datepicker" Version="1.8.9" />

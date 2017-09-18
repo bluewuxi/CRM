@@ -68,7 +68,7 @@ namespace CRM.WebUI.Controllers
             if (student != null) return View(student);
 
             int x = await _context.Database.ExecuteSqlCommandAsync(
-            "update Customers set Discriminator = 'Student', Rating='1',Note = 'Source:' + ISNULL(\"Source\",'') + '; Convert from lead ' + convert(varchar(25), getdate(), 120)+'; '+ISNULL(\"Note\",''), \"Source\" = null where \"CustomerID\" = 1;");
+            "update Customers set Discriminator = 'Student', Rating='1',Note = 'Source:' + ISNULL(\"Source\",'') + '; Convert from lead ' + convert(varchar(25), getdate(), 120)+'; '+ISNULL(\"Note\",''), \"Source\" = null where \"CustomerID\" = {0};", parameters: id);
 
             BindUserContext(_repo);
             student = await _repo.GetAsync(id.GetValueOrDefault());
@@ -77,7 +77,9 @@ namespace CRM.WebUI.Controllers
                 return NotFound();
             }
 
-            return View("Edit",student);
+            //return View("Edit",student);
+            return RedirectToAction("Edit", new { id = student.CustomerID });
+
         }
 
         // GET: Students/Create

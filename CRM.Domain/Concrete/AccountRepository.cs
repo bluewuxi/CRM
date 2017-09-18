@@ -35,7 +35,11 @@ namespace CRM.Domain.Concrete
             IQueryable<Account> records=accountEntity.Include(u => u.AccountOwner);
             if (search != null && search.Count() > 0)
             {
-                string searchName, searchType, searchOwner;
+                string searchName, searchType, searchOwner, sOwner;
+
+                sOwner = search.Where(u => u.Field == "Owner").Select(p => p.Value).SingleOrDefault();
+                if (sOwner != null && sOwner != "") records = records.Where(u => u.AccountOwnerID == sOwner || u.ModifiedByID == sOwner || u.AccountOwnerID == null);
+
                 searchName = search.Where<QuerySetting>(u => u.Field == "AccountName").Select(p => p.Value).SingleOrDefault();
                 if (searchName != null && searchName != "") records = records.Where(u => u.Name.ToLower().Contains(searchName.ToLower()));
                 searchType = search.Where<QuerySetting>(u => u.Field == "AccountType").Select(p => p.Value).SingleOrDefault();
